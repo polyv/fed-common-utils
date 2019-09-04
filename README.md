@@ -27,7 +27,7 @@ module.exports = {
     }
   },
 
-  // 指定需要 babel 转译
+  // 需要 babel 转译
   transpileDependencies: [
     '@polyv/utils'
   ]
@@ -43,7 +43,7 @@ module.exports = {
   // 省略其他配置
 
   build: {
-    // 指定需要 babel 转译
+    // 需要 babel 转译
     transpile: [
       '@polyv/utils'
     ]
@@ -66,5 +66,8 @@ module.exports = {
 
 ## 兼容性
 - IE >= 9
-- iOS >= 9
-- Android >= 4.4
+- iOS >= 9 (未测试更低版本)
+- Android >= 5 (未测试更低版本)
+
+## 其他
+- [API 文档](https://polyv.github.io/utils/index.html)
