@@ -1,0 +1,59 @@
+{
+  "name": "@polyv/utils",
+  "version": "1.0.0",
+  "description": "Utility functions of Polyv frontend development.",
+  "keywords": [
+    "polyv",
+    "utility",
+    "保利威"
+  ],
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.config.js",
+    "prebuild": "rimraf ./dist",
+    "build": "cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js",
+    "pregen-doc": "rimraf ./docs",
+    "gen-doc": "jsdoc ./src -d ./docs"
+  },
+  "files": [
+    "src/**/*",
+    "dist/**/*"
+  ],
+  "author": "Polyv frontend team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polyv/utils"
+  },
+  "bugs": {
+    "url": "https://github.com/polyv/utils/issues"
+  },
+  "homepage": "https://polyv.github.io/utils/",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-json-strings": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-syntax-import-meta": "^7.2.0",
+    "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.4",
+    "core-js": "^2.6.9",
+    "cross-env": "^5.2.0",
+    "eslint": "^6.1.0",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-sonarjs": "^0.4.0",
+    "glob": "^7.1.4",
+    "html-webpack-plugin": "^3.2.0",
+    "jsdoc": "^3.6.3",
+    "regenerator-runtime": "^0.13.3",
+    "rimraf": "^3.0.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1"
+  }
+}
