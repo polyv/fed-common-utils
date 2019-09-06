@@ -73,10 +73,18 @@ if (typeof window !== 'undefined') {
 
 /**
  * sessionStorage 存取方法（通过 StorageWrap 包装了 sessionStorage）。
+ * @example
+ * const user = { name: 'Tom', pet: 'cat' };
+ * session.setAsJSON('user', user);
+ * session.getAsJSON('user');
  */
 export const session = new StorageWrap(sessionStorage);
 
 /**
  * localStorage 存取方法（通过 StorageWrap 包装了 localStorage）。
+ * @example
+ * const user = { name: 'Tom', pet: 'cat' };
+ * local.setAsJSON('user', user);
+ * local.getAsJSON('user');
  */
 export const local = new StorageWrap(localStorage);
