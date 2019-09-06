@@ -3,6 +3,8 @@
  * @module storage
  */
 
+import { tryParseJSON } from './lang';
+
 /**
  * 本地存储调用封装。
  * @author luoliquan
@@ -28,13 +30,7 @@ export class StorageWrap {
    * @return {Any} 解析结果。
    */
   getAsJSON(key) {
-    let result = this.get(key);
-    try {
-      result = JSON.parse(result);
-    } catch (e) {
-      return null;
-    }
-    return result;
+    return tryParseJSON(this.get(key));
   }
 
   /**
