@@ -1,9 +1,17 @@
 import {
+  isArrayLike,
   isEmptyData,
   extend,
-  cloneJSON
+  cloneJSON,
+  tryParseJSON
 } from '@/lang';
 const QUnit = window.QUnit;
+
+QUnit.test('isArrayLike', (assert) => {
+  assert.strictEqual(isArrayLike([]), true);
+  assert.strictEqual(isArrayLike(document.getElementsByTagName('body')), true);
+  assert.strictEqual(isArrayLike({}), false);
+});
 
 QUnit.test('isEmptyData', (assert) => {
   assert.strictEqual(isEmptyData(null), true, 'null');
@@ -31,4 +39,9 @@ QUnit.test('clone', (assert) => {
   const copy = cloneJSON(src);
   assert.notStrictEqual(src, copy);
   assert.deepEqual(src, copy);
+});
+
+QUnit.test('tryParseJSON', (assert) => {
+  assert.strictEqual(tryParseJSON('ss&&**'), undefined);
+  assert.deepEqual(tryParseJSON('{"a": 1}'), { a: 1 });
 });
