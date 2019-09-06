@@ -46,3 +46,25 @@ export function ieVersion(ua) {
   }
   return false;
 }
+
+/**
+ * 检查指定 useragent 字符串是否符合安卓系统特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合安卓系统特征。
+ */
+export function isAndroid(ua) {
+  ua = getBrowserUA(ua);
+  return /\b(?:Android|Adr)\b/.test(ua);
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合 iOS 系统特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合 iOS 系统特征。
+ */
+export function isIOS(ua) {
+  ua = getBrowserUA(ua);
+  return /\b(?:iPad|iPod|iPhone)\b/.test(ua);
+}
