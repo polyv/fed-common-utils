@@ -76,3 +76,19 @@ export function cloneJSON(obj) {
   if (obj == null) { return obj; }
   return JSON.parse(JSON.stringify(obj));
 }
+
+/**
+ * 尝试把指定字符串解析为 JSON 对象。
+ * @author luoliquan
+ * @param {string} str 指定字符串。
+ * @return {Any} 解析结果，解析失败时返回 undefined。
+ */
+export function tryParseJSON(str) {
+  let result;
+  try {
+    result = JSON.parse(str);
+  } catch (e) {
+
+  }
+  return result;
+}
