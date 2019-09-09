@@ -11,6 +11,10 @@ import { extend } from './lang';
  * @param {string} str 字符串。
  * @param {number} [mode=2] 非英文字符按多少个字符算。
  * @return {number} 字符串长度。
+ * @example
+ * strLen('abcde;'); // 6
+ * strLen('abc测试；'); // 9
+ * strLen('abc测试；', 1); // 6
  */
 export function strLen(str, mode) {
   mode = Number(mode) || 2;
@@ -30,6 +34,9 @@ export function strLen(str, mode) {
  *   @param {number} [options.mode=2] 非英文字符按多少个字符算。
  *   @param {string} [options.ellipsis='...'] 省略符号。
  * @return {string} 截断后的字符串。
+ * @example
+ * cutStr('测试一下', 5); // '测试...'
+ * cutStr('测试一下', 8); // '测试一下'
  */
 export function cutStr(str, length, options) {
   options = extend({

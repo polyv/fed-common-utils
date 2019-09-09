@@ -15,6 +15,8 @@ export function ensureDate(date) {
  * @param {(Date|number)} date 日期对象或时间戳（毫秒）。
  * @param {string} formation 格式。
  * @return {string} 格式化结果。
+ * @example
+ * formatDate(new Date(2018, 9, 8, 8, 50, 56), 'YYYY-MM-DD hh:mm:ss'); // '2018-10-08 08:50:56'
  */
 export function formatDate(date, formation) {
   date = ensureDate(date);
@@ -46,6 +48,11 @@ export function formatDate(date, formation) {
  *     为 2 时，如果小时为 0，则格式化样式为「分:秒」。
  *   @param {number} [options.digits=2] 每一段数字的最小位数，不足位数时补 0。
  * @return {string} 格式化结果。
+ * @example
+ * formatSeconds(3682); // '01:01:22'
+ * formatSeconds(82); // '01:22'
+ * formatSeconds(82, { segments: 3 }); // '00:01:22'
+ * formatSeconds(3682, { digits: 1 }); // '1:1:22'
  */
 export function formatSeconds(secs, options) {
   secs = Number(secs);

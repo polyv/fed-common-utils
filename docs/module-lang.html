@@ -252,7 +252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line75">line 75</a>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line98">line 98</a>
     </li></ul></dd>
     
 
@@ -303,6 +303,11 @@
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>cloneJSON({ a: 1, b: 2 }); // { a: 1, b: 2 }</code></pre>
+
+
 
         
             
@@ -318,7 +323,7 @@
 
 
 <div class="description">
-    把源对象的属性（own property）扩展到目标对象。
+    把源对象的属性（own property）扩展到目标对象（同 Object.assign）。
 </div>
 
 
@@ -463,7 +468,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line56">line 56</a>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -504,6 +509,195 @@
     <dd>
         
 <span class="param-type">Any</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".hasOwnProp"><span class="type-signature">(static) </span>hasOwnProp<span class="signature">(obj, prop)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    检查指定对象是否具有某个 own property（ESLint 不推荐直接使用 obj.hasOwnProperty）。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">指定对象。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">属性名。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>luoliquan</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    指定对象是否具有某个 own property。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -629,7 +823,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line16">line 16</a>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -678,6 +872,13 @@
     
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>isArrayLike([]); // true
+isArrayLike(document.getElementsByTagName('body')); // true
+isArrayLike({}); // false</code></pre>
 
 
 
@@ -799,7 +1000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line34">line 34</a>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -848,6 +1049,16 @@
     
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>isEmptyData(null); // true
+isEmptyData([]); // true
+isEmptyData(''); // true
+isEmptyData({}); // true
+isEmptyData({ a: 1 }); // false
+isEmptyData([1]); // false</code></pre>
 
 
 
@@ -965,7 +1176,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line86">line 86</a>
+        <a href="lang.js.html">lang.js</a>, <a href="lang.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -1016,6 +1227,12 @@
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>tryParseJSON('ss&amp;&amp;**'); // undefined
+tryParseJSON('{"a": 1}'); // { a: 1 }</code></pre>
+
+
 
         
     
@@ -1039,7 +1256,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Sep 06 2019 18:07:27 GMT+0800 (GMT+08:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Sep 09 2019 19:16:12 GMT+0800 (GMT+08:00)
 </footer>
 
 <script> prettyPrint(); </script>

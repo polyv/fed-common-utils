@@ -10,6 +10,9 @@ import { hasOwnProp } from './lang';
  * @author luoliquan
  * @param {string} str 查询字符串。
  * @return {Object} 键值对集合。
+ * @example
+ * parse('a=1&%E9%94%AE=%E5%80%BC'); // { a: 1, '键': '值' }
+ * parse('a=1&a=2&b=3'); // { a: [1, 2], b: 3 }
  */
 export function parse(str) {
   if (typeof str !== 'string') {
@@ -45,6 +48,9 @@ export function parse(str) {
  * @param {Object} [options] 参数。
  *   @param {Boolean} [options.ignoreEmpty=false] 是否忽略空值（包括null、undefined、空字符串）。
  * @return {string} 序列化结果。
+ * @example
+ * stringify({ a: 1, '键': '值' }); // 'a=1&%E9%94%AE=%E5%80%BC'
+ * stringify({ a: [1, 2], b: 3 }); // 'a=1&a=2&b=3'
  */
 export function stringify(data, options) {
   options = options || {};
@@ -85,6 +91,9 @@ export function stringify(data, options) {
  * @param {Object} [options] 参数。
  *   @param {Boolean} [options.ignoreEmpty] 序列化时是否忽略空值（包括null、undefined、空字符串）。
  * @return {String} 处理后的URL。
+ * @example
+ * append('http://abc.com?a=1', { b: 2, c: 3 }); // 'http://abc.com?a=1&b=2&c=3'
+ * append('http://abc.com', { a: 1, b: 2 }); // 'http://abc.com?a=1&b=2'
  */
 export function append(url, data, options) {
   if (url == null) { return url; }

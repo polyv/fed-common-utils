@@ -29,6 +29,11 @@ const computes = [
  * @author luoliquan
  * @param {number} secs 总秒数。
  * @param {countdownCallback} [cb] 回调函数。
+ * @example
+ * const countdown = new Countdown(60, (rest) => {
+ *   console.dir(rest);
+ * });
+ * countdown.start();
  */
 export default class Countdown {
   constructor(secs, cb) {

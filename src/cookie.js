@@ -24,6 +24,13 @@ import { addToDate } from './internal/timeunit';
  *       %months，
  *       %years。
  *   @param {boolean} [options.secure] 是否只在 https 连接中有效。
+ * @example
+ * cookie.set('a', '1')
+ * cookie.set('b', '2', {
+ *   expires: '6months', // 180 天
+ *   domain: '.polyv.net',
+ *   path: '/'
+ * });
  */
 export function set(key, value, options) {
   options = options || {};
@@ -48,6 +55,8 @@ export function set(key, value, options) {
  * @author luoliquan
  * @param {string} name cookie 名。
  * @return {string} cookie 值。
+ * @example
+ * cookie.get('a');
  */
 export function get(key) {
   key = '; ' + encodeURIComponent(key) + '=';
@@ -81,6 +90,12 @@ const shouldSetEmptyBeforeRemove = (function() {
  * @param {Object} [options] 参数。
  *   @param {string} [options.domain] 所在域。
  *   @param {string} [options.path] 所在路径。
+ * @example
+ * remove('a');
+ * remove('b' {
+ *   domain: '.polyv.net',
+ *   path: '/abc'
+ * })
  */
 export function remove(name, options) {
   if (shouldSetEmptyBeforeRemove) { set(name, '', options); }

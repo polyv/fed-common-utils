@@ -1,5 +1,5 @@
 /**
- * @module
+ * @module internal-core
  * @ignore
  */
 
@@ -9,7 +9,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
  * 检查指定对象是否具有某个 own property。
  * @function
  * @name hasOwnProp
- * @luoliquan
+ * @author luoliquan
  * @param {Any} obj 指定对象。
  * @param {string} prop 属性名。
  * @return {boolean} 指定对象是否具有某个 own property。

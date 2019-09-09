@@ -8,6 +8,9 @@
  * @author liumin
  * @param {string} str 目标字符串。
  * @return {boolean} 目标字符串是否手机号码。
+ * @example
+ * isPhoneNO('13800138000'); // true
+ * isPhoneNO('a13800138000c'); // false
  */
 export function isPhoneNO(str) {
   return /^1[3-9]\d{9}$/.test(str);
@@ -18,6 +21,9 @@ export function isPhoneNO(str) {
  * @author luoliquan
  * @param {string} str 目标字符串。
  * @return {boolean} 目标字符串是否电子邮箱地址。
+ * @example
+ * isEmail('me@polyv.net'); // true
+ * isEmail('me@polyv_.net-'); // false
  */
 export function isEmail(str) {
   let temp = /^[\w-]+(?:\.[\w-]+)*@[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}$/.test(str);

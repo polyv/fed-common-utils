@@ -5,6 +5,16 @@
 
 import { extendSingle, hasOwnProp } from './internal/core';
 
+/**
+ * 检查指定对象是否具有某个 own property（ESLint 不推荐直接使用 obj.hasOwnProperty）。
+ * @author luoliquan
+ * @name hasOwnProp
+ * @function
+ * @static
+ * @param {Any} obj 指定对象。
+ * @param {string} prop 属性名。
+ * @return {boolean} 指定对象是否具有某个 own property。
+ */
 export { hasOwnProp };
 
 /**
@@ -12,6 +22,10 @@ export { hasOwnProp };
  * @author luoliquan
  * @param {Any} obj 指定对象。
  * @return {boolean} 检查指定对象是否为类数组结构。
+ * @example
+ * isArrayLike([]); // true
+ * isArrayLike(document.getElementsByTagName('body')); // true
+ * isArrayLike({}); // false
  */
 export function isArrayLike(obj) {
   return obj != null &&
@@ -30,6 +44,13 @@ export function isArrayLike(obj) {
  * @author luoliquan
  * @param {Any} value 指定值。
  * @return {boolean} 指定值是否为空数据。
+ * @example
+ * isEmptyData(null); // true
+ * isEmptyData([]); // true
+ * isEmptyData(''); // true
+ * isEmptyData({}); // true
+ * isEmptyData({ a: 1 }); // false
+ * isEmptyData([1]); // false
  */
 export function isEmptyData(value) {
   if (value == null) { return true; }
@@ -47,7 +68,7 @@ export function isEmptyData(value) {
 }
 
 /**
- * 把源对象的属性（own property）扩展到目标对象。
+ * 把源对象的属性（own property）扩展到目标对象（同 Object.assign）。
  * @author luoliquan
  * @param {Any} target 目标对象。
  * @param {...Any} [source] 源对象。若有同名属性，则后者覆盖前者。
@@ -71,6 +92,8 @@ export function extend(target) {
  * @author liumin
  * @param {Any} obj 指定对象。
  * @return {Any} 克隆结果。
+ * @example
+ * cloneJSON({ a: 1, b: 2 }); // { a: 1, b: 2 }
  */
 export function cloneJSON(obj) {
   if (obj == null) { return obj; }
@@ -82,6 +105,9 @@ export function cloneJSON(obj) {
  * @author luoliquan
  * @param {string} str 指定字符串。
  * @return {Any} 解析结果，解析失败时返回 undefined。
+ * @example
+ * tryParseJSON('ss&&**'); // undefined
+ * tryParseJSON('{"a": 1}'); // { a: 1 }
  */
 export function tryParseJSON(str) {
   let result;

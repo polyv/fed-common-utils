@@ -76,7 +76,8 @@ if (typeof window !== 'undefined') {
  * @example
  * const user = { name: 'Tom', pet: 'cat' };
  * session.setAsJSON('user', user);
- * session.getAsJSON('user');
+ * typeof session.get('user'); // 'string'
+ * typeof session.getAsJSON('user'); // 'object'
  */
 export const session = new StorageWrap(sessionStorage);
 
@@ -86,5 +87,7 @@ export const session = new StorageWrap(sessionStorage);
  * const user = { name: 'Tom', pet: 'cat' };
  * local.setAsJSON('user', user);
  * local.getAsJSON('user');
+ * typeof local.get('user'); // 'string'
+ * typeof local.getAsJSON('user'); // 'object'
  */
 export const local = new StorageWrap(localStorage);
