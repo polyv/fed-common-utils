@@ -119,6 +119,7 @@ module.exports = {
     'unicorn/prefer-includes': 0,
 
     // Sonarjs
-    'sonarjs/no-duplicate-string': ['error', 5]
+    'sonarjs/no-duplicate-string': ['error', 5],
+    'sonarjs/no-collection-size-mischeck': 0
   }
 }
