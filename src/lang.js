@@ -56,9 +56,9 @@ export function isEmptyData(value) {
   if (value == null) { return true; }
   if (typeof value === 'string') {
     return value.trim() === '';
-  } else if (value.constructor === Array) {
+  } else if (Array.isArray(value)) {
     return !value.length;
-  } else if (value.constructor === Object) {
+  } else if (Object.prototype.toString.call(value) === '[object Object]') {
     for (const key in value) {
       if (hasOwnProp(value, key)) { return false; }
     }
