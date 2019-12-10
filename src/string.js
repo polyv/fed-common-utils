@@ -47,7 +47,11 @@ export function cutStr(str, length, options) {
   str = String(str);
   const len = strLen(str, options.mode);
 
+  // 未超出长度，直接返回传入的字符串
   if (len <= length) { return str; }
+
+  // 减去省略符长度
+  length -= strLen(options.ellipsis, options.mode);
 
   let result = '', i = -1;
   while (length > 0 && ++i < len) {

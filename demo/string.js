@@ -9,16 +9,16 @@ QUnit.test('strLen', (assert) => {
 });
 
 QUnit.test('cutStr', (assert) => {
-  assert.strictEqual(cutStr('测试一下', 5), '测试...', '超出长度限制');
+  assert.strictEqual(cutStr('测试一下', 5), '测...', '超出长度限制');
   assert.strictEqual(cutStr('测试一下', 8), '测试一下', '未超出长度限制');
   assert.strictEqual(
     cutStr('测试一下', 5, { ellipsis: '---' }),
-    '测试---',
+    '测---',
     '省略符号'
   );
   assert.strictEqual(
-    cutStr('测试一下', 3, { mode: 1, ellipsis: '---' }),
-    '测试一---',
+    cutStr('测试一下下', 4, { mode: 1, ellipsis: '---' }),
+    '测---',
     '都按一个字符算'
   );
 });
