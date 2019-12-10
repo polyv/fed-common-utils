@@ -25,12 +25,20 @@ export function extendSingle(target, src) {
     for (key in src) {
       value = src[key];
       if (key === '__proto__' || target === value) { continue; }
-      if (hasOwnProperty.call(src, key)) { target[key] = value; }
+      if (hasOwnProp(src, key)) { target[key] = value; }
     }
   }
 }
 
+
+const toString = Object.prototype.toString;
+
 // 是否 Object 类型
 export function isObject(value) {
-  return Object.prototype.toString.call(value) === '[object Object]';
+  return toString.call(value) === '[object Object]';
+}
+
+// 是否 Date 类型
+export function isDate(value) {
+  return toString.call(value) === '[object Date]';
 }

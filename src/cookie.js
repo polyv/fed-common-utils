@@ -3,6 +3,7 @@
  * @module cookie
  */
 
+import { isDate } from './internal/core';
 import { addToDate } from './internal/timeunit';
 
 /**
@@ -38,7 +39,7 @@ export function set(key, value, options) {
   let content = encodeURIComponent(key) + '=' + encodeURIComponent(value);
   if (options.expires != null) {
     content += '; expires=' + (
-      options.expires instanceof Date ?
+      isDate(options.expires) ?
         options.expires :
         addToDate(new Date(), options.expires)
     ).toUTCString();
