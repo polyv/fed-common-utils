@@ -3,7 +3,7 @@
  * @module lang
  */
 
-import { extendSingle, hasOwnProp } from './internal/core';
+import { extendSingle, hasOwnProp, isObject } from './internal/core';
 
 /**
  * 检查指定对象是否具有某个 own property（ESLint 不推荐直接使用 obj.hasOwnProperty）。
@@ -58,7 +58,7 @@ export function isEmptyData(value) {
     return value.trim() === '';
   } else if (Array.isArray(value)) {
     return !value.length;
-  } else if (Object.prototype.toString.call(value) === '[object Object]') {
+  } else if (isObject(value)) {
     for (const key in value) {
       if (hasOwnProp(value, key)) { return false; }
     }
