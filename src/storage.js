@@ -43,7 +43,10 @@ export class StorageWrap {
     // 但 getItem 和 removeItem 都不会
     try {
       this._storageType.setItem(key, value);
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
