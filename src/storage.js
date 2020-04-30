@@ -34,9 +34,10 @@ export class StorageWrap {
   }
 
   /**
-   * 设置指定存储项的值。
+   * 写入指定存储项的值。
    * @param {string} key 存储项键名。
    * @param {Any} value 存储项的值。
+   * @return {boolean} 写入是否成功。
    */
   set(key, value) {
     // 在浏览器的隐私模式下 setItem 会抛出异常
