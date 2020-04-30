@@ -25,6 +25,7 @@ import { addToDate } from './internal/timeunit';
  *       %months，
  *       %years。
  *   @param {boolean} [options.secure] 是否只在 https 连接中有效。
+ *   @param {string} [options.sameSite] 访问限制：Lax、Strict 或 None。
  * @example
  * cookie.set('a', '1')
  * cookie.set('b', '2', {
@@ -47,6 +48,12 @@ export function set(key, value, options) {
   if (options.path) { content += '; path=' + options.path; }
   if (options.domain) { content += '; domain=' + options.domain; }
   if (options.secure === true) { content += '; secure'; }
+  if (options.sameSite) {
+    const sameSite = String(options.sameSite).toLowerCase();
+    if (['lax', 'strict', 'none'].indexOf(sameSite) !== -1) {
+      content += '; samesite=' + sameSite;
+    }
+  }
 
   document.cookie = content;
 }
