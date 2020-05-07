@@ -54,9 +54,10 @@ export class StorageWrap {
    * 把指定值序列化为 JSON 字符串后写入到指定存储项。
    * @param {string} key 存储项键名。
    * @param {Any} value 存储项的值。
+   * @return {boolean} 写入是否成功。
    */
   setAsJSON(key, value) {
-    this.set(key, JSON.stringify(value));
+    return this.set(key, JSON.stringify(value));
   }
 
   /**
