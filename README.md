@@ -8,7 +8,13 @@
 npm install @polyv/utils
 ```
 
-NPM 包同时提供了源文件（ES 2015 Modules）以及构建后的文件（CommonJS Modules），分别位于 src 和 dist 两个子文件夹。开发者可以根据项目的实际情况使用其中之一（由于 Webpack 的 tree shaking 对 CommonJS Modules 无效，故**推荐使用源文件**）。
+NPM 包同时提供了源文件（ES 2015 Modules）以及构建后的文件（CommonJS Modules），分别位于 src 和 dist 两个子文件夹。它们使用上的优缺点和区别在于：
+
+| 文件类型 | Tree shaking | 自行编写构建逻辑 |
+| --- | --- |
+| 源文件 |  有效，只有用到的代码会被打包 | 需要 |
+| 构建后文件 | 无效，依赖的文件会被整个打包 | 不需要 |
+
 
 ## 在基于 Vue.js 框架的项目中使用
 
@@ -27,7 +33,7 @@ module.exports = {
     }
   },
 
-  // 需要 babel 转译
+  // 需要 Babel 转译
   transpileDependencies: [
     '@polyv/utils'
   ]
@@ -43,7 +49,7 @@ module.exports = {
   // 省略其他配置
 
   build: {
-    // 需要 babel 转译
+    // 需要 Babel 转译
     transpile: [
       '@polyv/utils'
     ]
