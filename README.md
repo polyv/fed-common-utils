@@ -40,6 +40,13 @@ module.exports = {
 };
 ```
 
+在项目代码中引入：
+
+``` javascript
+import { cutStr } from '@utils/string';
+import Countdown from '@utils/countdown';
+```
+
 ## 在基于 Nuxt.js 框架的项目中使用
 
 以 create-nuxt-app 创建的项目为例，编辑 nuxt.config.js 增加相关配置：
@@ -70,10 +77,17 @@ module.exports = {
 };
 ```
 
+在项目代码中引入：
+
+``` javascript
+import { cutStr } from '@utils/string';
+import Countdown from '@utils/countdown';
+```
+
 ## 兼容性
 - IE >= 9
 - iOS >= 9 (未测试更低版本)
 - Android >= 5 (未测试更低版本)
 
 ## 其他
-- [API 文档](https://polyv.github.io/utils/index.html)
+- [API 文档](https://polyv.github.io/fed-common-utils/index.html)
