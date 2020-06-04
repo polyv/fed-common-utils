@@ -42,3 +42,17 @@ export function isObject(value) {
 export function isDate(value) {
   return toString.call(value) === '[object Date]';
 }
+
+/**
+ * 全局对象，浏览器环境下为 window，Node 环境下为 global。
+ * @type {Object}
+ */
+let theGlobal;
+if (typeof window !== 'undefined') {
+  theGlobal = window;
+} else if (typeof global !== 'undefined') {
+  theGlobal = global;
+} else {
+  theGlobal = null;
+}
+export { theGlobal };
