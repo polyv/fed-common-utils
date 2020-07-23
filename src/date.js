@@ -3,6 +3,8 @@
  * @module date
  */
 
+import { extend } from './lang';
+
 // 保证日期相关函数的操作对象为日期类型
 export function ensureDate(date) {
   if (typeof date !== 'object') { date = new Date(date); }
@@ -61,7 +63,7 @@ export function formatSeconds(secs, options) {
   }
 
   // 参数合法性校验
-  options = Object.assign({}, options);
+  options = extend({}, options);
   options.segments = parseInt(options.segments);
   // 位数最小为 1
   options.digits = Math.max(1, parseInt(options.digits) || 2);

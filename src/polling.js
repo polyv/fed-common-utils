@@ -4,6 +4,7 @@
  */
 
 import { theGlobal } from './internal/core';
+import { extend } from './lang';
 
 /**
  * 轮询类。
@@ -33,7 +34,7 @@ export default class Polling {
     // 执行函数
     this._executor = executor;
     // 其他选项
-    this._options = Object.assign({
+    this._options = extend({
       interval: 1000,
       breakOnError: false
     }, options);
