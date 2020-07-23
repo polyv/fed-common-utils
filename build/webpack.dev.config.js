@@ -1,5 +1,5 @@
 const path = require('path');
-const merge = require('webpack-merge');
+const merge = require('webpack-merge').merge;
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -40,11 +40,13 @@ module.exports = merge(config, {
     overlay: true
   },
   plugins: htmlWebpackPlugins.concat([
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, '../qunit'),
-        to: '/qunit'
-      }
-    ])
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, '../qunit'),
+          to: '/qunit'
+        }
+      ]
+    })
   ])
 });
