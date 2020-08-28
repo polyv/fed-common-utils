@@ -34,6 +34,17 @@ export function isWeixin(ua) {
 }
 
 /**
+ * 检查指定 useragent 字符串是否符合企业微信客户端特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 字符串是否符合企业微信客户端特征。
+ */
+export function isWorkWeixin(ua) {
+  ua = getBrowserUA(ua);
+  return isWeixin(ua) && /\bwxwork\b/.test(ua);
+}
+
+/**
  * 获取指定 useragent 字符串中的 IE 浏览器版本号。
  * @author luoliquan
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
