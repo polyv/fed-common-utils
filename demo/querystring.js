@@ -33,7 +33,6 @@ QUnit.test('stringify', function(assert) {
 QUnit.test('append', function(assert) {
   const url1 = 'https://heeroluo.github.io/jraiser/';
   const url2 = 'https://heeroluo.github.io/jraiser/?author=Heero.Law';
-  const url3 = 'https://mp.weiqihd.com/mpweb/#/signup/meetingsignup?m=10333';
 
   assert.strictEqual(
     qs.append(url1, obj1),
