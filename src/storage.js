@@ -12,7 +12,11 @@ import { tryParseJSON } from './lang';
  */
 export class StorageWrap {
   constructor(storageType) {
-    this._storageType = storageType;
+    this._storageType = storageType || {
+      getItem() { return null; },
+      setItem() {},
+      removeItem() {}
+    };
   }
 
   /**
@@ -72,8 +76,12 @@ export class StorageWrap {
 
 let sessionStorage, localStorage;
 if (typeof window !== 'undefined') {
-  sessionStorage = window.sessionStorage;
-  localStorage = window.localStorage;
+  // Chrome 隐私模式，跨域 iframe 内访问本地存储的相关对象会抛出异常
+  try {
+    sessionStorage = window.sessionStorage;
+    localStorage = window.localStorage;
+  } catch (e) {
+  }
 }
 
 /**
