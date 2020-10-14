@@ -33,21 +33,21 @@ export function ynToBool(value) {
 /**
  * 检查指定数组元素的值是否都为 Y。
  * @param {Array} values 指定数组。
- * @return 指定数组元素的值是否都为 Y。
+ * @return {boolean} 指定数组元素的值是否都为 Y。
  */
 export function allY(values) { return values.every(ynToBool); }
 
 /**
  * 检查指定数组元素的值是否至少有一个为 Y。
  * @param {Array} values 指定数组。
- * @return 指定数组元素的值是否至少有一个为 Y。
+ * @return {boolean} 指定数组元素的值是否至少有一个为 Y。
  */
 export function someY(values) { return values.some(ynToBool); }
 
 /**
  * 检查指定数组元素的值是否都为 N。
  * @param {Array} values 指定数组。
- * @return 指定数组元素的值是否都为 N。
+ * @return {boolean} 指定数组元素的值是否都为 N。
  */
 export function allN(values) {
   return values.every(function(value) {
@@ -58,7 +58,7 @@ export function allN(values) {
 /**
  * 检查指定数组元素的值是否至少有一个为 N。
  * @param {Array} values 指定数组。
- * @return 指定数组元素的值是否至少有一个为 N。
+ * @return {boolean} 指定数组元素的值是否至少有一个为 N。
  */
 export function someN(values) {
   return values.some(function(value) {

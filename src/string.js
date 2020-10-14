@@ -6,7 +6,7 @@
 import { extend } from './lang';
 
 /**
- * 获取字符串长度（非英文字符按2算）。
+ * 获取字符串长度（非英文字符默认按2算）。
  * @author luoliquan
  * @param {string} str 字符串。
  * @param {number} [mode=2] 非英文字符按多少个字符算。
