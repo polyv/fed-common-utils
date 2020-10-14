@@ -104,17 +104,18 @@ export function cloneJSON(obj) {
  * 尝试把指定字符串解析为 JSON 对象。
  * @author luoliquan
  * @param {string} str 指定字符串。
+ * @param {Function} [onError] 解析出错时执行的函数。
  * @return {Any} 解析结果，解析失败时返回 undefined。
  * @example
  * tryParseJSON('ss&&**'); // undefined
  * tryParseJSON('{"a": 1}'); // { a: 1 }
  */
-export function tryParseJSON(str) {
+export function tryParseJSON(str, onError) {
   let result;
   try {
     result = JSON.parse(str);
   } catch (e) {
-
+    if (onError) { onError(e); }
   }
   return result;
 }
