@@ -103,3 +103,29 @@ export function nl2br(str) {
   if (str == null) { return str; }
   return String(str).replace(/\r?\n/g, '<br />');
 }
+
+/**
+ * 生成随机字符串。
+ * @param {number} length 字符串长度。
+ * @param {string} [prefix] 字符串前缀（不计入长度）。
+ * @returns {string} 生成的随机字符串。
+ */
+export function randomStr(length, prefix) {
+  length = parseInt(length);
+  if (!length || length < 0) {
+    throw new Error('"length" must be a number greater than 0');
+  }
+
+  let result = '';
+  do {
+    result += Math.random().toString(36).substr(2);
+  } while (result.length < length);
+
+  // 拼接的长度可能大于指定长度，进行裁剪
+  result = result.substr(0, length);
+
+  if (prefix != null) { result = prefix + result; }
+
+  return result;
+}
+

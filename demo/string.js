@@ -1,5 +1,11 @@
-import { strLen, cutStr } from '@/string.js';
-import { escapeHTML, removeTags, nl2br } from '../src/string';
+import {
+  strLen,
+  cutStr,
+  escapeHTML,
+  removeTags,
+  nl2br,
+  randomStr
+} from '@/string.js';
 const QUnit = window.QUnit;
 
 QUnit.test('strLen', (assert) => {
@@ -34,4 +40,13 @@ QUnit.test('nl2br', (assert) => {
 
 QUnit.test('removeTags', (assert) => {
   assert.strictEqual(removeTags('a<br />\r\n<span style="color: red;">b</span>'), 'a\r\nb');
+});
+
+QUnit.test('randomStr', (assert) => {
+  const str1 = randomStr(10);
+  const str2 = randomStr(10);
+  assert.strictEqual(str1.length, 10);
+  assert.strictEqual(str2.length, 10);
+  assert.notEqual(str1, str2);
+  assert.strictEqual(randomStr(10, 'abc-').length, 14);
 });
