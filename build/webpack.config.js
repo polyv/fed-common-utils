@@ -1,5 +1,8 @@
 const path = require('path');
 
+
+const nodeModulesDir = path.resolve(__dirname, '../node_modules');
+
 module.exports = {
   resolve: {
     alias: {
@@ -10,29 +13,16 @@ module.exports = {
     rules: [
       {
         test: /\.m?js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', {
-                modules: false
-              }]
-            ],
-            plugins: [
-              // Stage 3
-              '@babel/plugin-syntax-dynamic-import',
-              '@babel/plugin-syntax-import-meta',
-              '@babel/plugin-proposal-class-properties',
-              '@babel/plugin-proposal-json-strings'
-            ]
-          }
-        }
+        exclude: [
+          nodeModulesDir
+        ],
+        loader: 'babel-loader'
       },
 
       {
         test: /\.m?js$/,
         exclude: [
-          path.resolve(__dirname, '../node_modules')
+          nodeModulesDir
         ],
         loader: 'eslint-loader'
       }

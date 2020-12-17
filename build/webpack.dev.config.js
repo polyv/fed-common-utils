@@ -29,9 +29,7 @@ glob.sync('**/*.html', {
 
 module.exports = merge(config, {
   mode: 'development',
-  entry: Object.assign({
-    polyfill: ['core-js', 'regenerator-runtime/runtime']
-  }, entry),
+  entry,
   devServer: {
     host: '0.0.0.0',
     disableHostCheck: true,
