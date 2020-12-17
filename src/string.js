@@ -6,56 +6,87 @@
 import { extend } from './lang';
 
 /**
- * 获取字符串长度（非英文字符默认按2算）。
- * @author luoliquan
+ * 计算字符串长度（英文字符按 1 算，非英文字符可指定单位长度）。
  * @param {string} str 字符串。
- * @param {number} [mode=2] 非英文字符按多少个字符算。
+ * @param {number} [nonEnLen=2] 非英文字符的单位长度。
  * @return {number} 字符串长度。
  * @example
  * strLen('abcde;'); // 6
  * strLen('abc测试；'); // 9
  * strLen('abc测试；', 1); // 6
  */
-export function strLen(str, mode) {
-  mode = Number(mode) || 2;
+/**
+ * 计算字符串长度（可分别指定英文字符和非英文字符的单位长度）。
+ * @param {string} str 字符串。
+ * @param {Object} [options] 选项。
+ *   @param {number} [options.enLen=1]
+ *   @param {number} [options.nonEnLen=2]
+ * @return {number} 字符串长度。
+ * @example
+ * strLen('abcde;'); // 6
+ * strLen('abc测试；'); // 9
+ * strLen('abc测试；', { enLen: 0.5, nonEnLen: 1 }); // 4.5
+ */
+export function strLen(str, options) {
+  // 函数重载
+  if (options == null) { options = 2; }
+  if (typeof options === 'number') {
+    options = {
+      enLen: 1,
+      nonEnLen: options
+    };
+  } else {
+    options = extend({
+      enLen: 1,
+      nonEnLen: 2
+    }, options);
+  }
+
   let result = 0;
   for (let i = str.length - 1; i >= 0; i--) {
-    result += str.charCodeAt(i) > 255 ? mode : 1;
+    result += str.charCodeAt(i) > 255 ?
+      options.nonEnLen :
+      options.enLen;
   }
   return result;
 }
 
 /**
  * 如果目标字符串超出限制长度，则进行截断并拼接省略符号；否则返回目标字符串。
- * @author luoliquan
  * @param {string} str 目标字符串。
  * @param {number} length 限制的长度。
- * @param {Object} [options] 其他设置。
- *   @param {number} [options.mode=2] 非英文字符按多少个字符算。
+ * @param {Object} [options] 选项。
+ *   @param {number} [options.mode=2] 非英文字符的单位长度。已废弃，请使用 nonEnLen。
+ *   @param {number} [options.enLen=1] 英文字符的单位长度。
+ *   @param {number} [options.nonEnLen=2] 非英文字符的单位长度。
  *   @param {string} [options.ellipsis='...'] 省略符号。
  * @return {string} 截断后的字符串。
  * @example
  * cutStr('测试一下', 5); // '测试...'
  * cutStr('测试一下', 8); // '测试一下'
+ * curStr('1测试2测试3', 3.5, { enLen: 0.5, nonEnLen: 1 }); // 1测...
  */
 export function cutStr(str, length, options) {
   options = extend({
-    ellipsis: '...'
+    ellipsis: '...',
+    enLen: 1
   }, options);
-  options.mode = Math.max(Number(options.mode) || 2, 1);
+  if (options.nonEnLen == null) {
+    options.nonEnLen = options.mode == null ? 2 : options.mode;
+  }
 
   str = String(str);
-  const len = strLen(str, options.mode);
+  const len = strLen(str, options);
 
   // 未超出长度，直接返回传入的字符串
   if (len <= length) { return str; }
 
   // 减去省略符长度
-  length -= strLen(options.ellipsis, options.mode);
+  length -= strLen(options.ellipsis, options);
 
   let result = '', i = -1;
   while (length > 0 && ++i < len) {
-    length -= str.charCodeAt(i) > 255 ? options.mode : 1;
+    length -= str.charCodeAt(i) > 255 ? options.nonEnLen : options.enLen;
     if (length >= 0) { result += str.charAt(i); }
   }
 
@@ -66,7 +97,6 @@ export function cutStr(str, length, options) {
 
 /**
  * 把指定字符串中的 HTML 预留字符替换成 HTML 实体。
- * @author luoliquan
  * @param {string} str 指定字符串。
  * @return {string} 替换后的字符串。
  */

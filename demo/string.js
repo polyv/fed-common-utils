@@ -12,6 +12,10 @@ QUnit.test('strLen', (assert) => {
   assert.strictEqual(strLen('abcde;'), 6, '英文字符');
   assert.strictEqual(strLen('abc测试；'), 9, '中英混合');
   assert.strictEqual(strLen('abc测试；', 1), 6, '都按一个字符算');
+  assert.strictEqual(strLen('abc测试；', {
+    enLen: 0.5,
+    nonEnLen: 1
+  }), 4.5, '分贝指定中英文单位长度');
 });
 
 QUnit.test('cutStr', (assert) => {
@@ -26,6 +30,16 @@ QUnit.test('cutStr', (assert) => {
     cutStr('测试一下下', 4, { mode: 1, ellipsis: '---' }),
     '测---',
     '都按一个字符算'
+  );
+  assert.strictEqual(
+    cutStr(
+      '1测试2测试3', 3.5, {
+        enLen: 0.5,
+        nonEnLen: 1
+      }
+    ),
+    '1测...',
+    '分别指定中英文长度'
   );
 });
 
