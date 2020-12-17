@@ -86,7 +86,9 @@ export function cutStr(str, length, options) {
 
   let result = '', i = -1;
   while (length > 0 && ++i < len) {
-    length -= str.charCodeAt(i) > 255 ? options.nonEnLen : options.enLen;
+    length -= str.charCodeAt(i) > 255 ?
+      options.nonEnLen :
+      options.enLen;
     if (length >= 0) { result += str.charAt(i); }
   }
 
