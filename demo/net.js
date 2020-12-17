@@ -2,6 +2,7 @@ import {
   startsWithProtocol,
   changeProtocol
 } from '@/net';
+
 const QUnit = window.QUnit;
 
 QUnit.test('startsWithProtocol', (assert) => {
@@ -32,7 +33,7 @@ QUnit.test('changeProtocol', (assert) => {
   assert.strictEqual(
     changeProtocol('//bcd.com', 'http'),
     'http://bcd.com',
-    '跟随页面协议'
+    '跟随页面协议替换为具体协议'
   );
   assert.strictEqual(
     changeProtocol('abc.com', 'https'),
@@ -43,5 +44,10 @@ QUnit.test('changeProtocol', (assert) => {
     changeProtocol('https://abc.com', 'http://'),
     'http://abc.com',
     '带有协议符号'
+  );
+  assert.strictEqual(
+    changeProtocol('https://abc.com', '//'),
+    '//abc.com',
+    '替换为跟随页面协议'
   );
 });
