@@ -264,7 +264,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line53">line 53</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -294,6 +294,180 @@
         
 <div class="param-desc">
     IE 浏览器版本号，不符合该浏览器特征时返回 false。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".iOSVersion"><span class="type-signature">(static) </span>iOSVersion<span class="signature">(ua<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    获取指定 useragent 字符串中的 iOS 版本号。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ua</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">useragent 字符串，浏览器环境下默认为 navigator.userAgent。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    iOS 版本号，不符合该系统特征时返回 false。
 </div>
 
 
@@ -445,7 +619,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line67">line 67</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -475,6 +649,165 @@
         
 <div class="param-desc">
     是否符合安卓系统特征。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".isHuawei"><span class="type-signature">(static) </span>isHuawei<span class="signature">(ua)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    检查指定 useragent 字符串是否符合华为或荣耀设备特征。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ua</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">useragent 字符串，浏览器环境下默认为 navigator.userAgent。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line112">line 112</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    是否符合华为或荣耀设备特征。
 </div>
 
 
@@ -623,7 +956,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line78">line 78</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -1157,7 +1490,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line42">line 42</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line52">line 52</a>
     </li></ul></dd>
     
 
@@ -1210,6 +1543,180 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id=".weixinVersion"><span class="type-signature">(static) </span>weixinVersion<span class="signature">(ua<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean|string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    获取指定 useragent 字符串中的微信版本号。
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ua</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">useragent 字符串，浏览器环境下默认为 navigator.userAgent。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line41">line 41</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    微信版本号，不符合微信特征时返回 false。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     
@@ -1231,7 +1738,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Fri Aug 28 2020 17:21:14 GMT+0800 (GMT+08:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Dec 23 2020 18:19:02 GMT+0800 (GMT+08:00)
 </footer>
 
 <script> prettyPrint(); </script>
