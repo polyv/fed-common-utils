@@ -161,3 +161,28 @@ export function randomStr(length, prefix) {
   return result;
 }
 
+/**
+ * 版本号对比。
+ * @param {string} versionA 待比较版本 A。
+ * @param {string} versionB 待比较版本 B。
+ * @return {number} 大于 0 时，表示版本 A 大于版本 B；
+ *   小于 0 时，表示版本 B 大于版本 A；
+ *   等于 0 时，表示两个版本号一致。
+ */
+export function compareVersions(versionA, versionB) {
+  if (!versionA || !versionB) {
+    throw new Error('Please specify both version-a and verson-b');
+  }
+
+  // 去掉末尾的 .000
+  const reg = /(\.0+)+$/;
+  versionA = String(versionA).replace(reg, '').split('.');
+  versionB = String(versionB).replace(reg, '').split('.');
+
+  const len = Math.min(versionA.length, versionB.length);
+  for (let i = 0; i < len; i++) {
+    const diff = parseInt(versionA[i]) - parseInt(versionB[i]);
+    if (diff) { return diff; }
+  }
+  return versionA.length - versionB.length;
+}

@@ -4,7 +4,8 @@ import {
   escapeHTML,
   removeTags,
   nl2br,
-  randomStr
+  randomStr,
+  compareVersions
 } from '@/string.js';
 const QUnit = window.QUnit;
 
@@ -63,4 +64,19 @@ QUnit.test('randomStr', (assert) => {
   assert.strictEqual(str2.length, 10);
   assert.notEqual(str1, str2);
   assert.strictEqual(randomStr(10, 'abc-').length, 14);
+});
+
+QUnit.test('compareVersions', (assert) => {
+  assert.strictEqual(
+    compareVersions('1.2.1', '10.2.1') < 0,
+    true
+  );
+  assert.strictEqual(
+    compareVersions('1.2.1', '1.2.10') < 0,
+    true
+  );
+  assert.strictEqual(
+    compareVersions('1.2.0', '1.2.0.0') === 0,
+    true
+  );
 });
