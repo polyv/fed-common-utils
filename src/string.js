@@ -18,9 +18,9 @@ import { extend } from './lang';
 /**
  * 计算字符串长度（可分别指定英文字符和非英文字符的单位长度）。
  * @param {string} str 字符串。
- * @param {Object} [options] 选项。
- *   @param {number} [options.enLen=1]
- *   @param {number} [options.nonEnLen=2]
+ * @param {number|Object} [options] 为数字时表示非英文字符单位长度（此时英文字符单位长度为 1）；为 Object 时表示选项。
+ *   @param {number} [options.enLen=1] 英文字符单位长度。
+ *   @param {number} [options.nonEnLen=2] 非英文字符单位长度。
  * @return {number} 字符串长度。
  * @example
  * strLen('abcde;'); // 6
@@ -138,6 +138,7 @@ export function nl2br(str) {
 
 /**
  * 生成随机字符串。
+ * @since 1.6.0
  * @param {number} length 字符串长度。
  * @param {string} [prefix] 字符串前缀（不计入长度）。
  * @returns {string} 生成的随机字符串。
@@ -163,6 +164,7 @@ export function randomStr(length, prefix) {
 
 /**
  * 版本号对比。
+ * @since 1.6.0
  * @param {string} versionA 待比较版本 A。
  * @param {string} versionB 待比较版本 B。
  * @return {number} 大于 0 时，表示版本 A 大于版本 B；

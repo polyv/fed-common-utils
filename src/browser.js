@@ -35,6 +35,7 @@ export function isWeixin(ua) {
 
 /**
  * 获取指定 useragent 字符串中的微信版本号。
+ * @since 1.6.0
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
  * @return {string} 微信版本号，不符合微信特征时返回空字符串。
  */
@@ -90,6 +91,7 @@ export function isIOS(ua) {
 
 /**
  * 获取指定 useragent 字符串中的 iOS 版本号。
+ * @since 1.6.0
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
  * @return {string} iOS 版本号，不符合该系统特征时返回空字符串。
  */
@@ -101,6 +103,7 @@ export function iOSVersion(ua) {
 
 /**
  * 检查指定 useragent 字符串是否符合华为或荣耀设备特征。
+ * @since 1.6.0
  * @param {string} ua useragent 字符串，浏览器环境下默认为 navigator.userAgent。
  * @return {boolean} 是否符合华为或荣耀设备特征。
  */
