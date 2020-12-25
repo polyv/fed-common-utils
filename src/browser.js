@@ -36,11 +36,11 @@ export function isWeixin(ua) {
 /**
  * 获取指定 useragent 字符串中的微信版本号。
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
- * @return {(boolean|string)} 微信版本号，不符合微信特征时返回 false。
+ * @return {string} 微信版本号，不符合微信特征时返回空字符串。
  */
 export function weixinVersion(ua) {
   ua = getBrowserUA(ua);
-  return /\bMicroMessenger\/([\d.]+)/.test(ua) ? RegExp.$1 : false;
+  return /\bMicroMessenger\/([\d.]+)/.test(ua) ? RegExp.$1 : '';
 }
 
 /**
@@ -58,14 +58,12 @@ export function isWorkWeixin(ua) {
  * 获取指定 useragent 字符串中的 IE 浏览器版本号。
  * @author luoliquan
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
- * @return {(boolean|string)} IE 浏览器版本号，不符合该浏览器特征时返回 false。
+ * @return {string} IE 浏览器版本号，不符合该浏览器特征时返回空字符串。
  */
 export function ieVersion(ua) {
   ua = getBrowserUA(ua);
-  if (/\bMSIE\s(\d+)/i.test(ua) || /\bTrident\/.*;\srv:(\d+)/.test(ua)) {
-    return RegExp.$1;
-  }
-  return false;
+  return /\bMSIE\s(\d+)/i.test(ua) || /\bTrident\/.*;\srv:(\d+)/.test(ua) ?
+    RegExp.$1 : '';
 }
 
 /**
@@ -93,15 +91,12 @@ export function isIOS(ua) {
 /**
  * 获取指定 useragent 字符串中的 iOS 版本号。
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
- * @return {(boolean|string)} iOS 版本号，不符合该系统特征时返回 false。
+ * @return {string} iOS 版本号，不符合该系统特征时返回空字符串。
  */
 export function iOSVersion(ua) {
   ua = getBrowserUA(ua);
-  if (/\bOS(?:\s([\d_.]+))?\slike\sMac\sOS\sX\b/.test(ua)) {
-    return RegExp.$1.replace(/_/g, '.');
-  } else {
-    return false;
-  }
+  return /\bOS(?:\s([\d_.]+))?\slike\sMac\sOS\sX\b/.test(ua) ?
+    RegExp.$1.replace(/_/g, '.') : '';
 }
 
 /**

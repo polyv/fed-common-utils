@@ -37,12 +37,12 @@ QUnit.test('isWorkWeixin', (assert) => {
 QUnit.test('weixinVersion', (assert) => {
   assert.strictEqual(weixinVersion(UA_PC_WORK_WEIXIN), '6.2');
   assert.strictEqual(weixinVersion(UA_IPHONE_WEIXIN), '7.0.18');
-  assert.strictEqual(weixinVersion(UA_HUAWEI_ADR_QQ), false);
+  assert.strictEqual(weixinVersion(UA_HUAWEI_ADR_QQ), '');
 });
 
 QUnit.test('ieVersion', (assert) => {
   assert.strictEqual(ieVersion(UA_PC_IE), '10');
-  assert.strictEqual(ieVersion(UA_PC_WORK_WEIXIN), false);
+  assert.strictEqual(ieVersion(UA_PC_WORK_WEIXIN), '');
 });
 
 QUnit.test('isAndroid', (assert) => {
@@ -58,8 +58,8 @@ QUnit.test('isIOS', (assert) => {
 });
 
 QUnit.test('iOSVersion', (assert) => {
-  assert.strictEqual(isIOS(UA_PC_WORK_WEIXIN), false);
-  assert.strictEqual(isIOS(UA_HUAWEI_ADR_QQ), false);
+  assert.strictEqual(iOSVersion(UA_PC_WORK_WEIXIN), '');
+  assert.strictEqual(iOSVersion(UA_HUAWEI_ADR_QQ), '');
   assert.strictEqual(iOSVersion(UA_IPHONE_WEIXIN), '14.1');
 });
 
