@@ -117,5 +117,7 @@ export function append(url, data, options) {
     data = data.replace(/^[?&]/, '');
   }
 
-  return url + (url.indexOf('?') !== -1 ? '&' : '?') + data + hash;
+  return url + (
+    data ? ((url.indexOf('?') !== -1 ? '&' : '?') + data) : ''
+  ) + hash;
 }

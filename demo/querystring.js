@@ -35,12 +35,6 @@ QUnit.test('append', function(assert) {
   const url2 = 'https://heeroluo.github.io/jraiser/?author=Heero.Law';
 
   assert.strictEqual(
-    qs.append(url1, obj1),
-    url1 + '?id=0&str=hello',
-    '无参数URL'
-  );
-
-  assert.strictEqual(
     qs.append(url2, obj1),
     url2 + '&id=0&str=hello',
     '带参数URL'
@@ -50,5 +44,17 @@ QUnit.test('append', function(assert) {
     qs.append('https://mp.weiqihd.com/mpweb/#/signup/meetingsignup?m=10333', obj1),
     'https://mp.weiqihd.com/mpweb/?id=0&str=hello#/signup/meetingsignup?m=10333',
     '带锚点URL'
+  );
+
+  assert.strictEqual(
+    qs.append(url1, { a: null, b: undefined }, { ignoreEmpty: true }),
+    url1,
+    '忽略空'
+  );
+
+  assert.strictEqual(
+    qs.append(url2, { a: null, b: '' }, { ignoreEmpty: true }),
+    url2,
+    '忽略空'
   );
 });
