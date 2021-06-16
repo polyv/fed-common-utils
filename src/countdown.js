@@ -4,10 +4,10 @@
  */
 
 const computes = [
-  { divisor: 24 * 60 * 60 * 1000, unit: 'days' },
-  { divisor: 60 * 60 * 1000, unit: 'hours' },
-  { divisor: 60 * 1000, unit: 'minutes' },
-  { divisor: 1000, unit: 'seconds' }
+  { divisor: 24 * 60 * 60, unit: 'days' },
+  { divisor: 60 * 60, unit: 'hours' },
+  { divisor: 60, unit: 'minutes' },
+  { divisor: 1, unit: 'seconds' }
 ];
 
 /**
@@ -55,11 +55,11 @@ export default class Countdown {
       const rest = {
         totalMsecs: value
       };
+      value = Math.round(value / 1000);
       computes.forEach((item, i) => {
         rest[item.unit] = value / item.divisor;
         if (i === computes.length - 1) {
-          // 通过 Math.round 四舍五入后可能会出现 60 秒，限制最大只能为 59 秒
-          rest[item.unit] = Math.min(Math.round(rest[item.unit]), 59);
+          rest[item.unit] = Math.round(rest[item.unit]);
         } else {
           rest[item.unit] = Math.floor(rest[item.unit]);
           value = value % item.divisor;
