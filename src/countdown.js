@@ -58,7 +58,8 @@ export default class Countdown {
       computes.forEach((item, i) => {
         rest[item.unit] = value / item.divisor;
         if (i === computes.length - 1) {
-          rest[item.unit] = Math.round(rest[item.unit]);
+          // 通过 Math.round 四舍五入后可能会出现 60 秒，限制最大只能为 59 秒
+          rest[item.unit] = Math.min(Math.round(rest[item.unit]), 59);
         } else {
           rest[item.unit] = Math.floor(rest[item.unit]);
           value = value % item.divisor;
