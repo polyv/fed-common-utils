@@ -44,11 +44,11 @@ export default class Countdown {
   }
 
   _exec() {
-    if (!this._startTime) { return; }
+    if (!this._startTime || this._stopped) { return; }
 
     let value = Math.max(0, this._secs - (Date.now() - this._startTime));
-    if (value > 0 && !this._stopped) {
-      setTimeout(() => { this._exec(); }, 1000);
+    if (value > 0) {
+      this._timerId = setTimeout(() => { this._exec(); }, 1000);
     }
 
     if (value >= 0) {
