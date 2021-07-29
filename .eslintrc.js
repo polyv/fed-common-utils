@@ -1,6 +1,5 @@
 const devWarnProdError = process.env.NODE_ENV === 'production' ? 'error' : 'warn';
 
-
 module.exports = {
   root: true,
   env: {
@@ -8,15 +7,19 @@ module.exports = {
     es6: true,
     node: true
   },
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 9
   },
-  plugins: ['sonarjs'],
+  plugins: [
+    '@typescript-eslint',
+    'sonarjs'
+  ],
   extends: [
     'eslint:recommended',
-    'plugin:sonarjs/recommended'
+    'plugin:sonarjs/recommended',
+    'plugin:@typescript-eslint/recommended'
   ],
   // add your custom rules here
   rules: {
@@ -40,23 +43,19 @@ module.exports = {
     // 变量
     'new-cap': 'error',
     'camelcase': 'error',
-    'no-use-before-define': ['error', {
-      'functions': false,
-      'classes': false,
-      'variables': true
-    }],
-    'no-unused-vars': devWarnProdError,
+    'no-use-before-define': 0,
+    'no-unused-vars': 0,
 
     // 空白与换行
     'semi-spacing': 'error',
     'array-bracket-spacing': ['error', 'never'],
     'block-spacing': ['error', 'always'],
     'computed-property-spacing': 'error',
-    'comma-spacing': 'error',
+    'comma-spacing': 0,
     'func-call-spacing': 'error',
     'key-spacing': 'error',
     'keyword-spacing': 'error',
-    'no-trailing-spaces': 'error',
+    'no-trailing-spaces': ['error', { ignoreComments: true }],
     'no-whitespace-before-property': 'error',
     'space-before-blocks': 'error',
     'space-before-function-paren': ['error', {
@@ -99,6 +98,7 @@ module.exports = {
     'no-useless-call': 'error',
     'no-with': 'error',
     'no-constant-condition': devWarnProdError,
+    'no-cond-assign': ['error', 'except-parens'],
     'no-empty': [devWarnProdError, {
       'allowEmptyCatch': true
     }],
@@ -120,6 +120,30 @@ module.exports = {
 
     // Sonarjs
     'sonarjs/no-duplicate-string': ['error', 5],
-    'sonarjs/no-collection-size-mischeck': 0
+    'sonarjs/no-collection-size-mischeck': 0,
+
+    // TypeScript
+    '@typescript-eslint/semi': ['error', 'always'],
+    '@typescript-eslint/comma-spacing': ['error'],
+    '@typescript-eslint/type-annotation-spacing': ['error', {
+      after: true,
+      before: false,
+      overrides: {
+        arrow: {
+          before: true,
+          after: true
+        }
+      }
+    }],
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-unused-vars': [devWarnProdError, {
+      vars: 'all',
+      args: 'after-used'
+    }],
+    '@typescript-eslint/no-use-before-define': ['error', {
+      'functions': false,
+      'classes': false,
+      'variables': true
+    }]
   }
-}
+};

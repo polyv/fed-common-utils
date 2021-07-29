@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "../es/",
+    "baseUrl": "./",
+    "module": "es6",
+    "target": "es6",
+    "declaration": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "strictNullChecks": true
+  }
+}
