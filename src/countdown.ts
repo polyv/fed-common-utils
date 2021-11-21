@@ -1,25 +1,12 @@
 /**
  * 本模块提供倒数功能。
- * @module countdown
+ * @packageDocumentation
  */
-
-
-interface ComputeItem {
-  divisor: number;
-  unit: string
-}
-
-const computes: ComputeItem[] = [
-  { divisor: 24 * 60 * 60, unit: 'days' },
-  { divisor: 60 * 60, unit: 'hours' },
-  { divisor: 60, unit: 'minutes' },
-  { divisor: 1, unit: 'seconds' }
-];
 
 /**
- * 倒计时回调函数的参数，表示剩余时间。
+ * 表示剩余时长。
  */
-export interface Remaining {
+export interface IRemaining {
   /**
    * 剩余天数。
    */
@@ -42,44 +29,61 @@ export interface Remaining {
   totalMsecs: number;
 }
 
-export interface CountdownCallback {
-  (remaining: Remaining): void
+/**
+ * 秒数转换的计算项。
+ */
+interface ComputeItem {
+  /**
+   * 进制。
+   */
+  divisor: number;
+  /**
+   * 单位。
+   */
+  unit: keyof IRemaining
+}
+
+const computes: ComputeItem[] = [
+  { divisor: 24 * 60 * 60, unit: 'days' },
+  { divisor: 60 * 60, unit: 'hours' },
+  { divisor: 60, unit: 'minutes' },
+  { divisor: 1, unit: 'seconds' }
+];
+
+/**
+ * 倒计时的回调函数。
+ */
+export interface ICountdownCallback {
+  (remaining: IRemaining): void
 }
 
 /**
- * 倒计时回调函数。
- * @callback countdownCallback
- * @memberof module:countdown.Countdown
- * @param {Object} rest 剩余的时间。
- *   @param {number} rest.days 剩余天数。
- *   @param {number} rest.hours 剩余小时数。
- *   @param {number} rest.minutes 剩余分钟数。
- *   @param {number} rest.seconds 剩余秒数。
- *   @param {boolean} rest.totalMsecs 剩余的总毫秒数。
- */
-/**
  * 倒计时类。
- * @memberof module:countdown
- * @class
- * @name Countdown
- * @author luoliquan
- * @param {number} secs 总秒数。
- * @param {countdownCallback} [cb] 回调函数。
  * @example
- * const countdown = new Countdown(60, (rest) => {
- *   console.dir(rest);
+ * ```javascript
+ * const countdown = new Countdown(60, (remaining) => {
+ *   console.dir(remaining);
  * });
  * countdown.start();
+ * ```
  */
-export default class Countdown {
+export class Countdown {
   /**
    * 倒计时总时间的毫秒表示。
    */
-  protected _secs: number;
+  protected readonly _totalMSecs: number;
+  /**
+   * 倒计时剩余时间的毫秒表示。
+   */
+  protected _remainingMSecs: number;
+  /**
+   * 当前正在使用的倒计时秒数。
+   */
+  protected _usingMSecs: number;
   /**
    * 倒计时回调函数。
    */
-  protected _cb: CountdownCallback;
+  protected readonly _cb: ICountdownCallback;
   /**
    * 倒计时开始时间的毫秒级时间戳。
    */
@@ -88,27 +92,46 @@ export default class Countdown {
    * 倒计时是否已停止。
    */
   protected _stopped: boolean;
+  /**
+   * 倒计时定时器 id。
+   */
+  protected _timerId: number;
 
-  constructor(secs: number, cb: CountdownCallback) {
-    secs = secs | 0;
-    if (isNaN(secs)) { throw new Error('Total seconds must be a number'); }
-    this._secs = secs * 1000;
+  /**
+   * 倒计时类构造函数。
+   * @param secs 倒计时总秒数。
+   * @param cb 回调剩余时长的函数，正常情况下大概 1 秒回调一次。
+   */
+  constructor(totalSecs: number, cb: ICountdownCallback) {
+    totalSecs = totalSecs | 0;
+    if (isNaN(totalSecs)) { throw new Error('Total seconds must be a number'); }
+    this._totalMSecs = totalSecs * 1000;
     this._cb = cb;
   }
 
+  /**
+   * 倒计时的具体操作。
+   */
   protected _exec(): void {
     if (!this._startTime) { return; }
 
-    let value = Math.max(0, this._secs - (Date.now() - this._startTime));
+    // 计算剩余时间，如果剩余时间大于 0 而且没有停止倒计时，则继续倒计时
+    let value = Math.max(0, this._usingMSecs - (Date.now() - this._startTime));
     if (value > 0 && !this._stopped) {
       setTimeout(() => { this._exec(); }, 1000);
     }
 
+    this._remainingMSecs = value;
+
     if (value >= 0) {
-      const remaining = {
+      const remaining: IRemaining = {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
         totalMsecs: value
       };
-      value = Math.round(value / 1000);
+      value = Math.round(value / 1000); // 毫秒转换成秒
       computes.forEach((item, i) => {
         remaining[item.unit] = value / item.divisor;
         if (i === computes.length - 1) {
@@ -118,28 +141,43 @@ export default class Countdown {
           value = value % item.divisor;
         }
       });
-      this._cb(rest);
+      this._cb(remaining);
     }
   }
 
   /**
    * 开始倒计时。
-   * @method
-   * @memberof module:countdown.Countdown.prototype
    */
-  start() {
-    if (this.secs <= 0) { return; }
+  public start(): void {
+    if (this._usingMSecs == null) {
+      this._usingMSecs = this._totalMSecs;
+    }
+    if (this._usingMSecs <= 0) { return; }
     this._startTime = Date.now();
     this._exec();
   }
 
   /**
-   * 停止倒计时。
-   * @method
-   * @memberof module:countdown.Countdown.prototype
+   * 中断倒计时。
    */
-  stop() {
+  protected _break(): void {
     if (this._timerId) { clearTimeout(this._timerId); }
     this._stopped = true;
+  }
+
+  /**
+   * 停止倒计时。如果再次调用 start，则重新开始倒计时。
+   */
+  public stop(): void {
+    this._break();
+    this._usingMSecs = this._totalMSecs;
+  }
+
+  /**
+   * 暂停倒计时。如果再次调用 start，则继续未完成的倒计时。
+   */
+  public pause(): void {
+    this._break();
+    this._usingMSecs = this._remainingMSecs;
   }
 }

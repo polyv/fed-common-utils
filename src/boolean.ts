@@ -24,12 +24,17 @@ export function boolToYN(value: boolean): YOrN {
 /**
  * Y 或者 N 转换为布尔值。
  * @param value Y 或者 N。
+ * @param defaultValue 当 value 为非法值时的默认值。
  * @return 布尔值。
  */
-export function ynToBool(value: YOrN): boolean {
-  const upperValue = String(value).toUpperCase();
+export function ynToBool(value: YOrN, defaultValue?: YOrN): boolean {
+  let upperValue = String(value).toUpperCase();
   if (upperValue !== 'Y' && upperValue !== 'N') {
-    throw new Error('The value argument must be "Y" or "N"');
+    if (defaultValue != null) {
+      upperValue = String(defaultValue).toUpperCase();
+    } else {
+      throw new Error('The value argument must be "Y" or "N"');
+    }
   }
   return value === 'Y';
 }
@@ -41,7 +46,9 @@ export function ynToBool(value: YOrN): boolean {
  * @return 指定数组元素的值是否都为 Y。
  */
 export function allY(values: YOrN[]): boolean {
-  return values.every(ynToBool);
+  return values.every(function(value) {
+    return ynToBool(value);
+  });
 }
 
 /**
@@ -50,7 +57,9 @@ export function allY(values: YOrN[]): boolean {
  * @return 指定数组元素的值是否至少有一个为 Y。
  */
 export function someY(values: YOrN[]): boolean {
-  return values.some(ynToBool);
+  return values.some(function(value) {
+    return ynToBool(value);
+  });
 }
 
 /**
