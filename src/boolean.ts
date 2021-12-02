@@ -1,6 +1,6 @@
 /**
  * 本模块提供布尔值处理相关方法。
- * @module boolean
+ * @packageDocumentation
  */
 
 /**
@@ -36,7 +36,7 @@ export function ynToBool(value: YOrN, defaultValue?: YOrN): boolean {
       throw new Error('The value argument must be "Y" or "N"');
     }
   }
-  return value === 'Y';
+  return upperValue === 'Y';
 }
 
 

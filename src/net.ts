@@ -12,12 +12,14 @@ const reProtocol = /^(?:([a-z]+):)?\/{2,3}/i;
  * @param protocols 特定协议（不含冒号和斜杠），不指定时表示允许任何协议。
  * @return 目标字符串是否以特定 URL 协议开头。
  * @example
+ * ```javascript
  * startsWithProtocol('//abc.com'); // true
  * startsWithProtocol('https://abc.com'); // true
  * startsWithProtocol('file:///Users/'); // true
  * startsWithProtocol('abc.com'); // false
  * startsWithProtocol('http://abc.com', ['http', 'https']); // true
  * startsWithProtocol('ftp://abc.com', ['http', 'https']); // false
+ * ```
  */
 export function startsWithProtocol(
   str: string, protocols?: string[]
@@ -41,8 +43,10 @@ export function startsWithProtocol(
  * @param protocol 协议。
  * @return 替换结果。
  * @example
+ * ```javascript
  * changeProtocol('abc.com', 'https'); // 'https://abc.com'
  * changeProtocol('http://abc.com', 'https'); // 'https://abc.com'
+ * ```
  */
 export function changeProtocol(url: string, protocol: string): string {
   if (!reProtocol.test(protocol)) {

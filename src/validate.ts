@@ -3,15 +3,14 @@
  * @packageDocumentation
  */
 
-
 /**
  * 检查目标字符串是否中国大陆手机号。
  * @param str 目标字符串。
  * @return 目标字符串是否中国大陆手机号。
  * @example
  * ```javascript
- * isPhoneNO('13800138000'); // true
- * isPhoneNO('a13800138000c'); // false
+ * isChsPhoneNO('13800138000'); // true
+ * isChsPhoneNO('a13800138000c'); // false
  * ```
  */
 export function isChsPhoneNO(str: string): boolean {

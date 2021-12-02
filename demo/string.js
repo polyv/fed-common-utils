@@ -5,8 +5,9 @@ import {
   removeTags,
   nl2br,
   randomStr,
+  uuidV4,
   compareVersions
-} from '@/string.js';
+} from '@/string';
 const QUnit = window.QUnit;
 
 QUnit.test('strLen', (assert) => {
@@ -28,7 +29,7 @@ QUnit.test('cutStr', (assert) => {
     '省略符号'
   );
   assert.strictEqual(
-    cutStr('测试一下下', 4, { mode: 1, ellipsis: '---' }),
+    cutStr('测试一下下', 4, { enLen: 1, nonEnLen: 1, ellipsis: '---' }),
     '测---',
     '都按一个字符算'
   );
@@ -64,6 +65,13 @@ QUnit.test('randomStr', (assert) => {
   assert.strictEqual(str2.length, 10);
   assert.notEqual(str1, str2);
   assert.strictEqual(randomStr(10, 'abc-').length, 14);
+});
+
+QUnit.test('uuidV4', (assert) => {
+  assert.strictEqual(
+    uuidV4().length,
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.length
+  );
 });
 
 QUnit.test('compareVersions', (assert) => {

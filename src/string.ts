@@ -29,7 +29,6 @@ export interface ICutStrOptions extends IStrLenOptions {
   ellipsis?: string;
 }
 
-
 /**
  * 计算字符串长度。默认情况下，英文字符的单位长度为 1，非英文字符的单位长度为 2。
  * @param str 字符串。
@@ -66,7 +65,6 @@ export function strLen(
   }
   return result;
 }
-
 
 /**
  * 如果目标字符串超出限制长度，则进行截断并拼接省略符号；否则返回目标字符串。
@@ -137,14 +135,8 @@ export function escapeHTML(str: string): string {
  * @return 处理后的字符串。
  */
 export function removeTags(str: string): string {
-  if (str == null) { return str; }
-  if (typeof document !== undefined) {
-    const div = document.createElement('div');
-    div.innerHTML = str;
-    return div.textContent || '';
-  } else {
-    return String(str).replace(/<.+?>/g, '');
-  }
+  if (str == null) { return ''; }
+  return String(str).replace(/<.+?>/g, '');
 }
 
 
@@ -156,6 +148,32 @@ export function removeTags(str: string): string {
 export function nl2br(str: string): string {
   if (str == null) { return str; }
   return String(str).replace(/\r?\n/g, '<br />');
+}
+
+
+/**
+ * 生成随机字符串。
+ * @param length 字符串长度。
+ * @param [prefix] 字符串前缀（不计入长度）。
+ * @returns 生成的随机字符串。
+ */
+export function randomStr(length: number, prefix?: string) {
+  length = length | 0;
+  if (!length || length < 0) {
+    throw new Error('"length" must be a number greater than 0');
+  }
+
+  let result = '';
+  do {
+    result += Math.random().toString(36).substr(2);
+  } while (result.length < length);
+
+  // 拼接的长度可能大于指定长度，进行裁剪
+  result = result.substr(0, length);
+
+  if (prefix != null) { result = prefix + result; }
+
+  return result;
 }
 
 

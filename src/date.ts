@@ -1,3 +1,8 @@
+/**
+ * 本模块提供日期和时间处理的相关方法。
+ * @packageDocumentation
+ */
+
 // 统一返回日期类型
 function ensureDate(date: number | Date): Date {
   if (typeof date !== 'object') { date = new Date(date); }
@@ -10,7 +15,9 @@ function ensureDate(date: number | Date): Date {
  * @param formation 格式。
  * @return 格式化结果。
  * @example
+ * ```javascript
  * formatDate(new Date(2018, 9, 8, 8, 50, 56), 'YYYY-MM-DD hh:mm:ss'); // '2018-10-08 08:50:56'
+ * ```
  */
 export function formatDate(date: number | Date, formation: string): string {
   date = ensureDate(date);
@@ -52,15 +59,17 @@ export interface FormatSecondsOptions {
 }
 
 /**
- * 把秒数格式化成「时:分:秒」格式。
+ * 把秒数格式化成“时:分:秒”格式。
  * @param secs 秒数。
  * @param options 格式化配置。
- * @return  格式化结果。
+ * @return 格式化结果。
  * @example
+ * ```javascript
  * formatSeconds(3682); // '01:01:22'
  * formatSeconds(82); // '01:22'
  * formatSeconds(82, { segments: 3 }); // '00:01:22'
  * formatSeconds(3682, { digits: 1 }); // '1:1:22'
+ * ```
  */
 export function formatSeconds(
   secs: number,

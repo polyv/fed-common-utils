@@ -15,6 +15,7 @@ QUnit.test('boolToYN', (assert) => {
 
 QUnit.test('ynToBool', (assert) => {
   assert.strictEqual(ynToBool('Y'), true);
+  assert.strictEqual(ynToBool(0, 'Y'), true);
   assert.strictEqual(ynToBool('N'), false);
 });
 

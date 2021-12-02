@@ -1,4 +1,4 @@
-import Countdown from '@/countdown';
+import { Countdown } from '@/countdown';
 const QUnit = window.QUnit;
 
 
@@ -19,6 +19,6 @@ QUnit.test('countdown', (assert) => {
 });
 
 const countdown = new Countdown(130, (rest) => {
-  console.dir(rest);
+  console.info(rest);
 });
 countdown.start();

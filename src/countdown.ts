@@ -1,5 +1,5 @@
 /**
- * 本模块提供倒数功能。
+ * 本模块提供倒计时功能。
  * @packageDocumentation
  */
 
@@ -57,6 +57,7 @@ export interface ICountdownCallback {
   (remaining: IRemaining): void
 }
 
+
 /**
  * 倒计时类。
  * @example
@@ -73,34 +74,34 @@ export class Countdown {
    */
   protected readonly _totalMSecs: number;
   /**
-   * 倒计时剩余时间的毫秒表示。
-   */
-  protected _remainingMSecs: number;
-  /**
-   * 当前正在使用的倒计时秒数。
-   */
-  protected _usingMSecs: number;
-  /**
    * 倒计时回调函数。
    */
   protected readonly _cb: ICountdownCallback;
   /**
+   * 倒计时剩余时间的毫秒表示。
+   */
+  protected _remainingMSecs?: number;
+  /**
+   * 当前正在使用的倒计时秒数。
+   */
+  protected _usingMSecs?: number;
+  /**
    * 倒计时开始时间的毫秒级时间戳。
    */
-  protected _startTime: number;
+  protected _startTime?: number;
   /**
    * 倒计时是否已停止。
    */
-  protected _stopped: boolean;
+  protected _stopped?: boolean;
   /**
    * 倒计时定时器 id。
    */
-  protected _timerId: number;
+  protected _timerId?: number;
 
   /**
    * 倒计时类构造函数。
    * @param secs 倒计时总秒数。
-   * @param cb 回调剩余时长的函数，正常情况下大概 1 秒回调一次。
+   * @param cb 剩余时长的回调函数，正常情况下大概 1 秒回调一次。
    */
   constructor(totalSecs: number, cb: ICountdownCallback) {
     totalSecs = totalSecs | 0;
@@ -113,7 +114,7 @@ export class Countdown {
    * 倒计时的具体操作。
    */
   protected _exec(): void {
-    if (!this._startTime) { return; }
+    if (!this._startTime || this._usingMSecs == null) { return; }
 
     // 计算剩余时间，如果剩余时间大于 0 而且没有停止倒计时，则继续倒计时
     let value = Math.max(0, this._usingMSecs - (Date.now() - this._startTime));
