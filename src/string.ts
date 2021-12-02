@@ -3,8 +3,6 @@
  * @packageDocumentation
  */
 
-import { assignProps } from '@just4/util/object';
-
 /**
  * 计算字符串长度的选项。
  */
@@ -51,10 +49,9 @@ export function strLen(
       nonEnLen: options
     };
   } else {
-    options = assignProps({
-      enLen: 1,
-      nonEnLen: 2
-    }, options);
+    options = options || {};
+    options.enLen = options.enLen ?? 1;
+    options.nonEnLen = options.nonEnLen ?? 2;
   }
 
   let result = 0;

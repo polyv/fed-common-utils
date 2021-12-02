@@ -1,0 +1,1 @@
+const reProtocol=/^(?:([a-z]+):)?\/{2,3}/i;export function startsWithProtocol(o,t){const r=reProtocol.test(o);if(r&&t){const o=(RegExp.$1||"").toLowerCase();for(let r=t.length-1;r>=0;r--)if(o===t[r].toLowerCase())return!0;return!1}return r}export function changeProtocol(o,t){return reProtocol.test(t)||(t+="://"),startsWithProtocol(o)?o.replace(reProtocol,t):t+o}

@@ -1,10 +1,12 @@
+/**
+ * 通用 Webpack 配置（目前只用于本地开发环境）。
+ */
+
 const path = require('path');
-const ESLintPlugin = require('eslint-webpack-plugin');
-
-const nodeModulesDir = path.resolve(__dirname, '../node_modules');
-
 const srcPath = path.resolve(__dirname, '../src');
-const tsCfgFile = path.join(srcPath, 'tsconfig.json');
+const tsCfgFile = path.join(srcPath, 'tsconfig.es5.json');
+const nodeModulesDir = path.resolve(__dirname, '../node_modules');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   resolve: {

@@ -1,6 +1,6 @@
 {
   "name": "@polyv/utils",
-  "version": "1.6.4-beta.1",
+  "version": "2.0.0-beta.1",
   "description": "Utility functions of Polyv frontend development.",
   "keywords": [
     "polyv",
@@ -9,13 +9,11 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.config.js",
-    "prebuild": "rimraf ./dist",
-    "build": "cross-env NODE_ENV=production webpack --config build/webpack.prod.config.js",
-    "pregen-doc": "rimraf ./docs",
-    "gen-doc": "jsdoc ./src -d ./docs"
+    "gen-doc": "rimraf ./docs/2.x && typedoc --tsconfig ./src/tsconfig.json",
+    "lint": "eslint ./src/*.ts",
+    "build": "npm run lint && rimraf ./dist/** && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.es5.json"
   },
   "files": [
-    "src/**/*",
     "dist/**/*"
   ],
   "author": "Polyv frontend team",
@@ -53,6 +51,7 @@
     "html-webpack-plugin": "^4.5.2",
     "regenerator-runtime": "^0.13.9",
     "rimraf": "^3.0.2",
+    "terser": "^5.10.0",
     "ts-loader": "^8.3.0",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.2",
@@ -61,7 +60,5 @@
     "webpack-dev-server": "^3.11.3",
     "webpack-merge": "^5.8.0"
   },
-  "dependencies": {
-    "@just4/util": "0.1.0-beta.2"
-  }
+  "dependencies": {}
 }

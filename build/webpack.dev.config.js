@@ -1,3 +1,7 @@
+/**
+ * 本地开发环境的 Webpack 配置。
+ */
+
 const path = require('path');
 const merge = require('webpack-merge').merge;
 const glob = require('glob');
@@ -8,6 +12,7 @@ const config = require('./webpack.config.js');
 const entry = {};
 const htmlWebpackPlugins = [];
 
+// 每个测试页面对应一个 js，每个 js 都是 entry
 const pagePath = path.resolve(__dirname, '../demo');
 glob.sync('**/*.html', {
   cwd: pagePath
@@ -21,7 +26,7 @@ glob.sync('**/*.html', {
     new HtmlWebpackPlugin({
       filename: key,
       template: htmlPath,
-      chunks: ['polyfill', key],
+      chunks: [key],
       inject: 'body'
     })
   );

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../es/",
+    "outDir": "../dist/es/",
     "baseUrl": "./",
     "module": "es6",
     "target": "es6",

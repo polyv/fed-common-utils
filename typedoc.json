@@ -1,0 +1,14 @@
+{
+  "entryPoints": [
+    "./src/boolean.ts",
+    "./src/countdown.ts",
+    "./src/date.ts",
+    "./src/json.ts",
+    "./src/net.ts",
+    "./src/string.ts",
+    "./src/validate.ts"
+  ],
+  "out": "./docs/2.x",
+  "excludeInternal": true,
+  "listInvalidSymbolLinks": true
+}

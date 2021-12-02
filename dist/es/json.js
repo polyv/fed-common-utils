@@ -1,0 +1,1 @@
+export function cloneJSON(r){return null==r?r:JSON.parse(JSON.stringify(r))}export function tryParseJSON(r,t){let e;try{e=JSON.parse(r)}catch(r){t&&t(r)}return e}
