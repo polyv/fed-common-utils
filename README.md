@@ -77,7 +77,7 @@ module.exports = {
 
 ``` javascript
 import { cutStr } from '@utils/string';
-import Countdown from '@utils/countdown';
+import { Countdown } from '@utils/countdown';
 ```
 
 ## 兼容性
