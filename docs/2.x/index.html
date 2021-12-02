@@ -1,0 +1,68 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@polyv/utils</title><meta name="description" content="Documentation for @polyv/utils"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@polyv/utils</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1> @polyv/utils</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#polyv-工具函数库" id="polyv-工具函数库" style="color: inherit; text-decoration: none;">
+  <h1>POLYV 工具函数库</h1>
+</a>
+<p>本项目提供 Web 前端常用的底层工具函数库，主要用于 POLYV 各类 Web 产品。</p>
+
+<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
+  <h2>安装</h2>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">install</span><span class="hl-1"> @</span><span class="hl-0">polyv</span><span class="hl-1">/</span><span class="hl-0">utils</span>
+</code></pre>
+<p>NPM 包同时提供了源文件（ES 2015 Modules）以及构建后的文件（CommonJS Modules），分别位于 src 和 dist 两个子文件夹。它们使用上的优缺点和区别在于：</p>
+<table>
+<thead>
+<tr>
+<th>文件类型</th>
+<th>Tree shaking</th>
+<th>自行编写构建逻辑</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>源文件</td>
+<td>有效，只有用到的代码会被打包</td>
+<td>需要</td>
+</tr>
+<tr>
+<td>构建后文件</td>
+<td>无效，依赖的文件会被整个打包</td>
+<td>不需要</td>
+</tr>
+</tbody></table>
+
+<a href="#在基于-vuejs-框架的项目中使用" id="在基于-vuejs-框架的项目中使用" style="color: inherit; text-decoration: none;">
+  <h2>在基于 Vue.js 框架的项目中使用</h2>
+</a>
+<p>以 Vue CLI 3.x 创建的项目为例，编辑 vue.config.js 增加相关配置：</p>
+<pre><code class="language-javascript"><span class="hl-2">module</span><span class="hl-1">.</span><span class="hl-2">exports</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-3">// 省略其他配置</span><br/><br/><span class="hl-1">  </span><span class="hl-0">configureWebpack:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">resolve:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-0">alias:</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-3">// 配置别名缩短引用路径</span><br/><span class="hl-1">        </span><span class="hl-4">&#39;@utils&#39;</span><span class="hl-0">:</span><span class="hl-1"> </span><span class="hl-0">path</span><span class="hl-1">.</span><span class="hl-5">resolve</span><span class="hl-1">(</span><span class="hl-0">__dirname</span><span class="hl-1">, </span><span class="hl-4">&#39;./node_modules/@polyv/utils/src&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">      }</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  },</span><br/><br/><span class="hl-1">  </span><span class="hl-3">// 需要 Babel 转译</span><br/><span class="hl-1">  </span><span class="hl-0">transpileDependencies:</span><span class="hl-1"> [</span><br/><span class="hl-1">    </span><span class="hl-4">&#39;@polyv/utils&#39;</span><br/><span class="hl-1">  ]</span><br/><span class="hl-1">};</span>
+</code></pre>
+<p>在项目代码中引入：</p>
+<pre><code class="language-javascript"><span class="hl-6">import</span><span class="hl-1"> { </span><span class="hl-0">cutStr</span><span class="hl-1"> } </span><span class="hl-6">from</span><span class="hl-1"> </span><span class="hl-4">&#39;@utils/string&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">import</span><span class="hl-1"> </span><span class="hl-0">Countdown</span><span class="hl-1"> </span><span class="hl-6">from</span><span class="hl-1"> </span><span class="hl-4">&#39;@utils/countdown&#39;</span><span class="hl-1">;</span>
+</code></pre>
+
+<a href="#在基于-nuxtjs-框架的项目中使用" id="在基于-nuxtjs-框架的项目中使用" style="color: inherit; text-decoration: none;">
+  <h2>在基于 Nuxt.js 框架的项目中使用</h2>
+</a>
+<p>以 create-nuxt-app 创建的项目为例，编辑 nuxt.config.js 增加相关配置：</p>
+<pre><code class="language-javascript"><span class="hl-2">module</span><span class="hl-1">.</span><span class="hl-2">exports</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-3">// 省略其他配置</span><br/><br/><span class="hl-1">  </span><span class="hl-0">build:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-3">// 需要 Babel 转译</span><br/><span class="hl-1">    </span><span class="hl-0">transpile:</span><span class="hl-1"> [</span><br/><span class="hl-1">      </span><span class="hl-4">&#39;@polyv/utils&#39;</span><br/><span class="hl-1">    ]</span><br/><span class="hl-1">  },</span><br/><br/><span class="hl-1">  </span><span class="hl-5">extend</span><span class="hl-1">(</span><span class="hl-0">config</span><span class="hl-1">, </span><span class="hl-0">ctx</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-3">// 浏览器端需要 polyfill</span><br/><span class="hl-1">    </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-0">ctx</span><span class="hl-1">.</span><span class="hl-0">isClient</span><span class="hl-1">) {</span><br/><span class="hl-1">      </span><span class="hl-0">config</span><span class="hl-1">.</span><span class="hl-0">entry</span><span class="hl-1"> = </span><span class="hl-0">config</span><span class="hl-1">.</span><span class="hl-0">entry</span><span class="hl-1"> || {};</span><br/><span class="hl-1">      </span><span class="hl-0">config</span><span class="hl-1">.</span><span class="hl-0">entry</span><span class="hl-1">.</span><span class="hl-0">polyfill</span><span class="hl-1"> = [</span><span class="hl-4">&#39;core-js&#39;</span><span class="hl-1">];</span><br/><span class="hl-1">    }</span><br/><br/><span class="hl-1">    </span><span class="hl-3">// 配置别名缩短引用路径</span><br/><span class="hl-1">    </span><span class="hl-0">config</span><span class="hl-1">.</span><span class="hl-0">resolve</span><span class="hl-1">.</span><span class="hl-0">alias</span><span class="hl-1">[</span><span class="hl-4">&#39;@utils&#39;</span><span class="hl-1">] = </span><span class="hl-0">path</span><span class="hl-1">.</span><span class="hl-5">resolve</span><span class="hl-1">(</span><br/><span class="hl-1">      </span><span class="hl-0">__dirname</span><span class="hl-1">, </span><span class="hl-4">&#39;./node_modules/@polyv/utils/src&#39;</span><br/><span class="hl-1">    );</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">};</span>
+</code></pre>
+<p>在项目代码中引入：</p>
+<pre><code class="language-javascript"><span class="hl-6">import</span><span class="hl-1"> { </span><span class="hl-0">cutStr</span><span class="hl-1"> } </span><span class="hl-6">from</span><span class="hl-1"> </span><span class="hl-4">&#39;@utils/string&#39;</span><span class="hl-1">;</span><br/><span class="hl-6">import</span><span class="hl-1"> </span><span class="hl-0">Countdown</span><span class="hl-1"> </span><span class="hl-6">from</span><span class="hl-1"> </span><span class="hl-4">&#39;@utils/countdown&#39;</span><span class="hl-1">;</span>
+</code></pre>
+
+<a href="#兼容性" id="兼容性" style="color: inherit; text-decoration: none;">
+  <h2>兼容性</h2>
+</a>
+<ul>
+<li>IE &gt;= 9</li>
+<li>iOS &gt;= 9 (未测试更低版本)</li>
+<li>Android &gt;= 5 (未测试更低版本)</li>
+</ul>
+
+<a href="#其他" id="其他" style="color: inherit; text-decoration: none;">
+  <h2>其他</h2>
+</a>
+<ul>
+<li><a href="https://polyv.github.io/fed-common-utils/index.html">API 文档</a></li>
+</ul>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Modules</a></li><li class=" tsd-kind-module"><a href="modules/boolean.html">boolean</a></li><li class=" tsd-kind-module"><a href="modules/countdown.html">countdown</a></li><li class=" tsd-kind-module"><a href="modules/date.html">date</a></li><li class=" tsd-kind-module"><a href="modules/json.html">json</a></li><li class=" tsd-kind-module"><a href="modules/net.html">net</a></li><li class=" tsd-kind-module"><a href="modules/string.html">string</a></li><li class=" tsd-kind-module"><a href="modules/validate.html">validate</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li><li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>

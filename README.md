@@ -8,7 +8,7 @@
 npm install @polyv/utils
 ```
 
-NPM 包同时提供了源文件（ES 2015 Modules）以及构建后的文件（CommonJS Modules），分别位于 src 和 dist 两个子文件夹。它们使用上的优缺点和区别在于：
+NPM 包同时提供了源文件（ES 2015 Modules）以及构建后的文件（CommonJS Modules），分别位于 dist/es 和 dist/cjs 两个子文件夹。它们使用上的优缺点和区别在于：
 
 | 文件类型 | Tree shaking | 自行编写构建逻辑 |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ module.exports = {
     resolve: {
       alias: {
         // 配置别名缩短引用路径
-        '@utils': path.resolve(__dirname, './node_modules/@polyv/utils/src')
+        '@utils': path.resolve(__dirname, './node_modules/@polyv/utils/dist/es')
       }
     }
   },
@@ -63,15 +63,9 @@ module.exports = {
   },
 
   extend(config, ctx) {
-    // 浏览器端需要 polyfill
-    if (ctx.isClient) {
-      config.entry = config.entry || {};
-      config.entry.polyfill = ['core-js'];
-    }
-
     // 配置别名缩短引用路径
     config.resolve.alias['@utils'] = path.resolve(
-      __dirname, './node_modules/@polyv/utils/src'
+      __dirname, './node_modules/@polyv/utils/dist/es'
     );
   }
 };
@@ -90,4 +84,5 @@ import Countdown from '@utils/countdown';
 - Android >= 5 (未测试更低版本)
 
 ## 其他
-- [API 文档](https://polyv.github.io/fed-common-utils/index.html)
+- [API 文档（1.6.3）](https://polyv.github.io/fed-common-utils/2.x/index.html)
+- [API 文档（2.x）](https://polyv.github.io/fed-common-utils/2.x/index.html)
