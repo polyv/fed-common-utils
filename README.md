@@ -94,11 +94,11 @@ import { Countdown } from '@utils/countdown';
 2.0.0 与 1.x 相比有较大的变更，如需升级，请参阅下方变更说明：
 
 - 部分功能模块分离为独立的 npm 包：
-  - 原 lang 模块已废弃，请使用 [@just4/util](https://www.npmjs.com/package/@just4/util)。
-  - 原 browser 模块已废弃，请使用 [@just4/ua-info](https://www.npmjs.com/package/@just4/ua-info)。
-  - 原 cookie 模块已废弃，请使用 [@just4/cookie](https://www.npmjs.com/package/@just4/cookie)。
-  - 原 polling 模块已废弃，请使用 [@just4/polling](https://www.npmjs.com/package/@just4/polling)。
-  - 原 storage 模块已废弃，请使用 [@just4/storage](https://www.npmjs.com/package/@just4/storage)。
+  - 原 lang 模块已移除，请使用 [@just4/util](https://www.npmjs.com/package/@just4/util)。
+  - 原 browser 模块已移除，请使用 [@just4/ua-info](https://www.npmjs.com/package/@just4/ua-info)。
+  - 原 cookie 模块已移除，请使用 [@just4/cookie](https://www.npmjs.com/package/@just4/cookie)。
+  - 原 polling 模块已移除，请使用 [@just4/polling](https://www.npmjs.com/package/@just4/polling)。
+  - 原 storage 模块已移除，请使用 [@just4/storage](https://www.npmjs.com/package/@just4/storage)。
 - 部分 API 的变更：
   - boolean 模块的 `ynToBool` 支持指定默认值。
   - countdown 模块的 `Countdown` 类增加 `pause` 方法。
