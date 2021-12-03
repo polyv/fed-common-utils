@@ -86,13 +86,9 @@ export class Countdown {
    */
   protected _usingMSecs?: number;
   /**
-   * 倒计时开始时间的毫秒级时间戳。
+   * 倒计时开始时间的毫秒级时间戳，为 undefined 时表示倒计时未开始。
    */
   protected _startTime?: number;
-  /**
-   * 倒计时是否已停止。
-   */
-  protected _stopped?: boolean;
   /**
    * 倒计时定时器 id。
    */
@@ -118,7 +114,7 @@ export class Countdown {
 
     // 计算剩余时间，如果剩余时间大于 0 而且没有停止倒计时，则继续倒计时
     let value = Math.max(0, this._usingMSecs - (Date.now() - this._startTime));
-    if (value > 0 && !this._stopped) {
+    if (value > 0) {
       setTimeout(() => { this._exec(); }, 1000);
     }
 
@@ -163,7 +159,7 @@ export class Countdown {
    */
   protected _break(): void {
     if (this._timerId) { clearTimeout(this._timerId); }
-    this._stopped = true;
+    this._startTime = undefined;
   }
 
   /**

@@ -17,8 +17,3 @@ QUnit.test('countdown', (assert) => {
   });
   countdown.start();
 });
-
-const countdown = new Countdown(130, (rest) => {
-  console.info(rest);
-});
-countdown.start();
