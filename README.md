@@ -88,3 +88,20 @@ import { Countdown } from '@utils/countdown';
 ## 其他
 - [API 文档（1.6.3）](https://polyv.github.io/fed-common-utils/1.6.3/index.html)
 - [API 文档（2.x）](https://polyv.github.io/fed-common-utils/2.x/index.html)
+
+## 2.0.0 版本的变更
+
+- 用 TypeScript 进行重写，具备声明文件。
+- 把部分通用性较强的功能模块分离为独立的 npm 包：
+  - 原 lang 模块已废弃，请使用 [@just4/util](https://www.npmjs.com/package/@just4/util)。
+  - 原 browser 模块已废弃，请使用 [@just4/ua-info](https://www.npmjs.com/package/@just4/ua-info)，浏览器检测项更为全面。
+  - 原 cookie 模块已废弃，请使用 [@just4/cookie](https://www.npmjs.com/package/@just4/cookie)。
+  - 原 polling 模块已废弃，请使用 [@just4/polling](https://www.npmjs.com/package/@just4/polling)。
+  - 原 storage 模块已废弃，请使用 [@just4/storage](https://www.npmjs.com/package/@just4/storage)。
+- 部分 API 的变更：
+  - boolean 模块的 `ynToBool` 支持指定默认值。
+  - countdown 模块的 `Countdown` 类增加 `pause` 方法。
+  - string 模块的 `cutStr`、`strLen` 两个方法的选项，不再支持 `mode` 属性。
+  - string 模块新增 `uuidV4` 方法。
+  - validate 模块的 `isPhoneNO` 方法改名为 `isChsPhoneNO`。
+
