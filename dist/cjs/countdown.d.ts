@@ -61,13 +61,9 @@ export declare class Countdown {
      */
     protected _usingMSecs?: number;
     /**
-     * 倒计时开始时间的毫秒级时间戳。
+     * 倒计时开始时间的毫秒级时间戳，为 undefined 时表示倒计时未开始。
      */
     protected _startTime?: number;
-    /**
-     * 倒计时是否已停止。
-     */
-    protected _stopped?: boolean;
     /**
      * 倒计时定时器 id。
      */

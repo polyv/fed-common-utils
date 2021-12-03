@@ -11,7 +11,8 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.config.js",
     "gen-doc": "rimraf ./docs/2.x && typedoc --options ./typedoc.js --tsconfig ./src/tsconfig.json",
     "lint": "eslint ./src/*.ts",
-    "build": "npm run lint && rimraf ./dist/** && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.es5.json"
+    "compress": "node ./build/compress-js",
+    "build": "npm run lint && rimraf ./dist/** && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.es5.json && npm run compress"
   },
   "files": [
     "dist/**/*"

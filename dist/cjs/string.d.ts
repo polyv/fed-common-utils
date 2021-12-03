@@ -74,7 +74,7 @@ export declare function nl2br(str: string): string;
 /**
  * 生成随机字符串。
  * @param length 字符串长度。
- * @param [prefix] 字符串前缀（不计入长度）。
+ * @param prefix 字符串前缀（不计入长度）。
  * @returns 生成的随机字符串。
  */
 export declare function randomStr(length: number, prefix?: string): string;
