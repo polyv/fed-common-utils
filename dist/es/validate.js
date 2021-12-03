@@ -1,1 +1,43 @@
-export function isChsPhoneNO(t){return/^1[3-9]\d{9}$/.test(t)}export function isEmail(t){if(/^[\w-]+(?:\.[\w-]+)*@[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}$/.test(t)){const e=t.replace("@",".").split(".");for(let t=e.length-1;t>=0;t--)if(/^[-_]/.test(e[t])||/[_-]$/.test(e[t]))return!1;return!0}return!1}
+/**
+ * 本模块提供数据验证方法。
+ * @packageDocumentation
+ */
+/**
+ * 检查目标字符串是否中国大陆手机号。
+ * @param str 目标字符串。
+ * @return 目标字符串是否中国大陆手机号。
+ * @example
+ * ```javascript
+ * isChsPhoneNO('13800138000'); // true
+ * isChsPhoneNO('a13800138000c'); // false
+ * ```
+ */
+export function isChsPhoneNO(str) {
+    return /^1[3-9]\d{9}$/.test(str);
+}
+/**
+ * 检查目标字符串是否电子邮箱地址。
+ * @param str 目标字符串。
+ * @return 目标字符串是否电子邮箱地址。
+ * @example
+ * ```javascript
+ * isEmail('me@polyv.net'); // true
+ * isEmail('me@polyv_.net-'); // false
+ * ```
+ */
+export function isEmail(str) {
+    const canMatch = /^[\w-]+(?:\.[\w-]+)*@[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}$/.test(str);
+    if (canMatch) {
+        const temp = str.replace('@', '.').split('.');
+        for (let i = temp.length - 1; i >= 0; i--) {
+            // 每一段的开头和结尾都不能是连字符或下划线
+            if (/^[-_]/.test(temp[i]) || /[_-]$/.test(temp[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}

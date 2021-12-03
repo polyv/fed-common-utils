@@ -1,5 +1,5 @@
 /**
- * 压缩 JS（tsc 编译后执行）。
+ * 通过 terser 压缩 JS 代码（tsc 编译后执行）。
  */
 
 const { minify } = require('terser');
@@ -7,6 +7,7 @@ const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 
+// 压缩参数
 const compressOptions = {
   output: {
     'ascii_only': true

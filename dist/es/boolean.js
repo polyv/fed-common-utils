@@ -1,1 +1,73 @@
-export function boolToYN(o){if("boolean"!=typeof o)throw new Error("The value argument must be a boolean type");return o?"Y":"N"}export function ynToBool(o,n){let e=String(o).toUpperCase();if("Y"!==e&&"N"!==e){if(null==n)throw new Error('The value argument must be "Y" or "N"');e=String(n).toUpperCase()}return"Y"===e}export function allY(o){return o.every((function(o){return ynToBool(o)}))}export function someY(o){return o.some((function(o){return ynToBool(o)}))}export function allN(o){return o.every((function(o){return!ynToBool(o)}))}export function someN(o){return o.some((function(o){return!ynToBool(o)}))}
+/**
+ * 本模块提供布尔值处理相关方法。
+ * @packageDocumentation
+ */
+/**
+ * 布尔值转换为 Y 或者 N。
+ * @param value 布尔值。
+ * @return Y 或者 N。
+ */
+export function boolToYN(value) {
+    if (typeof value !== 'boolean') {
+        throw new Error('The value argument must be a boolean type');
+    }
+    return value ? 'Y' : 'N';
+}
+/**
+ * Y 或者 N 转换为布尔值。
+ * @param value Y 或者 N。
+ * @param defaultValue 当 value 为非法值时的默认值。
+ * @return 布尔值。
+ */
+export function ynToBool(value, defaultValue) {
+    let upperValue = String(value).toUpperCase();
+    if (upperValue !== 'Y' && upperValue !== 'N') {
+        if (defaultValue != null) {
+            upperValue = String(defaultValue).toUpperCase();
+        }
+        else {
+            throw new Error('The value argument must be "Y" or "N"');
+        }
+    }
+    return upperValue === 'Y';
+}
+/**
+ * 检查指定数组元素的值是否都为 Y。
+ * @param values 指定数组。
+ * @return 指定数组元素的值是否都为 Y。
+ */
+export function allY(values) {
+    return values.every(function (value) {
+        return ynToBool(value);
+    });
+}
+/**
+ * 检查指定数组元素的值是否至少有一个为 Y。
+ * @param values 指定数组。
+ * @return 指定数组元素的值是否至少有一个为 Y。
+ */
+export function someY(values) {
+    return values.some(function (value) {
+        return ynToBool(value);
+    });
+}
+/**
+ * 检查指定数组元素的值是否都为 N。
+ * @param values 指定数组。
+ * @return 指定数组元素的值是否都为 N。
+ */
+export function allN(values) {
+    return values.every(function (value) {
+        return !ynToBool(value);
+    });
+}
+/**
+ * 检查指定数组元素的值是否至少有一个为 N。
+ * @param values 指定数组。
+ * @return 指定数组元素的值是否至少有一个为 N。
+ */
+export function someN(values) {
+    return values.some(function (value) {
+        return !ynToBool(value);
+    });
+}

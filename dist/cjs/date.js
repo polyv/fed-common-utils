@@ -1,1 +1,89 @@
-"use strict";function ensureDate(e){return"object"!=typeof e&&(e=new Date(e)),e}function formatDate(e,t){var r={Y:(e=ensureDate(e)).getFullYear(),M:e.getMonth()+1,D:e.getDate(),h:e.getHours(),m:e.getMinutes(),s:e.getSeconds()};return t.replace(/([YMDhms])\1*/g,(function(e){var t=r[e[0]].toString(),n=e.length;return n>t.length&&(t=new Array(n-t.length+1).join("0")+t),t}))}function formatSeconds(e,t){if(void 0===t&&(t={segments:2,digits:2}),e=Number(e),isNaN(e)||e<0)throw new Error('"secs" must be a positive integer');var r=0|(t.segments||2),n=0|(t.digits||2);n=Math.max(1,n),-1===[2,3].indexOf(r)&&(r=2);var o=new Array(n+1).join("0"),a=[3600,60,1].map((function(t){var r=Math.floor(e/t),a=r.toString().length;return e%=t,(o+r).slice(-Math.max(a,n))}));return r<3&&!Number(a[0])&&a.shift(),a.join(":")}Object.defineProperty(exports,"__esModule",{value:!0}),exports.formatSeconds=exports.formatDate=void 0,exports.formatDate=formatDate,exports.formatSeconds=formatSeconds;
+"use strict";
+/**
+ * 本模块提供日期和时间处理的相关方法。
+ * @packageDocumentation
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatSeconds = exports.formatDate = void 0;
+// 统一返回日期类型
+function ensureDate(date) {
+    if (typeof date !== 'object') {
+        date = new Date(date);
+    }
+    return date;
+}
+/**
+ * 格式化日期。
+ * @param date 日期对象或时间戳（毫秒）。
+ * @param formation 格式。
+ * @return 格式化结果。
+ * @example
+ * ```javascript
+ * formatDate(new Date(2018, 9, 8, 8, 50, 56), 'YYYY-MM-DD hh:mm:ss'); // '2018-10-08 08:50:56'
+ * ```
+ */
+function formatDate(date, formation) {
+    date = ensureDate(date);
+    var values = {
+        Y: date.getFullYear(),
+        M: date.getMonth() + 1,
+        D: date.getDate(),
+        h: date.getHours(),
+        m: date.getMinutes(),
+        s: date.getSeconds()
+    };
+    return formation.replace(/([YMDhms])\1*/g, function (match) {
+        var result = values[match[0]].toString();
+        var matchLen = match.length;
+        if (matchLen > result.length) {
+            result = (new Array(matchLen - result.length + 1)).join('0') + result;
+        }
+        return result;
+    });
+}
+exports.formatDate = formatDate;
+/**
+ * 把秒数格式化成“时:分:秒”格式。
+ * @param secs 秒数。
+ * @param options 格式化配置。
+ * @return 格式化结果。
+ * @example
+ * ```javascript
+ * formatSeconds(3682); // '01:01:22'
+ * formatSeconds(82); // '01:22'
+ * formatSeconds(82, { segments: 3 }); // '00:01:22'
+ * formatSeconds(3682, { digits: 1 }); // '1:1:22'
+ * ```
+ */
+function formatSeconds(secs, options) {
+    if (options === void 0) { options = { segments: 2, digits: 2 }; }
+    secs = Number(secs);
+    if (isNaN(secs) || secs < 0) {
+        throw new Error('"secs" must be a positive integer');
+    }
+    var segments = (options.segments || 2) | 0;
+    var digits = (options.digits || 2) | 0;
+    // 位数最小为 1
+    digits = Math.max(1, digits);
+    // 段数只能为 2 或者 3
+    if ([2, 3].indexOf(segments) === -1) {
+        segments = 2;
+    }
+    // 需要补多少个 0
+    var zeros = new Array(digits + 1).join('0');
+    var result = [
+        60 * 60,
+        60,
+        1
+    ].map(function (num) {
+        var subResult = Math.floor(secs / num);
+        var len = subResult.toString().length;
+        secs = secs % num;
+        return (zeros + subResult).slice(-Math.max(len, digits));
+    });
+    if (segments < 3 && !Number(result[0])) {
+        result.shift();
+    }
+    return result.join(':');
+}
+exports.formatSeconds = formatSeconds;
