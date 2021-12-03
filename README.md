@@ -105,3 +105,4 @@ import { Countdown } from '@utils/countdown';
   - string 模块的 `cutStr`、`strLen` 两个方法的选项，不再支持 `mode` 属性。
   - string 模块新增 `uuidV4` 方法。
   - validate 模块的 `isPhoneNO` 方法改名为 `isChsPhoneNO`。
+- CommonJS 模块的路径是 dist/cjs（原来是 dist），ES 模块的路径是 dist/es（原来是 src）。
