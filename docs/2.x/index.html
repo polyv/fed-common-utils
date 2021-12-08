@@ -7,7 +7,7 @@
 <a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
   <h2>安装</h2>
 </a>
-<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">install</span><span class="hl-1"> @</span><span class="hl-0">polyv</span><span class="hl-1">/</span><span class="hl-0">utils</span>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">install</span><span class="hl-1"> @</span><span class="hl-0">polyv</span><span class="hl-1">/</span><span class="hl-0">utils</span><span class="hl-1">@</span><span class="hl-0">next</span>
 </code></pre>
 <p>NPM 包同时提供了 ES 模块以及 CommonJS 模块，分别位于 <code>dist/es</code> 和 <code>dist/cjs</code> 两个文件夹。它们使用上的区别和优缺点在于：</p>
 <table>
@@ -76,12 +76,12 @@
 </a>
 <p>2.0.0 与 1.x 相比有较大的变更，如需升级，请参阅下方变更说明：</p>
 <ul>
-<li>部分功能模块分离为独立的 npm 包：<ul>
-<li>原 lang 模块已移除，请使用 <a href="https://www.npmjs.com/package/@just4/util">@just4/util</a>。</li>
-<li>原 browser 模块已移除，请使用 <a href="https://www.npmjs.com/package/@just4/ua-info">@just4/ua-info</a>。</li>
-<li>原 cookie 模块已移除，请使用 <a href="https://www.npmjs.com/package/@just4/cookie">@just4/cookie</a>。</li>
-<li>原 polling 模块已移除，请使用 <a href="https://www.npmjs.com/package/@just4/polling">@just4/polling</a>。</li>
-<li>原 storage 模块已移除，请使用 <a href="https://www.npmjs.com/package/@just4/storage">@just4/storage</a>。</li>
+<li>模块变更：<ul>
+<li>原 lang 模块已移除，可以使用 <a href="https://www.npmjs.com/package/@just4/util">@just4/util</a> 或 <a href="https://www.npmjs.com/package/lodash-es">lodash-es</a> 代替。</li>
+<li>原 browser 模块已移除，可以使用 <a href="https://www.npmjs.com/package/@just4/ua-info">@just4/ua-info</a> 代替。</li>
+<li>原 cookie 模块已移除，可以使用 <a href="https://www.npmjs.com/package/@just4/cookie">@just4/cookie</a> 代替。</li>
+<li>原 polling 模块已移除，可以使用 <a href="https://www.npmjs.com/package/@just4/polling">@just4/polling</a> 代替。</li>
+<li>原 storage 模块已移除，可以使用 <a href="https://www.npmjs.com/package/@just4/storage">@just4/storage</a> 代替。</li>
 </ul>
 </li>
 <li>部分 API 的变更：<ul>
