@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: browser.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: browser.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 本模块提供浏览器检测相关方法。
+ * @module browser
+ */
+
+// 默认获取浏览器 useragent
+function getBrowserUA(ua) {
+  if (!ua &amp;&amp; typeof navigator !== 'undefined') {
+    ua = navigator.userAgent;
+  }
+  return ua;
+}
+
+/**
+ * 检查当前设备是否移动设备。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @param {Object} [features] 浏览器特征。
+ *   @param {string} [features.platform] 运行平台。
+ *   @param {string} [features.maxTouchPoints] 最大触点数。
+ * @return {boolean} 当前设备是否移动设备。
+ * @example
+ * isMobile(navigator.userAgent);
+ * isMobile(navigator.userAgent, {
+ *   platform: navigator.platform,
+ *   maxTouchPoints: navigator.maxTouchPoints
+ * });
+ */
+export function isMobile(ua, features) {
+  ua = getBrowserUA(ua);
+  let result = /mobile|android/i.test(ua) ||
+    !/\b(Windows\sNT|Macintosh|Linux)\b/.test(ua);
+
+  if (features &amp;&amp; 'platform' in features) {
+    result = result || [
+      'Android', 'iPhone', 'iPad', 'iPod'
+    ].indexOf(features.platform) !== -1;
+
+    if ('maxTouchPoints' in features) {
+      result = result || (
+        features.platform === 'MacIntel' &amp;&amp; features.maxTouchPoints > 1
+      );
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合微信客户端特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合微信客户端特征。
+ */
+export function isWeixin(ua) {
+  ua = getBrowserUA(ua);
+  return /\bMicroMessenger\//.test(ua);
+}
+
+/**
+ * 获取指定 useragent 字符串中的微信版本号。
+ * @since 1.6.0
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {string} 微信版本号，不符合微信特征时返回空字符串。
+ */
+export function weixinVersion(ua) {
+  ua = getBrowserUA(ua);
+  return /\bMicroMessenger\/([\d.]+)/.test(ua) ? RegExp.$1 : '';
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合企业微信客户端特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 字符串是否符合企业微信客户端特征。
+ */
+export function isWorkWeixin(ua) {
+  ua = getBrowserUA(ua);
+  return isWeixin(ua) &amp;&amp; /\bwxwork\b/.test(ua);
+}
+
+/**
+ * 获取指定 useragent 字符串中的 IE 浏览器版本号。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {string} IE 浏览器版本号，不符合该浏览器特征时返回空字符串。
+ */
+export function ieVersion(ua) {
+  ua = getBrowserUA(ua);
+  return /\bMSIE\s(\d+)/i.test(ua) || /\bTrident\/.*;\srv:(\d+)/.test(ua) ?
+    RegExp.$1 : '';
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合安卓系统特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合安卓系统特征。
+ */
+export function isAndroid(ua) {
+  ua = getBrowserUA(ua);
+  return /\bAndroid\b/.test(ua);
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合 iOS 系统特征。
+ * @author luoliquan
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合 iOS 系统特征。
+ */
+export function isIOS(ua) {
+  ua = getBrowserUA(ua);
+  return /\b(?:iPad|iPod|iPhone)\b/.test(ua);
+}
+
+/**
+ * 获取指定 useragent 字符串中的 iOS 版本号。
+ * @since 1.6.0
+ * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {string} iOS 版本号，不符合该系统特征时返回空字符串。
+ */
+export function iOSVersion(ua) {
+  ua = getBrowserUA(ua);
+  return /\bOS(?:\s([\d_.]+))?\slike\sMac\sOS\sX\b/.test(ua) ?
+    RegExp.$1.replace(/_/g, '.') : '';
+}
+
+/**
+ * 检查指定 useragent 字符串是否符合华为或荣耀设备特征。
+ * @since 1.6.0
+ * @param {string} ua useragent 字符串，浏览器环境下默认为 navigator.userAgent。
+ * @return {boolean} 是否符合华为或荣耀设备特征。
+ */
+export function isHuawei(ua) {
+  ua = getBrowserUA(ua);
+  return /\b(?:huawei|honor)/i.test(ua);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-boolean.html">boolean</a></li><li><a href="module-browser.html">browser</a></li><li><a href="module-cookie.html">cookie</a></li><li><a href="module-countdown.html">countdown</a></li><li><a href="module-date.html">date</a></li><li><a href="module-lang.html">lang</a></li><li><a href="module-net.html">net</a></li><li><a href="module-polling.html">polling</a></li><li><a href="module-querystring.html">querystring</a></li><li><a href="module-storage.html">storage</a></li><li><a href="module-string.html">string</a></li><li><a href="module-validate.html">validate</a></li></ul><h3>Classes</h3><ul><li><a href="module-countdown.Countdown.html">Countdown</a></li><li><a href="module-polling.Polling.html">Polling</a></li><li><a href="module-storage.StorageWrap.html">StorageWrap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Apr 27 2022 10:51:30 GMT+0800 (中国标准时间)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
