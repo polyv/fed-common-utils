@@ -1,6 +1,6 @@
 {
   "name": "@polyv/utils",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "description": "Utility functions of Polyv frontend development.",
   "keywords": [
     "polyv",
@@ -48,7 +48,7 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "glob": "^7.1.6",
     "html-webpack-plugin": "^4.5.0",
-    "jsdoc": "^3.6.6",
+    "jsdoc": "^3.6.10",
     "regenerator-runtime": "^0.13.7",
     "rimraf": "^3.0.2",
     "webpack": "^4.44.2",
