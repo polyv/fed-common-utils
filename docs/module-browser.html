@@ -264,7 +264,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line64">line 64</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -438,7 +438,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line98">line 98</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line122">line 122</a>
     </li></ul></dd>
     
 
@@ -616,7 +616,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line76">line 76</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -778,7 +778,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line110">line 110</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -956,7 +956,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line87">line 87</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line111">line 111</a>
     </li></ul></dd>
     
 
@@ -1014,7 +1014,7 @@
     
 
     
-    <h4 class="name" id=".isMobile"><span class="type-signature">(static) </span>isMobile<span class="signature">(ua<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id=".isMobile"><span class="type-signature">(static) </span>isMobile<span class="signature">(ua<span class="signature-attributes">opt</span>, features<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -1022,7 +1022,7 @@
 
 
 <div class="description">
-    检查指定 useragent 字符串是否符合移动端设备特征。
+    检查当前设备是否移动设备。
 </div>
 
 
@@ -1090,6 +1090,133 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>features</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">浏览器特征。
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>platform</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">运行平台。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxTouchPoints</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">最大触点数。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1134,7 +1261,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line20">line 20</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -1163,7 +1290,7 @@
 
         
 <div class="param-desc">
-    是否符合移动端设备特征。
+    当前设备是否移动设备。
 </div>
 
 
@@ -1183,6 +1310,15 @@
     
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>isMobile(navigator.userAgent);
+isMobile(navigator.userAgent, {
+  platform: navigator.platform,
+  maxTouchPoints: navigator.maxTouchPoints
+});</code></pre>
 
 
 
@@ -1312,7 +1448,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line31">line 31</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -1490,7 +1626,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line53">line 53</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -1664,7 +1800,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line42">line 42</a>
+        <a href="browser.js.html">browser.js</a>, <a href="browser.js.html#line66">line 66</a>
     </li></ul></dd>
     
 
@@ -1738,7 +1874,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Thu Jul 08 2021 18:18:05 GMT+0800 (GMT+08:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Apr 27 2022 10:51:30 GMT+0800 (中国标准时间)
 </footer>
 
 <script> prettyPrint(); </script>

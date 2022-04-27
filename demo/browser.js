@@ -20,6 +20,21 @@ QUnit.test('isMobile', (assert) => {
   assert.strictEqual(isMobile(UA_PC_WORK_WEIXIN), false);
   assert.strictEqual(isMobile(UA_HUAWEI_ADR_QQ), true);
   assert.strictEqual(isMobile(UA_IPHONE_WEIXIN), true);
+  assert.strictEqual(isMobile(UA_PC_IE, {
+    platform: 'MacIntel',
+    maxTouchPoints: 0
+  }), false);
+  assert.strictEqual(isMobile(UA_PC_IE, {
+    platform: 'MacIntel',
+    maxTouchPoints: 2
+  }), true);
+  assert.strictEqual(isMobile(UA_PC_IE, {
+    platform: 'Android'
+  }), true);
+  console.info('isMobile: ' + isMobile(navigator.userAgent, {
+    platform: navigator.platform,
+    maxTouchPoints: navigator.maxTouchPoints
+  }));
 });
 
 QUnit.test('isWeixin', (assert) => {

@@ -90,4 +90,4 @@ import Countdown from '@utils/countdown';
 - Android >= 5 (未测试更低版本)
 
 ## 其他
-- [API 文档](https://polyv.github.io/fed-common-utils/index.html)
+- [API 文档](https://polyv.github.io/fed-common-utils/1.x/index.html)

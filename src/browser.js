@@ -12,14 +12,38 @@ function getBrowserUA(ua) {
 }
 
 /**
- * 检查指定 useragent 字符串是否符合移动端设备特征。
+ * 检查当前设备是否移动设备。
  * @author luoliquan
  * @param {string} [ua] useragent 字符串，浏览器环境下默认为 navigator.userAgent。
- * @return {boolean} 是否符合移动端设备特征。
+ * @param {Object} [features] 浏览器特征。
+ *   @param {string} [features.platform] 运行平台。
+ *   @param {string} [features.maxTouchPoints] 最大触点数。
+ * @return {boolean} 当前设备是否移动设备。
+ * @example
+ * isMobile(navigator.userAgent);
+ * isMobile(navigator.userAgent, {
+ *   platform: navigator.platform,
+ *   maxTouchPoints: navigator.maxTouchPoints
+ * });
  */
-export function isMobile(ua) {
+export function isMobile(ua, features) {
   ua = getBrowserUA(ua);
-  return /mobile|android/i.test(ua) || !/\b(Windows\sNT|Macintosh|Linux)\b/.test(ua);
+  let result = /mobile|android/i.test(ua) ||
+    !/\b(Windows\sNT|Macintosh|Linux)\b/.test(ua);
+
+  if (features && 'platform' in features) {
+    result = result || [
+      'Android', 'iPhone', 'iPad', 'iPod'
+    ].indexOf(features.platform) !== -1;
+
+    if ('maxTouchPoints' in features) {
+      result = result || (
+        features.platform === 'MacIntel' && features.maxTouchPoints > 1
+      );
+    }
+  }
+
+  return result;
 }
 
 /**
