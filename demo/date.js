@@ -26,26 +26,32 @@ QUnit.test('formatDate', (assert) => {
 
 QUnit.test('formatSeconds', (assert) => {
   assert.strictEqual(
-    formatSeconds(3682),
-    '01:01:22',
+    formatSeconds(7282),
+    '121:22',
     '默认调用'
   );
 
   assert.strictEqual(
-    formatSeconds(3682, { digits: 1 }),
-    '1:1:22',
-    '每段最少一位'
+    formatSeconds(3682, { segments: 3 }),
+    '01:01:22',
+    '三段两位'
   );
 
   assert.strictEqual(
-    formatSeconds(82, { segments: 3 }),
-    '00:01:22',
-    '强制三段'
+    formatSeconds(3682, { segments: 3, digits: 1 }),
+    '1:1:22',
+    '三段一位'
   );
 
   assert.strictEqual(
     formatSeconds(82, { segments: 2 }),
     '01:22',
-    '自适应两段'
+    '两段两位'
+  );
+
+  assert.strictEqual(
+    formatSeconds(82, { segments: 2, digits: 1 }),
+    '1:22',
+    '两段一位'
   );
 });

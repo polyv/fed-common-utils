@@ -51,10 +51,10 @@ export function formatDate(date, formation) {
  *   @param {number} [options.digits=2] 每一段数字的最小位数，不足位数时补 0。
  * @return {string} 格式化结果。
  * @example
- * formatSeconds(3682); // '01:01:22'
+ * formatSeconds(3682); // '61:22'
  * formatSeconds(82); // '01:22'
  * formatSeconds(82, { segments: 3 }); // '00:01:22'
- * formatSeconds(3682, { digits: 1 }); // '1:1:22'
+ * formatSeconds(3682, { segments: 3, digits: 1 }); // '1:1:22'
  */
 export function formatSeconds(secs, options) {
   secs = Number(secs);
@@ -75,18 +75,15 @@ export function formatSeconds(secs, options) {
   // 需要补多少个 0
   const zeros = (new Array(options.digits + 1).join('0'));
 
-  const result = [
-    60 * 60,
-    60,
-    1
-  ].map((num) => {
+  const steps = [60, 1];
+  if (options.segments === 3) {
+    steps.unshift(60 * 60);
+  }
+
+  return steps.map((num) => {
     const subResult = Math.floor(secs / num);
     const len = subResult.toString().length;
     secs = secs % num;
     return (zeros + subResult).slice(-Math.max(len, options.digits));
-  });
-
-  if (options.segments < 3 && !Number(result[0])) { result.shift(); }
-
-  return result.join(':');
+  }).join(':');
 }
