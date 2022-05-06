@@ -49,7 +49,7 @@ export interface FormatSecondsOptions {
   /**
    * 段数，2 或者 3。  
    * 为 3 时，格式化样式为「时:分:秒」。
-   * 为 2 时，如果小时为 0，则格式化样式为「分:秒」，否则与段数为 3 时一致。
+   * 为 2 时，格式化样式为「分:秒」。
    */
   segments?: number;
   /**
@@ -65,10 +65,10 @@ export interface FormatSecondsOptions {
  * @return 格式化结果。
  * @example
  * ```javascript
- * formatSeconds(3682); // '01:01:22'
+ * formatSeconds(3682); // '61:22'
  * formatSeconds(82); // '01:22'
  * formatSeconds(82, { segments: 3 }); // '00:01:22'
- * formatSeconds(3682, { digits: 1 }); // '1:1:22'
+ * formatSeconds(3682, { segments: 3, digits: 1 }); // '1:1:22'
  * ```
  */
 export function formatSeconds(
@@ -93,18 +93,19 @@ export function formatSeconds(
   // 需要补多少个 0
   const zeros = new Array(digits + 1).join('0');
 
-  const result = [
-    60 * 60,
+  // 每段除以多少秒
+  const steps = [
     60,
     1
-  ].map((num) => {
+  ];
+  if (options.segments === 3) {
+    steps.unshift(60 * 60);
+  }
+
+  return steps.map((num) => {
     const subResult = Math.floor(secs / num);
     const len = subResult.toString().length;
     secs = secs % num;
     return (zeros + subResult).slice(-Math.max(len, digits));
-  });
-
-  if (segments < 3 && !Number(result[0])) { result.shift(); }
-
-  return result.join(':');
+  }).join(':');
 }

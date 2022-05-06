@@ -20,7 +20,7 @@ export interface FormatSecondsOptions {
     /**
      * 段数，2 或者 3。
      * 为 3 时，格式化样式为「时:分:秒」。
-     * 为 2 时，如果小时为 0，则格式化样式为「分:秒」，否则与段数为 3 时一致。
+     * 为 2 时，格式化样式为「分:秒」。
      */
     segments?: number;
     /**
@@ -35,10 +35,10 @@ export interface FormatSecondsOptions {
  * @return 格式化结果。
  * @example
  * ```javascript
- * formatSeconds(3682); // '01:01:22'
+ * formatSeconds(3682); // '61:22'
  * formatSeconds(82); // '01:22'
  * formatSeconds(82, { segments: 3 }); // '00:01:22'
- * formatSeconds(3682, { digits: 1 }); // '1:1:22'
+ * formatSeconds(3682, { segments: 3, digits: 1 }); // '1:1:22'
  * ```
  */
 export declare function formatSeconds(secs: number, options?: FormatSecondsOptions): string;
