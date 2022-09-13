@@ -86,7 +86,7 @@ import { Countdown } from '@utils/countdown';
 - Android >= 5 (未测试更低版本)
 
 ## 其他
-- [API 文档（1.6.3）](https://polyv.github.io/fed-common-utils/1.6.3/index.html)
+- [API 文档（1.x）](https://polyv.github.io/fed-common-utils/1.x/index.html)
 - [API 文档（2.x）](https://polyv.github.io/fed-common-utils/2.x/index.html)
 
 ## 2.0.0 版本的变更
