@@ -24,10 +24,18 @@ export function boolToYN(value: boolean): YOrN {
 /**
  * Y 或者 N 转换为布尔值。
  * @param value Y 或者 N。
+ * @return 布尔值。
+ */
+export function ynToBool(value: YOrN): boolean;
+/**
+ * Y 或者 N 转换为布尔值。
+ * @param value Y 或 N 为合法值，其他为非法值。
  * @param defaultValue 当 value 为非法值时的默认值。
  * @return 布尔值。
  */
-export function ynToBool(value: YOrN, defaultValue?: YOrN): boolean {
+export function ynToBool(value: unknown, defaultValue?: YOrN): boolean;
+
+export function ynToBool(value: unknown, defaultValue?: YOrN): boolean {
   let upperValue = String(value).toUpperCase();
   if (upperValue !== 'Y' && upperValue !== 'N') {
     if (defaultValue != null) {

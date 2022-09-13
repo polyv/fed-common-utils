@@ -15,10 +15,16 @@ export declare function boolToYN(value: boolean): YOrN;
 /**
  * Y 或者 N 转换为布尔值。
  * @param value Y 或者 N。
+ * @return 布尔值。
+ */
+export declare function ynToBool(value: YOrN): boolean;
+/**
+ * Y 或者 N 转换为布尔值。
+ * @param value Y 或 N 为合法值，其他为非法值。
  * @param defaultValue 当 value 为非法值时的默认值。
  * @return 布尔值。
  */
-export declare function ynToBool(value: YOrN, defaultValue?: YOrN): boolean;
+export declare function ynToBool(value: unknown, defaultValue?: YOrN): boolean;
 /**
  * 检查指定数组元素的值是否都为 Y。
  * @param values 指定数组。
