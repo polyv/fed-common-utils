@@ -33,7 +33,7 @@ export function ynToBool(value: YOrN): boolean;
  * @param defaultValue 当 value 为非法值时的默认值。
  * @return 布尔值。
  */
-export function ynToBool(value: unknown, defaultValue?: YOrN): boolean;
+export function ynToBool(value: unknown, defaultValue: YOrN): boolean;
 
 export function ynToBool(value: unknown, defaultValue?: YOrN): boolean {
   let upperValue = String(value).toUpperCase();

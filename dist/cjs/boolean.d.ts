@@ -24,7 +24,7 @@ export declare function ynToBool(value: YOrN): boolean;
  * @param defaultValue 当 value 为非法值时的默认值。
  * @return 布尔值。
  */
-export declare function ynToBool(value: unknown, defaultValue?: YOrN): boolean;
+export declare function ynToBool(value: unknown, defaultValue: YOrN): boolean;
 /**
  * 检查指定数组元素的值是否都为 Y。
  * @param values 指定数组。
