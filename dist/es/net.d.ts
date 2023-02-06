@@ -21,7 +21,7 @@ export declare function startsWithProtocol(str: string, protocols?: string[]): b
 /**
  * 替换目标字符串中的 URL 协议。如果字符串中不包含协议，则加上协议。
  * @param url 目标字符串。
- * @param protocol 协议。
+ * @param protocol 协议（不含冒号和斜杠）。
  * @return 替换结果。
  * @example
  * ```javascript
@@ -30,3 +30,14 @@ export declare function startsWithProtocol(str: string, protocols?: string[]): b
  * ```
  */
 export declare function changeProtocol(url: string, protocol: string): string;
+/**
+ * 标准化（如果当前页面协议为 http，则为 http，否则为 https）目标字符串中的 URL 协议。
+ * @param url 目标字符串。
+ * @returns 标准化结果。
+ * ```javascript
+ * // 当前页面协议为 http 时，结果是 'http://abc.com'
+ * // 否则结果是 'https://abc.com'
+ * normalizeProtocol('http://abc.com');
+ * ```
+ */
+export declare function normalizeProtocol(url: string): string;
