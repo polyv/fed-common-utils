@@ -17,7 +17,7 @@ export function supportWebP(): boolean {
 }
 
 /**
- * 检查当前浏览器是否支持 AVIF 格式。
+ * 检查当前浏览器是否支持 AVIF 格式（注意，本函数是异步函数）。
  * @returns 当前浏览器是否支持 AVIF 格式。
  */
 export function supportAVIF(): Promise<boolean> {
@@ -55,22 +55,30 @@ export interface IOSSCompressOptions {
 }
 
 /**
- * 给指定图片地址追加 OSS 图片压缩参数。
- * @param url 指定图片地址。
+ * 如果指定图片 URL 的域名是 OSS 域名，则追加 OSS 图片压缩参数。
+ * @param url 指定图片 URL。
  * @param options 压缩选项。
- * @returns 处理后的图片地址。
+ * @returns 处理后的图片 URL。
+ * @example
+ * ```javascript
+ * ossCompress(url, {
+ *   width: 300,
+ *   allowWebp: true
+ * });
+ * ```
  */
 export function ossCompress(
   url: string, options: IOSSCompressOptions
 ): string {
   const a = document.createElement('a');
   a.href = url;
-  const host = a.host.toLowerCase();
   const search = a.search;
+  // IE 下 https 的 url，host 包含端口号，因此要取 hostname
+  const hostname = a.hostname.toLowerCase();
 
   // 仅处理特定域名以及没有进行过 OSS 处理的 URL
   if (
-    host !== 'liveimages.videocc.net' ||
+    hostname !== 'liveimages.videocc.net' ||
     /(?:\?|&)x-oss-process(?:=|&|$)/.test(search)
   ) {
     return url;

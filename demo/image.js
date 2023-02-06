@@ -3,8 +3,12 @@ import { supportWebP, supportAVIF, ossCompress } from '@/image';
 const QUnit = window.QUnit;
 
 QUnit.test('support', async (assert) => {
-  assert.strictEqual(typeof supportWebP(), 'boolean');
-  assert.strictEqual(typeof await supportAVIF(), 'boolean');
+  const webpResult = supportWebP();
+  const avifResult = await supportAVIF();
+  console.info('Support WebP: ' + webpResult);
+  console.info('Support AVIF: ' + avifResult);
+  assert.strictEqual(typeof webpResult, 'boolean');
+  assert.strictEqual(typeof avifResult, 'boolean');
 });
 
 QUnit.test('ossCompress', (assert) => {
