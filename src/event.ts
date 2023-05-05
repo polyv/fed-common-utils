@@ -32,7 +32,7 @@
  *   boo: number;
  * };
  * 
- * const emitter = new EventEmitter<TestEventParams>();
+ * const emitter = new EventEmitter<EventParams>();
  * 
  * emitter.on('foo', (e) => {}); // 'e' has inferred type 'string'
  * 
@@ -70,7 +70,7 @@ export type EventRelationsType = Record<EventType, unknown>;
 /**
  * 事件监听方式
  */
-export type EventWay = 'normal' | 'once';
+type EventWay = 'normal' | 'once';
 
 /**
  * 事件回调函数类型
@@ -89,7 +89,7 @@ interface EventStoreItem<Relations extends EventRelationsType, E extends EventTy
 }
 
 type EventStore<Relations extends EventRelationsType> = {
-  [Key in EventType]?: Set<EventStoreItem<Relations, EventType>>;
+  [Key in EventType]?: Array<EventStoreItem<Relations, EventType>>;
 };
 
 export class EventEmitter<
@@ -116,20 +116,16 @@ export class EventEmitter<
       return;
     }
 
-    let storeList: Set<EventStoreItem<Relations, E>> = this.__eventStore[event] as Set<
-      EventStoreItem<Relations, E>
-    >;
-    if (!(storeList instanceof Set)) {
-      storeList = new Set();
+    let storeList = this.__eventStore[event] as Array<EventStoreItem<Relations, E>> | undefined;
+    if (!storeList) {
+      storeList = [];
     }
 
-    if (storeList) {
-      storeList.add({
-        type,
-        handler,
-        callbackHandler: handler.bind(context),
-      });
-    }
+    storeList.push({
+      type,
+      handler,
+      callbackHandler: handler.bind(context),
+    });
 
     this.__eventStore[event] = storeList as EventStore<Relations>[E];
   }
@@ -168,16 +164,15 @@ export class EventEmitter<
    * @param handler 回调函数
    */
   public off<E extends Events>(event: E, handler: unknown): void {
-    const storeList = this.__eventStore[event];
-    if (!(storeList instanceof Set)) {
+    let storeList = this.__eventStore[event];
+    if (!storeList) {
       return;
     }
 
-    storeList.forEach(data => {
-      if (data.handler === handler) {
-        storeList.delete(data);
-      }
+    storeList = storeList.filter(data => {
+      return data.handler !== handler;
     });
+    this.__eventStore[event] = storeList;
   }
 
   /**
@@ -191,8 +186,8 @@ export class EventEmitter<
     event: undefined extends Relations[E] ? E : never,
     params?: Relations[E],
   ): void {
-    const storeList = this.__eventStore[event] as Set<EventStoreItem<Relations, E>>;
-    if (!(storeList instanceof Set)) {
+    const storeList = this.__eventStore[event] as Array<EventStoreItem<Relations, E>>;
+    if (!storeList) {
       return;
     }
 
