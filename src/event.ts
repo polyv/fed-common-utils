@@ -88,8 +88,8 @@ interface EventStoreItem<Relations extends EventRelationsType, E extends EventTy
   callbackHandler: EventHandler<Relations, E>;
 }
 
-type EventStore<Relations extends EventRelationsType> = {
-  [Key in EventType]?: Array<EventStoreItem<Relations, EventType>>;
+type EventStore<Relations extends EventRelationsType, E extends EventType> = {
+  [Key in E]?: Array<EventStoreItem<Relations, Key>>;
 };
 
 export class EventEmitter<
@@ -100,7 +100,7 @@ export class EventEmitter<
    * 事件回调存储器
    * @ignore
    */
-  private __eventStore: EventStore<Relations> = {};
+  private __eventStore: EventStore<Relations, Events> = {};
 
   /**
    * 添加监听事件
@@ -116,7 +116,7 @@ export class EventEmitter<
       return;
     }
 
-    let storeList = this.__eventStore[event] as Array<EventStoreItem<Relations, E>> | undefined;
+    let storeList = this.__eventStore[event];
     if (!storeList) {
       storeList = [];
     }
@@ -127,7 +127,7 @@ export class EventEmitter<
       callbackHandler: handler.bind(context),
     });
 
-    this.__eventStore[event] = storeList as EventStore<Relations>[E];
+    this.__eventStore[event] = storeList;
   }
 
   /**
