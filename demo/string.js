@@ -2,6 +2,7 @@ import {
   strLen,
   cutStr,
   escapeHTML,
+  unescapeHTML,
   removeTags,
   nl2br,
   randomStr,
@@ -45,9 +46,17 @@ QUnit.test('cutStr', (assert) => {
   );
 });
 
+const beforeEscape = '<abc a="1" b=\'&2\'>';
+const afterEscape = '&lt;abc a=&quot;1&quot; b=&#39;&amp;2&#39;&gt;';
+
 QUnit.test('escapeHTML', (assert) => {
   assert.strictEqual(escapeHTML(null), null, 'null');
-  assert.strictEqual(escapeHTML('<abc a="1" b=\'&2\'>'), '&lt;abc a=&quot;1&quot; b=&#39;&amp;2&#39;&gt;');
+  assert.strictEqual(escapeHTML(beforeEscape), afterEscape);
+});
+
+QUnit.test('unescapeHTML', (assert) => {
+  assert.strictEqual(unescapeHTML(null), null, 'null');
+  assert.strictEqual(unescapeHTML(afterEscape), beforeEscape);
 });
 
 QUnit.test('nl2br', (assert) => {

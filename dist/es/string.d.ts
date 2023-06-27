@@ -60,6 +60,12 @@ export declare function cutStr(str: string, length: number, options?: ICutStrOpt
  */
 export declare function escapeHTML(str: string): string;
 /**
+ * 把指定字符串中的 HTML 实体替换成 HTML 预留字符。
+ * @param str 指定字符串。
+ * @return 替换后的字符串。
+ */
+export declare function unescapeHTML(str: string): string;
+/**
  * 移除指定字符串中的 HTML 标签。
  * @param str 指定字符串。
  * @return 处理后的字符串。

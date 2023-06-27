@@ -106,6 +106,18 @@ export function cutStr(
 }
 
 
+// 生成 HTML 预留字符与 HTML 实体的映射
+const htmlChars = ['"', '\'', '&', '<', '>'];
+const htmlEntities = ['&quot;', '&#39;', '&amp;', '&lt;', '&gt;'];
+const charsToEntities: Record<string, string> = Object.create(null);
+const entitiesToChars: Record<string, string> = Object.create(null);
+htmlChars.forEach((item, i) => {
+  charsToEntities[item] = htmlEntities[i];
+  entitiesToChars[htmlEntities[i]] = item;
+});
+const reHTMLChars = new RegExp('[' + htmlChars.join('') + ']', 'g');
+const reHTMLEntities = new RegExp('(' + htmlEntities.join('|') + ')', 'g');
+
 /**
  * 把指定字符串中的 HTML 预留字符替换成 HTML 实体。
  * @param str 指定字符串。
@@ -113,15 +125,20 @@ export function cutStr(
  */
 export function escapeHTML(str: string): string {
   if (str == null) { return str; }
-  const map: Record<string, string> = {
-    '"': '&quot;',
-    '\'': '&#39;',
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;'
-  };
-  return String(str).replace(/["'&<>]/g, (match) => {
-    return map[match];
+  return String(str).replace(reHTMLChars, (match) => {
+    return charsToEntities[match];
+  });
+}
+
+/**
+ * 把指定字符串中的 HTML 实体替换成 HTML 预留字符。
+ * @param str 指定字符串。
+ * @return 替换后的字符串。
+ */
+export function unescapeHTML(str: string): string {
+  if (str == null) { return str; }
+  return String(str).replace(reHTMLEntities, (match) => {
+    return entitiesToChars[match];
   });
 }
 
@@ -135,7 +152,6 @@ export function removeTags(str: string): string {
   if (str == null) { return ''; }
   return String(str).replace(/<.+?>/g, '');
 }
-
 
 /**
  * 把指定字符串中的换行符替换成 &lt;br /&gt;。
