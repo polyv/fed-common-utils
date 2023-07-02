@@ -17,6 +17,9 @@
   "files": [
     "dist/**/*"
   ],
+  "miniprogram": "./dist/es",
+  "main": "./dist/es/index.js",
+  "types": "./dist/es/index.d.ts",
   "author": "Polyv frontend team",
   "license": "MIT",
   "repository": {
