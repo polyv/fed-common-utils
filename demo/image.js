@@ -1,4 +1,9 @@
-import { supportWebP, supportAVIF, ossCompress } from '@/image';
+import {
+  supportWebP,
+  supportAVIF,
+  ossCompress,
+  compressHTMLImgs
+} from '@/image';
 
 const QUnit = window.QUnit;
 
@@ -41,5 +46,19 @@ QUnit.test('ossCompress', (assert) => {
       allowAVIF: true
     }),
     URL + '?x-oss-process=image/resize,mfit,w_100,h_100,limit_1/format,avif'
+  );
+});
+
+QUnit.test('compressHTMLImgs', (assert) => {
+  const htmlIn = 'abc<img src="https://liveimages.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg" />def';
+  const htmlOut = 'abc<img src="https://liveimages.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg?x-oss-process=image/resize,mfit,w_100,h_100,limit_1/format,avif" data-src="https://liveimages.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg" />def';
+  assert.strictEqual(
+    compressHTMLImgs(htmlIn, {
+      width: 100,
+      height: 100,
+      allowWebP: true,
+      allowAVIF: true
+    }),
+    htmlOut
   );
 });
