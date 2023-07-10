@@ -1,6 +1,6 @@
 {
   "name": "@polyv/utils",
-  "version": "2.3.0-beta.1",
+  "version": "2.4.0-beta.1",
   "description": "Utility functions of Polyv frontend development.",
   "keywords": [
     "polyv",
@@ -11,14 +11,12 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.dev.config.js",
     "gen-doc": "rimraf ./docs/2.x && typedoc --options ./typedoc.js --tsconfig ./src/tsconfig.json",
     "lint": "eslint ./src/*.ts",
-    "compress": "node ./build/compress-js",
-    "build": "npm run lint && rimraf ./dist/** && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.es5.json && npm run compress"
+    "after-tsc": "node ./build/after-tsc",
+    "build": "npm run lint && rimraf ./dist/** && tsc -p ./src/tsconfig.json && tsc -p ./src/tsconfig.es5.json && npm run after-tsc"
   },
-  "files": [
-    "dist/**/*"
-  ],
   "author": "Polyv frontend team",
   "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/polyv/fed-common-utils"
@@ -60,5 +58,6 @@
     "webpack-dev-server": "^3.11.3",
     "webpack-merge": "^5.8.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "miniprogram": "./"
 }
