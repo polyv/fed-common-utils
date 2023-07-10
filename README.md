@@ -8,7 +8,7 @@
 npm install @polyv/utils@next
 ```
 
-NPM 包同时提供了 ES 模块以及 CommonJS 模块，分别位于 `dist/es` 和 `dist/cjs` 两个文件夹。它们使用上的区别和优缺点在于：
+NPM 包同时提供了 ES 模块以及 CommonJS 模块，分别位于 `es` 和 `cjs` 两个文件夹。它们使用上的区别和优缺点在于：
 
 | 模块类型 | Tree shaking | Babel 编译 |
 | --- | --- | --- |
@@ -30,7 +30,7 @@ module.exports = {
     resolve: {
       alias: {
         // 配置别名缩短引用路径
-        '@utils': path.resolve(__dirname, './node_modules/@polyv/utils/dist/es')
+        '@utils': path.resolve(__dirname, './node_modules/@polyv/utils/es')
       }
     }
   },
@@ -67,7 +67,7 @@ module.exports = {
   extend(config, ctx) {
     // 配置别名缩短引用路径
     config.resolve.alias['@utils'] = path.resolve(
-      __dirname, './node_modules/@polyv/utils/dist/es'
+      __dirname, './node_modules/@polyv/utils/es'
     );
   }
 };
@@ -105,4 +105,4 @@ import { Countdown } from '@utils/countdown';
   - string 模块的 `cutStr`、`strLen` 两个方法的选项，不再支持 `mode` 属性。
   - string 模块新增 `uuidV4` 方法。
   - validate 模块的 `isPhoneNO` 方法改名为 `isChsPhoneNO`。
-- CommonJS 模块的路径是 dist/cjs（原来是 dist），ES 模块的路径是 dist/es（原来是 src）。
+- CommonJS 模块的路径是 `cjs`（原来是 dist），ES 模块的路径是 `es`（原来是 src）。
