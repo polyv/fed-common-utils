@@ -1,0 +1,25 @@
+{
+  "name": "@polyv/utils",
+  "version": "2.4.0-beta.1",
+  "description": "Utility functions of Polyv frontend development.",
+  "keywords": [
+    "polyv",
+    "utility",
+    "保利威"
+  ],
+  "author": "Polyv frontend team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polyv/fed-common-utils"
+  },
+  "bugs": {
+    "url": "https://github.com/polyv/fed-common-utils/issues"
+  },
+  "homepage": "https://polyv.github.io/fed-common-utils/index.html",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {},
+  "miniprogram": "./"
+}
