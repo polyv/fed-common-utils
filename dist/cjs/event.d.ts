@@ -59,7 +59,7 @@
 /**
  * 事件类型
  */
-export declare type EventType = string | symbol;
+export declare type EventType = number | string | symbol;
 /**
  * 事件参数关系类型
  */
