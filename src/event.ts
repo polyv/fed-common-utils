@@ -60,7 +60,7 @@
 /**
  * 事件类型
  */
-export type EventType = string | symbol;
+export type EventType = number | string | symbol;
 
 /**
  * 事件参数关系类型
