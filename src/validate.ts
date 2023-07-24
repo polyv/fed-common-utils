@@ -18,6 +18,16 @@ export function isChsPhoneNO(str: string): boolean {
 }
 
 /**
+ * 检查目标字符串是否手机号。
+ * @param str 目标字符串。
+ * @param areaCode 区号，例如中国为 +86。
+ * @returns 目标字符串是否手机号。
+ */
+export function isPhoneNO(str: string, areaCode = '+86'): boolean {
+  return areaCode === '+86' ? isChsPhoneNO(str) : /^\d{5,20}$/.test(str);
+}
+
+/**
  * 检查目标字符串是否电子邮箱地址。
  * @param str 目标字符串。
  * @return 目标字符串是否电子邮箱地址。
