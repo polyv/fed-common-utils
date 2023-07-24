@@ -86,7 +86,7 @@ export function ossCompress(
 
   let ossProccess = '';
   if (options.width != null || options.height != null) {
-    ossProccess += '/resize,mfit';
+    ossProccess += '/resize';
     if (options.width) { ossProccess += ',w_' + options.width; }
     if (options.height) { ossProccess += ',h_' + options.height; }
     ossProccess += ',limit_1';
