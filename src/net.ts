@@ -58,6 +58,20 @@ export function changeProtocol(url: string, protocol: string): string {
 }
 
 /**
+ * 移除指定 URL 中的协议头。
+ * @param url 指定 URL。
+ * @returns 处理后的字符串。
+ * @example
+ * ```javascript
+ * removeProtocol('https://abc.com/abc.html'); // 'abc.com/abc.html'
+ * removeProtocol('abc.com/abc.html'); // 'abc.com/abc.html'
+ * ```
+ */
+export function removeProtocol(url: string): string {
+  return url.replace(reProtocol, '');
+}
+
+/**
  * 标准化（如果当前页面协议为 http，则为 http，否则为 https）目标字符串中的 URL 协议。
  * @param url 目标字符串。
  * @returns 标准化结果。
