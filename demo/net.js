@@ -1,6 +1,7 @@
 import {
   startsWithProtocol,
   changeProtocol,
+  removeProtocol,
   normalizeProtocol
 } from '@/net';
 
@@ -58,5 +59,17 @@ QUnit.test('changeProtocol', (assert) => {
     normalizeProtocol(HTTPS_URL),
     window.location.protocol === 'http:' ? HTTP_URL : HTTPS_URL,
     '标准化页面协议'
+  );
+});
+
+QUnit.test('removeProtocol', (assert) => {
+  assert.strictEqual(
+    removeProtocol('https://abc.com/abc.html'),
+    'abc.com/abc.html'
+  );
+
+  assert.strictEqual(
+    removeProtocol('abc.com/abc.html'),
+    'abc.com/abc.html'
   );
 });

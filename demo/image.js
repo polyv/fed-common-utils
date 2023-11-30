@@ -17,7 +17,7 @@ QUnit.test('support', async (assert) => {
 });
 
 QUnit.test('ossCompress', (assert) => {
-  const URL = 'https://liveimages.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg';
+  const URL = 'https://vod-assets.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg';
   assert.strictEqual(
     ossCompress(URL, {
       allowWebP: true,
