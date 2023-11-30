@@ -78,7 +78,7 @@ export function ossCompress(
 
   // 仅处理特定域名以及没有进行过 OSS 处理的 URL
   if (
-    hostname !== 'liveimages.videocc.net' ||
+    ['liveimages.videocc.net', 'vod-assets.videocc.net'].indexOf(hostname) === -1 ||
     /(?:\?|&)x-oss-process(?:=|&|$)/.test(search)
   ) {
     return url;
