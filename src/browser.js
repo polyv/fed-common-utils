@@ -29,7 +29,7 @@ function getBrowserUA(ua) {
 export function isMobile(ua, features) {
   ua = getBrowserUA(ua);
   let result = /mobile|android/i.test(ua) ||
-    !/\b(Windows\sNT|Macintosh|Linux)\b/.test(ua);
+    !/\b(Windows\sNT|Macintosh|x86(_(32|64))?|amd64|i[356]86)\b/.test(ua);
 
   if (features && 'platform' in features) {
     result = result || [
