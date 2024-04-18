@@ -19,7 +19,10 @@ export function isMobile() {
  */
 export function hasMobileFeature() {
   const platform = navigator.platform;
-  if ('onorientationchange' in window) {
+  if (
+    'onorientationchange' in window &&
+    typeof window.orientation === 'number'
+  ) {
     return true;
   } else if (/^(iPhone|iPod|iPad)/.test(platform)) {
     return true;
