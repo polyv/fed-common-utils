@@ -91,8 +91,8 @@ export declare function randomStr(length: number, prefix?: string): string;
 export declare function uuidV4(): string;
 /**
  * 版本号对比。
- * @param versionA 待比较版本 A。
- * @param versionB 待比较版本 B。
+ * @param verA 待比较版本 A。
+ * @param verB 待比较版本 B。
  * @return 大于 0 时，表示版本 A 大于版本 B；
  *   小于 0 时，表示版本 B 大于版本 A；
  *   等于 0 时，表示两个版本号一致。

@@ -52,9 +52,9 @@ export function changeProtocol(url: string, protocol: string): string {
   if (!reProtocol.test(protocol)) {
     protocol += '://';
   }
-  return startsWithProtocol(url) ?
-    url.replace(reProtocol, protocol) :
-    protocol + url;
+  return startsWithProtocol(url)
+    ? url.replace(reProtocol, protocol)
+    : protocol + url;
 }
 
 /**

@@ -13,5 +13,7 @@ module.exports = {
   }),
   out: path.resolve(__dirname, './docs/2.x'),
   excludeInternal: true,
-  listInvalidSymbolLinks: true
+  validation: {
+    invalidLink: true
+  }
 };

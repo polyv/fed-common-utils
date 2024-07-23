@@ -96,7 +96,7 @@ export class Countdown {
 
   /**
    * 倒计时类构造函数。
-   * @param secs 倒计时总秒数。
+   * @param totalSecs 倒计时总秒数。
    * @param cb 剩余时长的回调函数，正常情况下大概 1 秒回调一次。
    */
   constructor(totalSecs: number, cb: ICountdownCallback) {

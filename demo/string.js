@@ -18,7 +18,7 @@ QUnit.test('strLen', (assert) => {
   assert.strictEqual(strLen('abc测试；', {
     enLen: 0.5,
     nonEnLen: 1
-  }), 4.5, '分贝指定中英文单位长度');
+  }), 4.5, '分别指定中英文单位长度');
 });
 
 QUnit.test('cutStr', (assert) => {

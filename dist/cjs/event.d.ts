@@ -59,15 +59,15 @@
 /**
  * 事件类型
  */
-export declare type EventType = number | string | symbol;
+export type EventType = number | string | symbol;
 /**
  * 事件参数关系类型
  */
-export declare type EventRelationsType = Record<EventType, unknown>;
+export type EventRelationsType = Record<EventType, unknown>;
 /**
  * 事件回调函数类型
  */
-export declare type EventHandler<Relations extends EventRelationsType, E extends EventType> = (params: Relations[E]) => unknown;
+export type EventHandler<Relations extends EventRelationsType, E extends EventType> = (params: Relations[E]) => unknown;
 export declare class EventEmitter<Relations extends EventRelationsType = EventRelationsType, Events extends EventType = string> {
     /**
      * 事件回调存储器

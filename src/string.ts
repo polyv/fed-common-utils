@@ -56,9 +56,9 @@ export function strLen(
 
   let result = 0;
   for (let i = str.length - 1; i >= 0; i--) {
-    result += str.charCodeAt(i) > 255 ?
-      (options.nonEnLen || 0) :
-      (options.enLen || 0);
+    result += str.charCodeAt(i) > 255
+      ? (options.nonEnLen || 0)
+      : (options.enLen || 0);
   }
   return result;
 }
@@ -94,7 +94,8 @@ export function cutStr(
   // 减去省略符长度
   length -= strLen(options.ellipsis, options);
 
-  let result = '', i = -1;
+  let result = '';
+  let i = -1;
   while (length > 0 && ++i < len) {
     length -= str.charCodeAt(i) > 255 ? options.nonEnLen : options.enLen;
     if (length >= 0) { result += str.charAt(i); }
@@ -170,7 +171,7 @@ export function nl2br(str: string): string {
  * @param prefix 字符串前缀（不计入长度）。
  * @returns 生成的随机字符串。
  */
-export function randomStr(length: number, prefix?: string) {
+export function randomStr(length: number, prefix?: string): string {
   length = length | 0;
   if (!length || length < 0) {
     throw new Error('"length" must be a number greater than 0');
@@ -209,8 +210,8 @@ export function uuidV4(): string {
 
 /**
  * 版本号对比。
- * @param versionA 待比较版本 A。
- * @param versionB 待比较版本 B。
+ * @param verA 待比较版本 A。
+ * @param verB 待比较版本 B。
  * @return 大于 0 时，表示版本 A 大于版本 B；
  *   小于 0 时，表示版本 B 大于版本 A；
  *   等于 0 时，表示两个版本号一致。

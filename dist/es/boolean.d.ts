@@ -5,7 +5,7 @@
 /**
  * Y 或者 N。
  */
-export declare type YOrN = 'Y' | 'N';
+export type YOrN = 'Y' | 'N';
 /**
  * 布尔值转换为 Y 或者 N。
  * @param value 布尔值。

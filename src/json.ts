@@ -12,7 +12,7 @@
  * cloneJSON({ a: 1, b: 2 }); // { a: 1, b: 2 }
  * ```
  */
-export function cloneJSON(obj: unknown) {
+export function cloneJSON(obj: unknown): any {
   if (obj == null) { return obj; }
   return JSON.parse(JSON.stringify(obj));
 }
