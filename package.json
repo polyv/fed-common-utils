@@ -35,7 +35,7 @@
     "@babel/plugin-transform-class-properties": "^7.24.7",
     "@babel/plugin-transform-json-strings": "^7.24.7",
     "@babel/preset-env": "^7.24.8",
-    "@polyv/eslint-config": "^0.7.0-beta.1",
+    "@polyv/eslint-config": "^0.7.0",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^6.4.1",
     "core-js": "^3.37.1",
@@ -56,6 +56,5 @@
     "webpack-dev-server": "^3.11.3",
     "webpack-merge": "^5.8.0"
   },
-  "dependencies": {},
   "miniprogram": "./"
 }
