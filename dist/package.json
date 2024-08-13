@@ -1,6 +1,6 @@
 {
   "name": "@polyv/utils",
-  "version": "2.8.0",
+  "version": "2.9.0-beta.1",
   "description": "Utility functions of Polyv frontend development.",
   "keywords": [
     "polyv",
@@ -20,6 +20,5 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "dependencies": {},
   "miniprogram": "./"
 }
