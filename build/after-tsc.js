@@ -37,6 +37,9 @@ const pkgJSON = require('../package.json');
 delete pkgJSON.devDependencies;
 delete pkgJSON.scripts;
 delete pkgJSON.private;
+// 增加小程序所需字段
+pkgJSON.miniprogram = './dist/es';
+
 fs.writeFileSync(
   path.join(distPath, 'package.json'),
   JSON.stringify(pkgJSON, null, 2),
