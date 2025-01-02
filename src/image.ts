@@ -70,16 +70,30 @@ export interface IOSSCompressOptions {
 export function ossCompress(
   url: string, options: IOSSCompressOptions
 ): string {
-  const a = document.createElement('a');
-  a.href = url;
-  const search = a.search;
-  // IE 下 https 的 url，host 包含端口号，因此要取 hostname
-  const hostname = a.hostname.toLowerCase();
+  let search = '';
+  let hostname = '';
+
+  if (typeof document !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = url;
+    search = a.search;
+    // IE 下 https 的 url，host 包含端口号，因此要取 hostname
+    hostname = a.hostname;
+  } else if (typeof URL === 'function') {
+    const urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
+    search = urlObj.search;
+    hostname = urlObj.hostname;
+  }
+  hostname = hostname.toLowerCase();
 
   // 仅处理特定域名以及没有进行过 OSS 处理的 URL
   if (
-    ['liveimages.videocc.net', 'vod-assets.videocc.net'].indexOf(hostname) === -1 ||
-    /(?:\?|&)x-oss-process(?:=|&|$)/.test(search)
+    [
+      'liveimages.videocc.net',
+      'vod-assets.videocc.net',
+      'polyvschool.videocc.net',
+      'img.videocc.net'
+    ].indexOf(hostname) === -1 || /(?:\?|&)x-oss-process(?:=|&|$)/.test(search)
   ) {
     return url;
   }
