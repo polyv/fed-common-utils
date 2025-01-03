@@ -45,6 +45,10 @@ export interface IOSSCompressOptions {
    */
   height?: number,
   /**
+   * 是否允许转换为 JPG。
+   */
+  allowJPG?: boolean,
+  /**
    * 是否允许转换为 WebP。
    */
   allowWebP?: boolean,
@@ -52,6 +56,30 @@ export interface IOSSCompressOptions {
    * 是否允许转换为 AVIF。
    */
   allowAVIF?: boolean
+}
+
+// 生成 OSS 压缩参数
+function genOssProcessParams(extname: string, options: IOSSCompressOptions): string {
+  let ossProccess = '';
+
+  if (options.width != null || options.height != null) {
+    ossProccess += '/resize';
+    if (options.width) { ossProccess += ',w_' + options.width; }
+    if (options.height) { ossProccess += ',h_' + options.height; }
+    ossProccess += ',limit_1';
+  }
+
+  if (extname !== 'gif') {
+    if (options.allowAVIF) {
+      ossProccess += '/format,avif';
+    } else if (options.allowWebP) {
+      ossProccess += '/format,webp/quality,Q_80';
+    } else if (options.allowJPG) {
+      ossProccess += '/format,jpg/quality,Q_80';
+    }
+  }
+
+  return ossProccess;
 }
 
 /**
@@ -70,21 +98,22 @@ export interface IOSSCompressOptions {
 export function ossCompress(
   url: string, options: IOSSCompressOptions
 ): string {
-  let search = '';
-  let hostname = '';
+  let urlObj: {
+    search: string
+    pathname: string,
+    hostname: string,
+    href: string
+  } | undefined;
 
   if (typeof document !== 'undefined') {
     const a = document.createElement('a');
     a.href = url;
-    search = a.search;
-    // IE 下 https 的 url，host 包含端口号，因此要取 hostname
-    hostname = a.hostname;
+    urlObj = a;
   } else if (typeof URL === 'function') {
-    const urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
-    search = urlObj.search;
-    hostname = urlObj.hostname;
+    urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
   }
-  hostname = hostname.toLowerCase();
+
+  if (!urlObj) { return url; }
 
   // 仅处理特定域名以及没有进行过 OSS 处理的 URL
   if (
@@ -93,30 +122,24 @@ export function ossCompress(
       'vod-assets.videocc.net',
       'polyvschool.videocc.net',
       'img.videocc.net'
-    ].indexOf(hostname) === -1 || /(?:\?|&)x-oss-process(?:=|&|$)/.test(search)
+    ].indexOf(urlObj.hostname) === -1
   ) {
     return url;
   }
 
-  let ossProccess = '';
-  if (options.width != null || options.height != null) {
-    ossProccess += '/resize';
-    if (options.width) { ossProccess += ',w_' + options.width; }
-    if (options.height) { ossProccess += ',h_' + options.height; }
-    ossProccess += ',limit_1';
-  }
-  if (options.allowAVIF) {
-    ossProccess += '/format,avif';
-  } else if (options.allowWebP) {
-    ossProccess += '/format,webp';
+  const filename = (urlObj.pathname.split('/').pop() || '').split('.');
+  const extname = filename[filename.length - 1].toLowerCase();
+
+  const ossProcess = genOssProcessParams(extname, options);
+  if (ossProcess) {
+    let search = urlObj.search.replace(/(?:\?|&)x-oss-process=[^&]+/g, '');
+    search += (search.indexOf('?') === -1 ? '?' : '&') +
+      'x-oss-process=image' +
+      ossProcess;
+    urlObj.search = search;
   }
 
-  if (ossProccess) {
-    ossProccess = 'x-oss-process=image' + ossProccess;
-    url += (url.indexOf('?') === -1 ? '?' : '&') + ossProccess;
-  }
-
-  return url;
+  return urlObj.href;
 }
 
 /**

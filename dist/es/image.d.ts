@@ -25,6 +25,10 @@ export interface IOSSCompressOptions {
      */
     height?: number;
     /**
+     * 是否允许转换为 JPG。
+     */
+    allowJPG?: boolean;
+    /**
      * 是否允许转换为 WebP。
      */
     allowWebP?: boolean;
