@@ -5,7 +5,7 @@
 ## 安装
 
 ```
-npm install @polyv/utils@next
+npm install @polyv/utils
 ```
 
 NPM 包同时提供了 ES 模块以及 CommonJS 模块，分别位于 `es` 和 `cjs` 两个文件夹。它们使用上的区别和优缺点在于：

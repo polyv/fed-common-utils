@@ -122,7 +122,8 @@ export function ossCompress(
       'vod-assets.videocc.net',
       'polyvschool.videocc.net',
       'img.videocc.net'
-    ].indexOf(urlObj.hostname) === -1
+    ].indexOf(urlObj.hostname) === -1 ||
+    /(?:\?|&)x-oss-process(?:=|&|$)/.test(urlObj.search)
   ) {
     return url;
   }
@@ -132,7 +133,7 @@ export function ossCompress(
 
   const ossProcess = genOssProcessParams(extname, options);
   if (ossProcess) {
-    let search = urlObj.search.replace(/(?:\?|&)x-oss-process=[^&]+/g, '');
+    let search = urlObj.search;
     search += (search.indexOf('?') === -1 ? '?' : '&') +
       'x-oss-process=image' +
       ossProcess;
