@@ -59,7 +59,7 @@ export interface IOSSCompressOptions {
 }
 
 // 生成 OSS 压缩参数
-function genOssProcessParams(extname: string, options: IOSSCompressOptions): string {
+function genOSSCompressParams(extname: string, options: IOSSCompressOptions): string {
   let ossProccess = '';
 
   if (options.width != null || options.height != null) {
@@ -80,6 +80,24 @@ function genOssProcessParams(extname: string, options: IOSSCompressOptions): str
   }
 
   return ossProccess;
+}
+
+// 替换或追加压缩参数
+function setOSSCompressParams(search: string, params: string): string {
+  let replaced = false;
+  search = search.replace(/([?&]x-oss-process)(?:=([^&]*))?/, (match, p1, p2) => {
+    replaced = true;
+    return !/^image/.test(p2)
+      ? match
+      : p1 + '=' + p2.replace(/\/(?:resize|format|quality)[^/]*/gi, '') + params;
+  });
+
+  return replaced
+    ? search
+    : search +
+        (search.indexOf('?') === -1 ? '?' : '&') +
+        'x-oss-process=image' +
+        params;
 }
 
 /**
@@ -110,34 +128,22 @@ export function ossCompress(
     a.href = url;
     urlObj = a;
   } else if (typeof URL === 'function') {
-    urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
+    try {
+      urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
+    } catch {}
   }
 
   if (!urlObj) { return url; }
 
-  // 仅处理特定域名以及没有进行过 OSS 处理的 URL
-  if (
-    [
-      'liveimages.videocc.net',
-      'vod-assets.videocc.net',
-      'polyvschool.videocc.net',
-      'img.videocc.net'
-    ].indexOf(urlObj.hostname) === -1 ||
-    /(?:\?|&)x-oss-process(?:=|&|$)/.test(urlObj.search)
-  ) {
-    return url;
-  }
+  // 仅处理 CDN 域名
+  if (!/\.videocc\.net$/i.test(urlObj.hostname)) { return url; }
 
   const filename = (urlObj.pathname.split('/').pop() || '').split('.');
   const extname = filename[filename.length - 1].toLowerCase();
 
-  const ossProcess = genOssProcessParams(extname, options);
+  const ossProcess = genOSSCompressParams(extname, options);
   if (ossProcess) {
-    let search = urlObj.search;
-    search += (search.indexOf('?') === -1 ? '?' : '&') +
-      'x-oss-process=image' +
-      ossProcess;
-    urlObj.search = search;
+    urlObj.search = setOSSCompressParams(urlObj.search, ossProcess);
   }
 
   return urlObj.href;
