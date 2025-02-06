@@ -7,30 +7,45 @@
  * 检查当前浏览器是否支持 WebP 格式。
  * @returns 当前浏览器是否支持 WebP 格式。
  */
-export function supportWebP(): boolean {
-  const elem = document.createElement('canvas');
-  if (elem.getContext && elem.getContext('2d')) {
-    const mimeType = 'image/webp';
-    return elem.toDataURL(mimeType).indexOf('data:' + mimeType) === 0;
+export const supportWebP: () => boolean = (() => {
+  function check(): boolean {
+    const elem = document.createElement('canvas');
+    if (elem.getContext && elem.getContext('2d')) {
+      const mimeType = 'image/webp';
+      return elem.toDataURL(mimeType).indexOf('data:' + mimeType) === 0;
+    }
+    return false;
   }
-  return false;
-}
+
+  let result: boolean | undefined;
+  return () => {
+    if (result == null) { result = check(); }
+    return result;
+  };
+})();
 
 /**
  * 检查当前浏览器是否支持 AVIF 格式（注意，本函数是异步函数）。
  * @returns 当前浏览器是否支持 AVIF 格式。
  */
-export function supportAVIF(): Promise<boolean> {
-  return new Promise((resolve) => {
-    const avif = new Image();
-    avif.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+export const supportAVIF: () => Promise<boolean> = (() => {
+  function check() {
+    return new Promise<boolean>((resolve) => {
+      const avif = new Image();
+      avif.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+      avif.onerror = () => { resolve(false); };
+      avif.onload = () => { resolve(true); };
+      // 避免长时间不触发前面两个事件
+      setTimeout(() => { resolve(false); }, 1000);
+    });
+  }
 
-    avif.onerror = () => { resolve(false); };
-    avif.onload = () => { resolve(true); };
-    // 避免长时间不触发前面两个事件
-    setTimeout(() => { resolve(false); }, 1000);
-  });
-}
+  let promise: Promise<boolean> | undefined;
+  return () => {
+    if (!promise) { promise = check(); }
+    return promise;
+  };
+})();
 
 /**
  * 压缩选项。
@@ -49,9 +64,9 @@ export interface IOSSCompressOptions {
    */
   allowJPG?: boolean,
   /**
-   * 是否允许转换为 WebP。
+   * 是否允许转换为 WebP。设为 'auto' 时，只要当前浏览器支持 WebP，就进行转换。
    */
-  allowWebP?: boolean,
+  allowWebP?: boolean | 'auto',
   /**
    * 是否允许转换为 AVIF。
    */
@@ -69,14 +84,14 @@ function genOSSCompressParams(extname: string, options: IOSSCompressOptions): st
     ossProccess += ',limit_1';
   }
 
-  if (extname !== 'gif') {
-    if (options.allowAVIF) {
-      ossProccess += '/format,avif';
-    } else if (options.allowWebP) {
-      ossProccess += '/format,webp/quality,Q_80';
-    } else if (options.allowJPG) {
-      ossProccess += '/format,jpg/quality,Q_80';
-    }
+  if (options.allowAVIF && extname !== 'gif') {
+    ossProccess += '/format,avif';
+  } else if (
+    options.allowWebP === true || (options.allowWebP === 'auto' && supportWebP())
+  ) {
+    ossProccess += '/format,webp/quality,Q_80';
+  } else if (options.allowJPG && extname !== 'gif') {
+    ossProccess += '/format,jpg/quality,Q_80';
   }
 
   return ossProccess;

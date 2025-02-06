@@ -33,6 +33,12 @@ QUnit.test('ossCompress', (assert) => {
   );
   assert.strictEqual(
     ossCompress(URL, {
+      allowWebP: 'auto'
+    }),
+    URL + '?x-oss-process=image/format,webp/quality,Q_80'
+  );
+  assert.strictEqual(
+    ossCompress(URL, {
       width: 100,
       height: 100
     }),
