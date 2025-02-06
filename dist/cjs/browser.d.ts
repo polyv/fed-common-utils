@@ -3,7 +3,7 @@
  * @packageDocumentation
  */
 /**
- * 检测当前浏览器是否运行在移动设备上（User-Agent 识别为主，特征判断为辅）。
+ * 检测当前浏览器是否运行在移动设备上（仅使用 User-Agent 识别）。
  * @returns 当前浏览器是否运行在移动设备上。
  */
 export declare function isMobile(): boolean;

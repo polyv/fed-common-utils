@@ -6,12 +6,12 @@
  * 检查当前浏览器是否支持 WebP 格式。
  * @returns 当前浏览器是否支持 WebP 格式。
  */
-export declare function supportWebP(): boolean;
+export declare const supportWebP: () => boolean;
 /**
  * 检查当前浏览器是否支持 AVIF 格式（注意，本函数是异步函数）。
  * @returns 当前浏览器是否支持 AVIF 格式。
  */
-export declare function supportAVIF(): Promise<boolean>;
+export declare const supportAVIF: () => Promise<boolean>;
 /**
  * 压缩选项。
  */
@@ -29,9 +29,9 @@ export interface IOSSCompressOptions {
      */
     allowJPG?: boolean;
     /**
-     * 是否允许转换为 WebP。
+     * 是否允许转换为 WebP。设为 'auto' 时，只要当前浏览器支持 WebP，就进行转换。
      */
-    allowWebP?: boolean;
+    allowWebP?: boolean | 'auto';
     /**
      * 是否允许转换为 AVIF。
      */
