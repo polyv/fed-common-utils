@@ -4,19 +4,15 @@
  */
 
 /**
- * 检测当前浏览器是否运行在移动设备上（User-Agent 识别为主，特征判断为辅）。
+ * 检测当前浏览器是否运行在移动设备上（仅使用 User-Agent 识别）。
  * @returns 当前浏览器是否运行在移动设备上。
  */
 export function isMobile(): boolean {
   const ua = navigator.userAgent;
-  if (/mobile|android/i.test(ua)) {
-    return true;
-  } else if (/\b(Windows\sNT|Macintosh|x86(_(32|64))?|amd64|i[1-6]86)\b/.test(ua)) {
+  if (/\(X11[;)]/i.test(ua) || /\b(Windows\sNT|Macintosh)\b/.test(ua)) {
     return false;
-  } else {
-    return 'onorientationchange' in window &&
-      typeof window.orientation === 'number';
   }
+  return /mobile|tablet|android/i.test(ua);
 }
 
 /**
