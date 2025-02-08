@@ -54,19 +54,19 @@ export interface IOSSCompressOptions {
   /**
    * 压缩后的图片宽度。
    */
-  width?: number,
+  width?: number
   /**
    * 压缩后的图片高度。
    */
-  height?: number,
+  height?: number
   /**
-   * 是否允许转换为 JPG。
+   * 是否允许转换为 JPG。默认为 true。
    */
-  allowJPG?: boolean,
+  allowJPG?: boolean
   /**
-   * 是否允许转换为 WebP。设为 'auto' 时，只要当前浏览器支持 WebP，就进行转换。
+   * 是否允许转换为 WebP，默认为 'auto'。'auto' 表示当前浏览器支持 WebP，就进行转换。
    */
-  allowWebP?: boolean | 'auto',
+  allowWebP?: boolean | 'auto'
   /**
    * 是否允许转换为 AVIF。
    */
@@ -118,18 +118,20 @@ function setOSSCompressParams(search: string, params: string): string {
 /**
  * 如果指定图片 URL 的域名是 OSS 域名，且没有任何 OSS 处理参数，则根据压缩选项追加 OSS 图片压缩处理参数。
  * @param url 指定图片 URL。
- * @param options 压缩选项。
+ * @param options 压缩选项或缩放的宽度。
  * @returns 处理后的图片 URL。
  * @example
  * ```javascript
+ * ossCompress(url, 300);
  * ossCompress(url, {
  *   width: 300,
- *   allowWebp: true
+ *   allowJPG: true,
+ *   allowWebP: 'auto'
  * });
  * ```
  */
 export function ossCompress(
-  url: string, options: IOSSCompressOptions
+  url: string, options: IOSSCompressOptions | number
 ): string {
   let urlObj: {
     search: string
@@ -156,7 +158,11 @@ export function ossCompress(
   const filename = (urlObj.pathname.split('/').pop() || '').split('.');
   const extname = filename[filename.length - 1].toLowerCase();
 
-  const ossProcess = genOSSCompressParams(extname, options);
+  const opts = typeof options === 'number' ? { width: options } : options;
+  opts.allowJPG = opts.allowJPG ?? true;
+  opts.allowWebP = opts.allowWebP ?? 'auto';
+
+  const ossProcess = genOSSCompressParams(extname, opts);
   if (ossProcess) {
     urlObj.search = setOSSCompressParams(urlObj.search, ossProcess);
   }

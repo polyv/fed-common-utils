@@ -25,11 +25,11 @@ export interface IOSSCompressOptions {
      */
     height?: number;
     /**
-     * 是否允许转换为 JPG。
+     * 是否允许转换为 JPG。默认为 true。
      */
     allowJPG?: boolean;
     /**
-     * 是否允许转换为 WebP。设为 'auto' 时，只要当前浏览器支持 WebP，就进行转换。
+     * 是否允许转换为 WebP，默认为 'auto'。'auto' 表示当前浏览器支持 WebP，就进行转换。
      */
     allowWebP?: boolean | 'auto';
     /**
@@ -40,17 +40,19 @@ export interface IOSSCompressOptions {
 /**
  * 如果指定图片 URL 的域名是 OSS 域名，且没有任何 OSS 处理参数，则根据压缩选项追加 OSS 图片压缩处理参数。
  * @param url 指定图片 URL。
- * @param options 压缩选项。
+ * @param options 压缩选项或缩放的宽度。
  * @returns 处理后的图片 URL。
  * @example
  * ```javascript
+ * ossCompress(url, 300);
  * ossCompress(url, {
  *   width: 300,
- *   allowWebp: true
+ *   allowJPG: true,
+ *   allowWebP: 'auto'
  * });
  * ```
  */
-export declare function ossCompress(url: string, options: IOSSCompressOptions): string;
+export declare function ossCompress(url: string, options: IOSSCompressOptions | number): string;
 /**
  * 对指定 HTML 代码中 img 标签的图片地址做 OSS 压缩处理。
  * @param html 指定 HTML 代码。
