@@ -18,11 +18,12 @@ export declare function formatDate(date: number | Date, formation: string): stri
  */
 export interface FormatSecondsOptions {
     /**
-     * 段数，2 或者 3。
+     * 段数，2、3 或 'auto'。
      * 为 3 时，格式化样式为「时:分:秒」。
-     * 为 2 时，格式化样式为「分:秒」。
+     * 为 2 时，格式化样式为「分:秒」；
+     * 为 'auto' 时，不超过 1 小时按 2 段处理，否则按 3 段处理。
      */
-    segments?: number;
+    segments?: number | 'auto';
     /**
      * 每一段数字的最小位数，不足位数时补 0。
      */

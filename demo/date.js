@@ -38,6 +38,18 @@ QUnit.test('formatSeconds', (assert) => {
   );
 
   assert.strictEqual(
+    formatSeconds(3682, { segments: 'auto' }),
+    '01:01:22',
+    '自动段数'
+  );
+
+  assert.strictEqual(
+    formatSeconds(3599, { segments: 'auto' }),
+    '59:59',
+    '自动段数'
+  );
+
+  assert.strictEqual(
     formatSeconds(3682, { segments: 3, digits: 1 }),
     '1:1:22',
     '三段一位'

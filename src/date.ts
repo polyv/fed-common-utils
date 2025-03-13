@@ -47,11 +47,12 @@ export function formatDate(date: number | Date, formation: string): string {
  */
 export interface FormatSecondsOptions {
   /**
-   * 段数，2 或者 3。  
+   * 段数，2、3 或 'auto'。  
    * 为 3 时，格式化样式为「时:分:秒」。
-   * 为 2 时，格式化样式为「分:秒」。
+   * 为 2 时，格式化样式为「分:秒」；
+   * 为 'auto' 时，不超过 1 小时按 2 段处理，否则按 3 段处理。
    */
-  segments?: number;
+  segments?: number | 'auto';
   /**
    * 每一段数字的最小位数，不足位数时补 0。
    */
@@ -80,27 +81,27 @@ export function formatSeconds(
     throw new Error('"secs" must be a positive integer');
   }
 
-  let segments: number = (options.segments || 2) | 0;
+  let segments = 2;
+  if (options.segments === 'auto' && secs >= 3600) {
+    segments = 3;
+  } else if (
+    typeof options.segments === 'number' &&
+    [2, 3].indexOf(options.segments) !== -1
+  ) {
+    segments = options.segments;
+  }
+
   let digits: number = (options.digits || 2) | 0;
 
   // 位数最小为 1
   digits = Math.max(1, digits);
-  // 段数只能为 2 或者 3
-  if ([2, 3].indexOf(segments) === -1) {
-    segments = 2;
-  }
 
   // 需要补多少个 0
   const zeros = new Array(digits + 1).join('0');
 
   // 每段除以多少秒
-  const steps = [
-    60,
-    1
-  ];
-  if (options.segments === 3) {
-    steps.unshift(60 * 60);
-  }
+  const steps = [60, 1];
+  if (segments === 3) { steps.unshift(60 * 60); }
 
   return steps.map((num) => {
     const subResult = Math.floor(secs / num);
