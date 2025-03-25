@@ -2,6 +2,7 @@ import {
   supportWebP,
   supportAVIF,
   ossCompress,
+  cosCompress,
   compressHTMLImgs
 } from '@/image';
 
@@ -20,7 +21,6 @@ QUnit.test('ossCompress', (assert) => {
   const URL = 'https://vod-assets.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg';
   assert.strictEqual(
     ossCompress(URL, {
-      allowWebP: true,
       allowAVIF: true
     }),
     URL + '?x-oss-process=image/format,avif'
@@ -57,6 +57,22 @@ QUnit.test('ossCompress', (assert) => {
       allowAVIF: true
     }),
     URL + '?x-oss-process=image/resize,w_100,h_100,limit_1/format,avif'
+  );
+});
+
+QUnit.test('cosCompress', (assert) => {
+  const URL = 'https://static.kingswayvideo.com/ugplsoje/vod/386936a005/cover.jpg';
+  assert.strictEqual(
+    cosCompress(URL, { allowWebP: true }),
+    URL + '?imageMogr2/format/webp/quality/80'
+  );
+  assert.strictEqual(
+    cosCompress(URL, { width: 200, allowWebP: true }),
+    URL + '?imageMogr2/thumbnail/200x/format/webp/quality/80'
+  );
+  assert.strictEqual(
+    cosCompress(URL, { width: 200, height: 300, allowWebP: false }),
+    URL + '?imageMogr2/thumbnail/200x300/format/jpg/quality/80'
   );
 });
 

@@ -38,7 +38,7 @@ export interface IOSSCompressOptions {
     allowAVIF?: boolean;
 }
 /**
- * 如果指定图片 URL 的域名是 OSS 域名，且没有任何 OSS 处理参数，则根据压缩选项追加 OSS 图片压缩处理参数。
+ * 追加或替换 OSS 图片压缩参数。
  * @param url 指定图片 URL。
  * @param options 压缩选项或缩放的宽度。
  * @returns 处理后的图片 URL。
@@ -54,9 +54,17 @@ export interface IOSSCompressOptions {
  */
 export declare function ossCompress(url: string, options: IOSSCompressOptions | number): string;
 /**
+ * 追加或替换 COS 图片压缩参数。
+ * @param url 指定图片 URL。
+ * @param options 压缩选项或缩放的宽度。
+ * @returns 处理后的图片 URL。
+ */
+export declare function cosCompress(url: string, options: IOSSCompressOptions | number): string;
+/**
  * 对指定 HTML 代码中 img 标签的图片地址做 OSS 压缩处理。
  * @param html 指定 HTML 代码。
  * @param options 压缩选项。
+ * @param compressor 压缩器。可以使用本模块下的 ossCompress 或 cosCompress，默认为 ossCompress。
  * @returns 处理后的 HTML 代码。
  */
-export declare function compressHTMLImgs(html: string, options: IOSSCompressOptions): string;
+export declare function compressHTMLImgs(html: string, options: IOSSCompressOptions, compressor?: (url: string, options: IOSSCompressOptions | number) => string): string;

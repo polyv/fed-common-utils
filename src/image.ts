@@ -19,7 +19,13 @@ export const supportWebP: () => boolean = (() => {
 
   let result: boolean | undefined;
   return () => {
-    if (result == null) { result = check(); }
+    if (result == null) {
+      try {
+        result = check();
+      } catch {
+        result = false;
+      }
+    }
     return result;
   };
 })();
@@ -47,6 +53,7 @@ export const supportAVIF: () => Promise<boolean> = (() => {
   };
 })();
 
+
 /**
  * 压缩选项。
  */
@@ -72,6 +79,54 @@ export interface IOSSCompressOptions {
    */
   allowAVIF?: boolean
 }
+
+// 获取扩展名
+function getExtname(path?: string): string {
+  const filename = (path || '').split('.');
+  const extname = filename[filename.length - 1];
+  return extname ? extname.toLowerCase() : '';
+}
+
+// 把压缩参数转换为标准格式，并设置默认值
+function handleCompressOptions(
+  options: IOSSCompressOptions | number
+): IOSSCompressOptions {
+  const opts = typeof options === 'number' ? { width: options } : options;
+  opts.allowJPG = opts.allowJPG ?? true;
+  opts.allowWebP = opts.allowWebP ?? 'auto';
+  return opts;
+}
+
+// URL 对象的属性
+interface IURL {
+  search: string
+  pathname: string,
+  hostname: string,
+  href: string
+}
+
+// 创建 URL 对象（兼容浏览器端和 Node.js 端）
+function createURLObject(url: string): IURL | undefined {
+  let urlObj: {
+    search: string
+    pathname: string,
+    hostname: string,
+    href: string
+  } | undefined;
+
+  if (typeof document !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = url;
+    urlObj = a;
+  } else if (typeof URL === 'function') {
+    try {
+      urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
+    } catch {}
+  }
+
+  return urlObj;
+}
+
 
 // 生成 OSS 压缩参数
 function genOSSCompressParams(extname: string, options: IOSSCompressOptions): string {
@@ -116,7 +171,7 @@ function setOSSCompressParams(search: string, params: string): string {
 }
 
 /**
- * 如果指定图片 URL 的域名是 OSS 域名，且没有任何 OSS 处理参数，则根据压缩选项追加 OSS 图片压缩处理参数。
+ * 追加或替换 OSS 图片压缩参数。
  * @param url 指定图片 URL。
  * @param options 压缩选项或缩放的宽度。
  * @returns 处理后的图片 URL。
@@ -133,34 +188,14 @@ function setOSSCompressParams(search: string, params: string): string {
 export function ossCompress(
   url: string, options: IOSSCompressOptions | number
 ): string {
-  let urlObj: {
-    search: string
-    pathname: string,
-    hostname: string,
-    href: string
-  } | undefined;
-
-  if (typeof document !== 'undefined') {
-    const a = document.createElement('a');
-    a.href = url;
-    urlObj = a;
-  } else if (typeof URL === 'function') {
-    try {
-      urlObj = new URL(/^\/\//.test(url) ? ('https:' + url) : url);
-    } catch {}
-  }
-
+  const urlObj = createURLObject(url);
   if (!urlObj) { return url; }
 
   // 仅处理 CDN 域名
   if (!/\.videocc\.net$/i.test(urlObj.hostname)) { return url; }
 
-  const filename = (urlObj.pathname.split('/').pop() || '').split('.');
-  const extname = filename[filename.length - 1].toLowerCase();
-
-  const opts = typeof options === 'number' ? { width: options } : options;
-  opts.allowJPG = opts.allowJPG ?? true;
-  opts.allowWebP = opts.allowWebP ?? 'auto';
+  const extname = getExtname(urlObj.pathname.split('/').pop());
+  const opts = handleCompressOptions(options);
 
   const ossProcess = genOSSCompressParams(extname, opts);
   if (ossProcess) {
@@ -170,21 +205,91 @@ export function ossCompress(
   return urlObj.href;
 }
 
+
+// 生成 COS 压缩参数
+function genCOSCompressParams(extname: string, options: IOSSCompressOptions): string {
+  let cosProcess = '';
+  if (options.width != null && options.height != null) {
+    cosProcess += `/thumbnail/${options.width}x${options.height}`;
+  } else if (options.width != null) {
+    cosProcess += `/thumbnail/${options.width}x`;
+  } else if (options.height != null) {
+    cosProcess += `/thumbnail/x${options.height}`;
+  }
+
+  if (options.allowAVIF && extname !== 'gif') {
+    cosProcess += '/format/avif';
+  } else if (
+    options.allowWebP === true || (options.allowWebP === 'auto' && supportWebP())
+  ) {
+    cosProcess += '/format/webp/quality/80';
+  } else if (options.allowJPG && extname !== 'gif') {
+    cosProcess += '/format/jpg/quality/80';
+  }
+
+  return cosProcess;
+}
+
+// 替换或追加压缩参数
+function setCOSCompressParams(search: string, params: string): string {
+  let replaced = false;
+  search = search.replace(/([?&]imageMogr2)(\/[^&]*)/, (match, p1, p2) => {
+    replaced = true;
+    return p1 + '=' + p2.replace(/\/(?:thumbnail|format|quality)\/[^/]+/gi, '') + params;
+  });
+
+  return replaced
+    ? search
+    : search +
+        (search.indexOf('?') === -1 ? '?' : '&') +
+        'imageMogr2' +
+        params;
+}
+
+/**
+ * 追加或替换 COS 图片压缩参数。
+ * @param url 指定图片 URL。
+ * @param options 压缩选项或缩放的宽度。
+ * @returns 处理后的图片 URL。
+ */
+export function cosCompress(
+  url: string, options: IOSSCompressOptions | number
+): string {
+  const urlObj = createURLObject(url);
+  if (!urlObj) { return url; }
+
+  if (!/(?:\.videocc\.net|\.kingswayvideo\.com)$/i.test(urlObj.hostname)) {
+    return url;
+  }
+
+  const extname = getExtname(urlObj.pathname.split('/').pop());
+  const opts = handleCompressOptions(options);
+
+  const ossProcess = genCOSCompressParams(extname, opts);
+  if (ossProcess) {
+    urlObj.search = setCOSCompressParams(urlObj.search, ossProcess);
+  }
+
+  return urlObj.href;
+}
+
 /**
  * 对指定 HTML 代码中 img 标签的图片地址做 OSS 压缩处理。
  * @param html 指定 HTML 代码。
  * @param options 压缩选项。
+ * @param compressor 压缩器。可以使用本模块下的 ossCompress 或 cosCompress，默认为 ossCompress。
  * @returns 处理后的 HTML 代码。
  */
 export function compressHTMLImgs(
   html: string,
-  options: IOSSCompressOptions
+  options: IOSSCompressOptions,
+  compressor: (url: string, options: IOSSCompressOptions | number) => string = ossCompress
 ): string {
   if (!html) { return ''; }
   return html.replace(
     /(<img.*?\ssrc=)(["']?)(.+?)\2(.*?>)/gi,
     (match, before, quot, src, after) => {
-      return before + '"' + ossCompress(src, options) + '"' + ' data-src="' + src + '"' + after;
+      return before + '"' + compressor(src, options) + '"' + ' data-src="' + src + '"' + after;
     },
   );
 }
