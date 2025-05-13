@@ -7,7 +7,8 @@ import {
   nl2br,
   randomStr,
   uuidV4,
-  compareVersions
+  compareVersions,
+  maskChars
 } from '@/string';
 const QUnit = window.QUnit;
 
@@ -96,4 +97,16 @@ QUnit.test('compareVersions', (assert) => {
     compareVersions('1.2.0', '1.2.0.0') === 0,
     true
   );
+});
+
+QUnit.test('maskChars', (assert) => {
+  const str = '1234567890';
+  const allMasked = '**********';
+  assert.strictEqual(maskChars(str, { start: 3, end: 6 }), '123****890');
+  assert.strictEqual(maskChars(str, { start: 3 }), '123*******');
+  assert.strictEqual(maskChars(str, { end: 6 }), '*******890');
+  assert.strictEqual(maskChars(str, { start: 10 }), str);
+  assert.strictEqual(maskChars(str, { end: 10 }), allMasked);
+  assert.strictEqual(maskChars(str), allMasked);
+  assert.strictEqual(maskChars(str, { maskChar: '#' }), allMasked.replace(/\*/g, '#'));
 });

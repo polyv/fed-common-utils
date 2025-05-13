@@ -232,3 +232,62 @@ export function compareVersions(verA: string, verB: string): number {
   }
   return verAParts.length - verBParts.length;
 }
+
+
+/**
+ * 遮蔽字符的选项。
+ */
+export interface IMaskCharsOptions {
+  /**
+   * 掩码字符，默认为 '*'。
+   */
+  maskChar?: string
+  /**
+   * 遮蔽的开始位置（从 0 开始算），默认为 0。如果不指定，则 end 位置前的字符都被遮蔽。
+   */
+  start?: number
+  /**
+   * 遮蔽的结束位置（从 0 开始算），默认为字符串的最后一位。如果不指定，则 start 位置后的字符都被遮蔽。
+   */
+  end?: number
+}
+
+/**
+ * 以特定遮蔽字符遮蔽指定字符串的部分字符。
+ * @param str 指定字符串。
+ * @param options 遮蔽选项。
+ * @returns 遮蔽后的结果。
+ * @example
+ * ```javascript
+ * maskChars('1234567890', { start: 3, end: 6 }); // '123****890'
+ * maskChars('1234567890', { start: 3 }); // '123*******'
+ * maskChars('1234567890', { end: 6 }); // '*******890'
+ * maskChars('1234567890'); // '**********'
+ * maskChars('1234567890', { maskChar: '#' }); // '##########'
+ * ```
+ */
+export function maskChars(str: string, options: IMaskCharsOptions): string {
+  options = options || {};
+
+  const strLen = str.length;
+  const start = options.start ?? 0;
+  const end = options.end ?? strLen - 1;
+  const maskChar = options.maskChar ?? '*';
+
+  if (start >= 0 && end >= 0 && start <= end && end < strLen) {
+    let result = str.substring(0, start);
+    result += (new Array(end - start + 2).join(maskChar));
+    if (end < strLen - 1) { result += str.substring(end + 1); }
+    return result;
+  } else if (start >= 0) {
+    return start >= strLen
+      ? str
+      : str.substring(0, start) + (new Array(strLen - start + 1).join(maskChar));
+  } else if (end >= 0) {
+    let result = (new Array(Math.min(end, strLen) + 2).join(maskChar));
+    if (end < strLen - 1) { result += str.substring(end + 1); }
+    return result;
+  } else {
+    return str;
+  }
+}
