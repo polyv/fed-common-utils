@@ -98,3 +98,35 @@ export declare function uuidV4(): string;
  *   等于 0 时，表示两个版本号一致。
  */
 export declare function compareVersions(verA: string, verB: string): number;
+/**
+ * 遮蔽字符的选项。
+ */
+export interface IMaskCharsOptions {
+    /**
+     * 掩码字符，默认为 '*'。
+     */
+    maskChar?: string;
+    /**
+     * 遮蔽的开始位置（从 0 开始算），默认为 0。如果不指定，则 end 位置前的字符都被遮蔽。
+     */
+    start?: number;
+    /**
+     * 遮蔽的结束位置（从 0 开始算），默认为字符串的最后一位。如果不指定，则 start 位置后的字符都被遮蔽。
+     */
+    end?: number;
+}
+/**
+ * 以特定遮蔽字符遮蔽指定字符串的部分字符。
+ * @param str 指定字符串。
+ * @param options 遮蔽选项。
+ * @returns 遮蔽后的结果。
+ * @example
+ * ```javascript
+ * maskChars('1234567890', { start: 3, end: 6 }); // '123****890'
+ * maskChars('1234567890', { start: 3 }); // '123*******'
+ * maskChars('1234567890', { end: 6 }); // '*******890'
+ * maskChars('1234567890'); // '**********'
+ * maskChars('1234567890', { maskChar: '#' }); // '##########'
+ * ```
+ */
+export declare function maskChars(str: string, options: IMaskCharsOptions): string;
