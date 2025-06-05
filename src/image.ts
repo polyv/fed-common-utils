@@ -258,11 +258,14 @@ export function cosCompress(
   const urlObj = createURLObject(url);
   if (!urlObj) { return url; }
 
-  if (!/(?:\.videocc\.net|\.kingswayvideo\.com)$/i.test(urlObj.hostname)) {
+  const extname = getExtname(urlObj.pathname.split('/').pop());
+  if (
+    !/(?:\.videocc\.net|\.kingswayvideo\.com)$/i.test(urlObj.hostname) ||
+    extname === 'svg'
+  ) {
     return url;
   }
 
-  const extname = getExtname(urlObj.pathname.split('/').pop());
   const opts = handleCompressOptions(options);
 
   const ossProcess = genCOSCompressParams(extname, opts);

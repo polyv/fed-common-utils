@@ -74,6 +74,12 @@ QUnit.test('cosCompress', (assert) => {
     cosCompress(URL, { width: 200, height: 300, allowWebP: false }),
     URL + '?imageMogr2/thumbnail/200x300/format/jpg/quality/80'
   );
+
+  const SVG_URL = 'https://static.kingswayvideo.com/ugplsoje/vod/386936a005/cover.svg';
+  assert.strictEqual(
+    cosCompress(SVG_URL, { width: 200, allowWebP: true }),
+    SVG_URL
+  );
 });
 
 QUnit.test('compressHTMLImgs', (assert) => {
