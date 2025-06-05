@@ -191,10 +191,10 @@ export function ossCompress(
   const urlObj = createURLObject(url);
   if (!urlObj) { return url; }
 
-  // 仅处理 CDN 域名
-  if (!/\.videocc\.net$/i.test(urlObj.hostname)) { return url; }
-
   const extname = getExtname(urlObj.pathname.split('/').pop());
+  // 仅处理 CDN 域名
+  if (!/\.videocc\.net$/i.test(urlObj.hostname) || extname === 'svg') { return url; }
+
   const opts = handleCompressOptions(options);
 
   const ossProcess = genOSSCompressParams(extname, opts);

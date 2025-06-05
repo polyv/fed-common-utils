@@ -58,6 +58,12 @@ QUnit.test('ossCompress', (assert) => {
     }),
     URL + '?x-oss-process=image/resize,w_100,h_100,limit_1/format,avif'
   );
+
+  const SVG_URL = 'https://vod-assets.videocc.net/uploaded/images/2019/12/fii52n6nkh.svg';
+  assert.strictEqual(
+    ossCompress(SVG_URL, { width: 100, allowWebP: true }),
+    SVG_URL
+  );
 });
 
 QUnit.test('cosCompress', (assert) => {
