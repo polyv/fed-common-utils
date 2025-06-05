@@ -108,8 +108,8 @@ export function cutStr(
 
 
 // 生成 HTML 预留字符与 HTML 实体的映射
-const htmlChars = ['"', '\'', '&', '<', '>'];
-const htmlEntities = ['&quot;', '&#39;', '&amp;', '&lt;', '&gt;'];
+const htmlChars = ['"', '\'', '&', '<', '>', ' '];
+const htmlEntities = ['&quot;', '&#39;', '&amp;', '&lt;', '&gt;', '&nbsp;'];
 const charsToEntities: Record<string, string> = Object.create(null);
 const entitiesToChars: Record<string, string> = Object.create(null);
 htmlChars.forEach((item, i) => {
