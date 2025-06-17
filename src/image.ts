@@ -8,7 +8,7 @@
  * @returns 当前浏览器是否支持 WebP 格式。
  */
 export const supportWebP: () => boolean = (() => {
-  function check(): boolean {
+  function checkByCanvas(): boolean {
     const elem = document.createElement('canvas');
     if (elem.getContext && elem.getContext('2d')) {
       const mimeType = 'image/webp';
@@ -17,11 +17,28 @@ export const supportWebP: () => boolean = (() => {
     return false;
   }
 
+  // iOS 和 macOS 都不支持通过 canvas 检查 WebP 的兼容性
+  // 为了避免使用 image onload 或 onerror 的异步检测方式，通过 UA 来判断
+  function checkByUA(): boolean {
+    let result = false;
+    const ua = navigator.userAgent;
+
+    const iOSMatches = /\bOS\s([\d_.]+)\slike\sMac\sOS\sX\b/.exec(ua);
+    if (iOSMatches) {
+      result = parseInt(iOSMatches[1]) >= 14;
+    } else {
+      const safariMatches = /\bVersion\/([\d.]+)\sSafari\b/.exec(ua);
+      if (safariMatches) { result = parseInt(safariMatches[1]) >= 16; }
+    }
+
+    return result;
+  }
+
   let result: boolean | undefined;
   return () => {
     if (result == null) {
       try {
-        result = check();
+        result = checkByCanvas() || checkByUA();
       } catch {
         result = false;
       }
