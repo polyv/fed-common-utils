@@ -1,4 +1,18 @@
-import type { WebViewBridge } from '@polyv/web-view-bridge';
+/**
+ * 本模块提供链接处理相关方法。
+ * @packageDocumentation
+ */
+/**
+ * 保利威 WebView 桥接器接口
+ */
+export interface WebViewBridge {
+    /**
+     * 向 WebView 发送数据
+     * @param event 事件
+     * @param data 数据对象
+     */
+    sendData: (event: string, data: Record<string, unknown>) => void;
+}
 /** 是否安卓 */
 export declare const isAndroid: boolean;
 /** 是否 iOS */

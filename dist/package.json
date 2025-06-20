@@ -23,7 +23,6 @@
   "miniprogram": "./dist/es",
   "dependencies": {
     "@just4/querystring": "^2.0.0",
-    "@just4/ua-info": "^3.2.0",
-    "@polyv/web-view-bridge": "^0.1.0-rc.1"
+    "@just4/ua-info": "^3.2.0"
   }
 }
