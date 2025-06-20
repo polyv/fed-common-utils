@@ -1,3 +1,8 @@
+/**
+ * 本模块提供链接处理相关方法。
+ * @packageDocumentation
+ */
+
 /* eslint-disable @typescript-eslint/naming-convention */
 import { getCurrentUAInfo } from '@just4/ua-info';
 import { concat } from '@just4/querystring';
