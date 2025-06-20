@@ -6,7 +6,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { getCurrentUAInfo } from '@just4/ua-info';
 import { concat } from '@just4/querystring';
-import type { WebViewBridge } from '@polyv/web-view-bridge';
+
+/**
+ * 保利威 WebView 桥接器接口
+ */
+export interface WebViewBridge {
+  /**
+   * 向 WebView 发送数据
+   * @param event 事件
+   * @param data 数据对象
+   */
+  sendData: (event: string, data: Record<string, unknown>) => void;
+}
 
 const ua = navigator.userAgent.toLowerCase();
 const uaInfo = getCurrentUAInfo();
@@ -22,25 +33,9 @@ export const isWorkWeixin = uaInfo.client.isWxWork;
 /** 判断 PC 端微信小程序环境 */
 export const isPcMiniProgram = (isWeixin || isWorkWeixin) && /miniprogramenv/.test(ua);
 
-function __isMobile() {
-  const ua = navigator.userAgent;
-  if (/mobile|android/i.test(ua)) {
-    return true;
-  } else {
-    if (
-      /\b(Windows\sNT|Macintosh|x86(_(32|64))?|amd64|i[1-6]86)\b/.test(ua) ||
-      !('onorientationchange' in window)
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
-
 /** 是否移动端 */
 export const isMobile = (() => {
-  return __isMobile() || isPcMiniProgram;
+  return uaInfo.isPortable || isPcMiniProgram;
 })();
 
 type ToPointMallFunc = (params: string) => unknown;
