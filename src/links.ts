@@ -1,0 +1,364 @@
+/**
+ * 本模块提供链接处理相关方法。
+ * @packageDocumentation
+ */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+import { getCurrentUAInfo } from '@just4/ua-info';
+import { concat } from '@just4/querystring';
+
+/**
+ * 保利威 WebView 桥接器接口
+ */
+export interface WebViewBridge {
+  /**
+   * 向 WebView 发送数据
+   * @param event 事件
+   * @param data 数据对象
+   */
+  sendData: (event: string, data: Record<string, unknown>) => void;
+}
+
+const ua = navigator.userAgent.toLowerCase();
+const uaInfo = getCurrentUAInfo();
+/** 是否安卓 */
+export const isAndroid = uaInfo.os.isAndroid;
+/** 是否 iOS */
+export const isIOS = uaInfo.os.isIOS;
+/** 是否微信（非企业微信） */
+export const isWeixin = uaInfo.client.isWx;
+/** 是否企业微信 */
+export const isWorkWeixin = uaInfo.client.isWxWork;
+
+/** 判断 PC 端微信小程序环境 */
+export const isPcMiniProgram = (isWeixin || isWorkWeixin) && /miniprogramenv/.test(ua);
+
+/** 是否移动端 */
+export const isMobile = (() => {
+  return uaInfo.isPortable || isPcMiniProgram;
+})();
+
+type ToPointMallFunc = (params: string) => unknown;
+declare global {
+  interface Window {
+    AndroidNative?: {
+      toPointMall?: ToPointMallFunc;
+    };
+    webkit?: {
+      messageHandlers?: {
+        gotoPointsMall?: {
+          postMessage?: ToPointMallFunc;
+        };
+      };
+    };
+  }
+}
+
+/**
+ * 链接类型
+ */
+export enum LinkType {
+  /**
+   * 通用链接
+   */
+  Normal = 10,
+  /**
+   * 多平台链接
+   */
+  MultiPlatform = 11,
+  /**
+   * 原生方法跳转
+   */
+  Native = 12,
+}
+
+/**
+ * 外链跳转方式
+ */
+export enum LinkJumpWay {
+  /**
+   * iframe 弹框形式打开
+   */
+  PopUp = 'POP_UP',
+  /**
+   * 新窗口打开
+   */
+  NewWindow = 'NEW_WINDOW',
+  /**
+   * 当前窗口打开
+   */
+  CurrentWindow = 'CURRENT_WINDOW',
+}
+
+/**
+ * 链接数据接口
+ */
+export interface LinkData {
+  /**
+   * 链接类型
+   */
+  linkType: LinkType;
+  /**
+   * 跳转方式
+   */
+  jumpWay: LinkJumpWay;
+  /**
+   * 通用平台跳转链接
+   */
+  link: string;
+  /**
+   * PC 端跳转链接
+   */
+  pcLink: string;
+  /**
+   * 移动端跳转链接
+   */
+  mobileLink: string;
+  /**
+   * App 链接
+   */
+  mobileAppLink: string;
+  /**
+   * 安卓端 app 跳转链接
+   */
+  androidLink: string;
+  /**
+   * iOS app 跳转链接
+   */
+  iosLink: string;
+  /**
+   * 其他链接
+   */
+  otherLink: string;
+  /**
+   * 微信小程序原始 id
+   */
+  wxMiniprogramOriginalId: string;
+  /**
+   * 微信小程序应用 id
+   */
+  wxMiniprogramAppId: string;
+  /**
+   * 微信小程序内页面路径及参数
+   */
+  wxMiniprogramLink: string;
+}
+
+/**
+ * 跳转链接配置项
+ */
+export interface NavigateToLinkOptions {
+  /** 链接数据 */
+  linkData: LinkData;
+  /** 通用链接打开处理器 */
+  openLink: (url: string, jumpWay: LinkJumpWay) => void;
+  /** 是否处于保利威 webview 中 */
+  isPlvWebview?: () => boolean;
+  /** 获取保利威 webview 桥接器 */
+  getPlvWebviewBridge?: () => Promise<WebViewBridge | undefined>;
+  /** 获取保利威 webview 小窗尺寸 */
+  getPlvWebviewSmallWindowSize?: () => { width: number; height: number; };
+  isWxMiniProgramEnv?: () => Promise<boolean | undefined>;
+  /** 跳转微信小程序 */
+  toWxMiniProgram?: (link: string) => void;
+}
+
+/**
+   * 获取原生 App 方法
+   */
+function getNativeToPointMallFn() {
+  if (isAndroid) {
+    return window.AndroidNative?.toPointMall;
+  } else if (isIOS) {
+    return window.webkit?.messageHandlers?.gotoPointsMall?.postMessage;
+  }
+}
+
+/**
+ * 调用原生方法跳转
+ */
+function toNativeLink(options: {
+  androidLink: string;
+  iosLink: string;
+  otherLink: string;
+}) {
+  const { androidLink, iosLink, otherLink } = options;
+
+  const nativePointMallFn = getNativeToPointMallFn();
+  if (nativePointMallFn) {
+    let url = isAndroid ? androidLink : iosLink;
+
+    // 处理地址并注入 plt_back_uri
+    const pltBackUri = encodeURIComponent(location.href);
+    url = concat(url, {
+      plt_back_uri: pltBackUri,
+    });
+
+    const paramsStr = JSON.stringify({
+      url,
+    });
+    nativePointMallFn(paramsStr);
+    return;
+  }
+
+  window.open(otherLink, '_blank', 'noopener=yes');
+}
+
+/**
+ * 处理 webview
+ */
+async function toPlvWebviewBridge(options: {
+  link: string;
+  data: unknown;
+  getPlvWebviewSmallWindowSize?: () => { width: number; height: number; } | undefined;
+  getPlvWebviewBridge?: () => Promise<WebViewBridge | undefined>;
+}) {
+  const { getPlvWebviewSmallWindowSize, getPlvWebviewBridge } = options;
+
+  const plvWebviewDataSize = getPlvWebviewSmallWindowSize?.() || { width: 90, height: 160 };
+
+  const webviewBridge = await getPlvWebviewBridge?.();
+  if (!webviewBridge) {
+    return;
+  }
+
+  webviewBridge.sendData('clickProduct', {
+    width: plvWebviewDataSize.width,
+    height: plvWebviewDataSize.height,
+    newPage: true,
+    link: options.link,
+    data: options.data,
+  });
+}
+
+/**
+ * 处理多平台
+ */
+async function toMultiPlatformLink(options: {
+  linkData: LinkData,
+  isWxMiniProgramEnv?: () => Promise<boolean | undefined>,
+  toWxMiniProgram?: (link: string) => void;
+  openLink: (url: string, jumpWay: LinkJumpWay) => void;
+}) {
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink } = options;
+  const { wxMiniprogramLink, mobileLink, pcLink } = linkData;
+
+  let isWxMiniProgramWebview = false;
+  try {
+    isWxMiniProgramWebview = (await isWxMiniProgramEnv?.()) || false;
+  } catch (err) {
+    isWxMiniProgramWebview = false;
+  }
+
+  // 小程序 webview 环境，利用微信 sdk 跳转指定页面
+  if (isWxMiniProgramWebview && wxMiniprogramLink && toWxMiniProgram) {
+    toWxMiniProgram(formatLink(wxMiniprogramLink));
+    return;
+  }
+
+  // 移动 Web 跳转
+  if (isMobile) {
+    openLink(formatLink(mobileLink), LinkJumpWay.NewWindow);
+    return;
+  }
+
+  // PC 跳转
+  if (!isMobile) {
+    openLink(formatLink(pcLink), LinkJumpWay.NewWindow);
+  }
+}
+
+/**
+ * 格式化链接地址
+ * @param url 需要格式化的链接地址
+ * @param getLinkParams 获取额外参数的函数，可选
+ * @returns 格式化后的链接地址
+ */
+export function formatLink(url: string, getLinkParams?: (url: string) => Record<string, unknown>) {
+  let urlParams = {};
+
+  if (getLinkParams) {
+    const res = getLinkParams(url);
+    urlParams = Object.assign({}, urlParams, res);
+  }
+  return concat(url, urlParams);
+}
+
+/**
+ * 根据链接类型和当前环境进行跳转处理
+ * @param options 跳转配置项
+ * @param options.linkData 链接数据，包含各种平台的链接和跳转方式
+ * @param options.openLink 通用链接打开处理器
+ * @param options.isPlvWebview 判断是否处于保利威 webview 中的函数
+ * @param options.getPlvWebviewSmallWindowSize 获取保利威 webview 小窗尺寸的函数
+ * @param options.getPlvWebviewBridge 获取保利威 webview 桥接器的函数
+ * @param options.isWxMiniProgramEnv 判断是否处于微信小程序环境的函数
+ * @param options.toWxMiniProgram 跳转微信小程序的函数
+ */
+export function navigateToLink(options: NavigateToLinkOptions): void {
+  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram } = options;
+  const { linkType } = linkData;
+
+  const supportPlvWebview = isPlvWebview?.() || false;
+
+  // 原生方法跳转
+  if (linkType === LinkType.Native) {
+    toNativeLink({
+      androidLink: formatLink(linkData.androidLink),
+      iosLink: formatLink(linkData.iosLink),
+      otherLink: formatLink(linkData.otherLink),
+    });
+    return;
+  }
+
+  // 保利威 SDK Webview 下跳转
+  if (supportPlvWebview) {
+    let linkTo = '';
+    const { link, mobileLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+
+    switch (linkType) {
+      case LinkType.Normal:
+        linkTo = link;
+        break;
+      case LinkType.MultiPlatform:
+        linkTo = mobileAppLink || mobileLink;
+        break;
+    }
+
+    // 非通用链接，将其余字段单独放到 data 供接入方使用
+    let otherData = null;
+    if (linkType !== LinkType.Normal) {
+      otherData = {
+        mobileLink: formatLink(mobileLink),
+        wxMiniprogramOriginalId,
+        wxMiniprogramLink: formatLink(wxMiniprogramLink),
+        mobileAppLink: formatLink(mobileAppLink),
+      };
+    }
+
+    toPlvWebviewBridge({
+      link: formatLink(linkTo),
+      data: otherData,
+      getPlvWebviewSmallWindowSize,
+      getPlvWebviewBridge,
+    });
+    return;
+  }
+
+  // 通用平台
+  if (linkType === LinkType.Normal) {
+    const { link, jumpWay } = linkData;
+    openLink(formatLink(link), jumpWay);
+    return;
+  }
+
+  // 多平台跳转
+  if (linkType === LinkType.MultiPlatform) {
+    toMultiPlatformLink({
+      linkData,
+      isWxMiniProgramEnv,
+      toWxMiniProgram,
+      openLink,
+    });
+  }
+}

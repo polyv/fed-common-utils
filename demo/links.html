@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,shrink-to-fit=no" />
+  <meta name="format-detection" content="telephone=no,email=no" />
+  <link href="/qunit/qunit-2.6.2.css" rel="stylesheet" type="text/css" />
+  <title>Links 链接跳转功能测试</title>
+  <style>
+    .demo-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .demo-section h3 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 2px solid #007cba;
+      padding-bottom: 5px;
+    }
+    .demo-section h4 {
+      color: #555;
+      margin: 15px 0 10px 0;
+    }
+    .demo-buttons {
+      margin: 10px 0;
+    }
+    .demo-buttons button {
+      margin: 5px;
+      padding: 8px 16px;
+      border: 1px solid #007cba;
+      background: #007cba;
+      color: white;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .demo-buttons button:hover {
+      background: #005a87;
+    }
+    .demo-buttons button:disabled {
+      background: #ccc;
+      border-color: #ccc;
+      cursor: not-allowed;
+    }
+    .demo-buttons button.secondary {
+      background: #28a745;
+      border-color: #28a745;
+    }
+    .demo-buttons button.secondary:hover {
+      background: #218838;
+    }
+    .demo-log {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      line-height: 1.4;
+    }
+    .demo-log div {
+      margin: 2px 0;
+      word-break: break-all;
+    }
+    .env-info {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .clear-log {
+      margin-left: 10px;
+      background: #dc3545;
+      border-color: #dc3545;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .clear-log:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+<div class="demo-section">
+  <h3>🔗 链接跳转功能测试 (Links Module Test)</h3>
+
+  <div class="env-info">
+    <strong>🌍 当前环境信息：</strong><br>
+    <span id="env-info">加载中...</span>
+  </div>
+
+  <div class="demo-section">
+    <h4>1. 通用链接跳转测试 (Normal Link Navigation)</h4>
+    <p>测试基本的链接跳转功能，支持不同的打开方式</p>
+    <div class="demo-buttons">
+      <button id="btn-normal-new">🔗 新窗口打开</button>
+      <button id="btn-normal-current">🏠 当前窗口打开</button>
+      <button id="btn-normal-popup">💬 弹窗打开</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h4>2. 多平台链接跳转测试 (Multi-Platform Navigation)</h4>
+    <p>根据设备类型和环境自动选择合适的链接进行跳转</p>
+    <div class="demo-buttons">
+      <button id="btn-multi-platform">🌈 多平台自动跳转</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h4>3. 原生 App 跳转测试 (Native App Navigation)</h4>
+    <p>调用原生 App 方法进行跳转，支持 Android 和 iOS</p>
+    <div class="demo-buttons">
+      <button id="btn-native">📱 原生 App 跳转</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h4>4. 保利威 Webview 跳转测试 (Polyv Webview Navigation)</h4>
+    <p>模拟保利威 Webview 环境下的链接跳转</p>
+    <div class="demo-buttons">
+      <button id="btn-plv-webview" class="secondary">🎥 保利威 Webview 跳转</button>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h4>5. 工具函数测试 (Utility Functions)</h4>
+    <p>测试链接格式化等工具函数</p>
+    <div class="demo-buttons">
+      <button id="btn-format-link" class="secondary">🔧 测试链接格式化</button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-section">
+  <h4>📝 测试日志
+    <button id="btn-clear-log" class="clear-log">🧹 清空日志</button>
+  </h4>
+  <div class="demo-log" id="demo-log">
+    <div><strong>🚀 链接跳转测试工具初始化完成，点击上方按钮测试各种功能...</strong></div>
+  </div>
+</div>
+
+<script src="/qunit/qunit-2.6.2.js"></script>
+<script>
+  // 页面加载时显示环境信息
+  document.addEventListener('DOMContentLoaded', () => {
+    // 显示基本环境信息
+    const envInfo = document.getElementById('env-info');
+    if (envInfo) {
+      const info = [
+        `📱 User Agent: ${navigator.userAgent}`,
+        `🖥️ Screen: ${screen.width}x${screen.height}`,
+        `🪟 Window: ${window.innerWidth}x${window.innerHeight}`,
+        `💻 Platform: ${navigator.platform}`,
+        `🌐 Language: ${navigator.language}`
+      ];
+      envInfo.innerHTML = info.join('<br>');
+    }
+  });
+</script>
+</body>
+</html>
