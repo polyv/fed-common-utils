@@ -128,11 +128,19 @@ export interface LinkData {
     wxMiniprogramLink: string;
 }
 /**
+ * 获取链接参数
+ */
+export type GetLinkParams = (url: string) => Record<string, unknown>;
+/**
  * 跳转链接配置项
  */
 export interface NavigateToLinkOptions {
     /** 链接数据 */
     linkData: LinkData;
+    /**
+     * 获取链接参数
+     */
+    getLinkParams?: GetLinkParams;
     /** 通用链接打开处理器 */
     openLink: (url: string, jumpWay: LinkJumpWay) => void;
     /** 是否处于保利威 webview 中 */
@@ -159,6 +167,7 @@ export declare function formatLink(url: string, getLinkParams?: (url: string) =>
  * 根据链接类型和当前环境进行跳转处理
  * @param options 跳转配置项
  * @param options.linkData 链接数据，包含各种平台的链接和跳转方式
+ * @param options.getLinkParams 获取链接参数的函数
  * @param options.openLink 通用链接打开处理器
  * @param options.isPlvWebview 判断是否处于保利威 webview 中的函数
  * @param options.getPlvWebviewSmallWindowSize 获取保利威 webview 小窗尺寸的函数
