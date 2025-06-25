@@ -145,11 +145,20 @@ export interface LinkData {
 }
 
 /**
+ * 获取链接参数
+ */
+export type GetLinkParams = (url: string) => Record<string, unknown>;
+
+/**
  * 跳转链接配置项
  */
 export interface NavigateToLinkOptions {
   /** 链接数据 */
   linkData: LinkData;
+  /**
+   * 获取链接参数
+   */
+  getLinkParams?: GetLinkParams;
   /** 通用链接打开处理器 */
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   /** 是否处于保利威 webview 中 */
@@ -236,11 +245,12 @@ async function toPlvWebviewBridge(options: {
  */
 async function toMultiPlatformLink(options: {
   linkData: LinkData,
+  getLinkParams?: GetLinkParams,
   isWxMiniProgramEnv?: () => Promise<boolean | undefined>,
   toWxMiniProgram?: (link: string) => void;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
 }) {
-  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink } = options;
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams } = options;
   const { wxMiniprogramLink, mobileLink, pcLink } = linkData;
 
   let isWxMiniProgramWebview = false;
@@ -252,19 +262,19 @@ async function toMultiPlatformLink(options: {
 
   // 小程序 webview 环境，利用微信 sdk 跳转指定页面
   if (isWxMiniProgramWebview && wxMiniprogramLink && toWxMiniProgram) {
-    toWxMiniProgram(formatLink(wxMiniprogramLink));
+    toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
     return;
   }
 
   // 移动 Web 跳转
   if (isMobile) {
-    openLink(formatLink(mobileLink), LinkJumpWay.NewWindow);
+    openLink(formatLink(mobileLink, getLinkParams), LinkJumpWay.NewWindow);
     return;
   }
 
   // PC 跳转
   if (!isMobile) {
-    openLink(formatLink(pcLink), LinkJumpWay.NewWindow);
+    openLink(formatLink(pcLink, getLinkParams), LinkJumpWay.NewWindow);
   }
 }
 
@@ -288,6 +298,7 @@ export function formatLink(url: string, getLinkParams?: (url: string) => Record<
  * 根据链接类型和当前环境进行跳转处理
  * @param options 跳转配置项
  * @param options.linkData 链接数据，包含各种平台的链接和跳转方式
+ * @param options.getLinkParams 获取链接参数的函数
  * @param options.openLink 通用链接打开处理器
  * @param options.isPlvWebview 判断是否处于保利威 webview 中的函数
  * @param options.getPlvWebviewSmallWindowSize 获取保利威 webview 小窗尺寸的函数
@@ -296,7 +307,7 @@ export function formatLink(url: string, getLinkParams?: (url: string) => Record<
  * @param options.toWxMiniProgram 跳转微信小程序的函数
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram } = options;
+  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams } = options;
   const { linkType } = linkData;
 
   const supportPlvWebview = isPlvWebview?.() || false;
@@ -304,9 +315,9 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
   // 原生方法跳转
   if (linkType === LinkType.Native) {
     toNativeLink({
-      androidLink: formatLink(linkData.androidLink),
-      iosLink: formatLink(linkData.iosLink),
-      otherLink: formatLink(linkData.otherLink),
+      androidLink: formatLink(linkData.androidLink, getLinkParams),
+      iosLink: formatLink(linkData.iosLink, getLinkParams),
+      otherLink: formatLink(linkData.otherLink, getLinkParams),
     });
     return;
   }
@@ -329,15 +340,15 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
     let otherData = null;
     if (linkType !== LinkType.Normal) {
       otherData = {
-        mobileLink: formatLink(mobileLink),
+        mobileLink: formatLink(mobileLink, getLinkParams),
         wxMiniprogramOriginalId,
-        wxMiniprogramLink: formatLink(wxMiniprogramLink),
-        mobileAppLink: formatLink(mobileAppLink),
+        wxMiniprogramLink: formatLink(wxMiniprogramLink, getLinkParams),
+        mobileAppLink: formatLink(mobileAppLink, getLinkParams),
       };
     }
 
     toPlvWebviewBridge({
-      link: formatLink(linkTo),
+      link: formatLink(linkTo, getLinkParams),
       data: otherData,
       getPlvWebviewSmallWindowSize,
       getPlvWebviewBridge,
@@ -348,7 +359,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
   // 通用平台
   if (linkType === LinkType.Normal) {
     const { link, jumpWay } = linkData;
-    openLink(formatLink(link), jumpWay);
+    openLink(formatLink(link, getLinkParams), jumpWay);
     return;
   }
 
@@ -356,6 +367,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
   if (linkType === LinkType.MultiPlatform) {
     toMultiPlatformLink({
       linkData,
+      getLinkParams,
       isWxMiniProgramEnv,
       toWxMiniProgram,
       openLink,
