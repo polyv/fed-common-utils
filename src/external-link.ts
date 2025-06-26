@@ -19,24 +19,11 @@ export interface WebViewBridge {
   sendData: (event: string, data: Record<string, unknown>) => void;
 }
 
-const ua = navigator.userAgent.toLowerCase();
 const uaInfo = getCurrentUAInfo();
 /** 是否安卓 */
 export const isAndroid = uaInfo.os.isAndroid;
 /** 是否 iOS */
 export const isIOS = uaInfo.os.isIOS;
-/** 是否微信（非企业微信） */
-export const isWeixin = uaInfo.client.isWx;
-/** 是否企业微信 */
-export const isWorkWeixin = uaInfo.client.isWxWork;
-
-/** 判断 PC 端微信小程序环境 */
-export const isPcMiniProgram = (isWeixin || isWorkWeixin) && /miniprogramenv/.test(ua);
-
-/** 是否移动端 */
-export const isMobile = (() => {
-  return uaInfo.isPortable || isPcMiniProgram;
-})();
 
 type ToPointMallFunc = (params: string) => unknown;
 declare global {
@@ -163,6 +150,8 @@ export interface NavigateToLinkOptions {
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   /** 是否处于保利威 webview 中 */
   isPlvWebview?: () => boolean;
+  /** 是否移动端 */
+  isMobile?: () => boolean;
   /** 获取保利威 webview 桥接器 */
   getPlvWebviewBridge?: () => Promise<WebViewBridge | undefined>;
   /** 获取保利威 webview 小窗尺寸 */
@@ -249,9 +238,11 @@ async function toMultiPlatformLink(options: {
   isWxMiniProgramEnv?: () => Promise<boolean | undefined>,
   toWxMiniProgram?: (link: string) => void;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
+  isMobile?: () => boolean;
 }) {
-  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams } = options;
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
   const { wxMiniprogramLink, mobileLink, pcLink } = linkData;
+  const isMobilePlatform = isMobile?.() || false;
 
   let isWxMiniProgramWebview = false;
   try {
@@ -267,13 +258,13 @@ async function toMultiPlatformLink(options: {
   }
 
   // 移动 Web 跳转
-  if (isMobile) {
+  if (isMobilePlatform) {
     openLink(formatLink(mobileLink, getLinkParams), LinkJumpWay.NewWindow);
     return;
   }
 
   // PC 跳转
-  if (!isMobile) {
+  if (!isMobilePlatform) {
     openLink(formatLink(pcLink, getLinkParams), LinkJumpWay.NewWindow);
   }
 }
@@ -301,13 +292,14 @@ export function formatLink(url: string, getLinkParams?: (url: string) => Record<
  * @param options.getLinkParams 获取链接参数的函数
  * @param options.openLink 通用链接打开处理器
  * @param options.isPlvWebview 判断是否处于保利威 webview 中的函数
+ * @param options.isMobile 判断是否移动端的函数
  * @param options.getPlvWebviewSmallWindowSize 获取保利威 webview 小窗尺寸的函数
  * @param options.getPlvWebviewBridge 获取保利威 webview 桥接器的函数
  * @param options.isWxMiniProgramEnv 判断是否处于微信小程序环境的函数
  * @param options.toWxMiniProgram 跳转微信小程序的函数
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams } = options;
+  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
   const { linkType } = linkData;
 
   const supportPlvWebview = isPlvWebview?.() || false;
@@ -371,6 +363,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       isWxMiniProgramEnv,
       toWxMiniProgram,
       openLink,
+      isMobile,
     });
   }
 }
