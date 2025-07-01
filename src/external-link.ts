@@ -258,13 +258,13 @@ async function toMultiPlatformLink(options: {
   }
 
   // 移动 Web 跳转
-  if (isMobilePlatform) {
+  if (isMobilePlatform && mobileLink) {
     openLink(formatLink(mobileLink, getLinkParams), LinkJumpWay.NewWindow);
     return;
   }
 
   // PC 跳转
-  if (!isMobilePlatform) {
+  if (!isMobilePlatform && pcLink) {
     openLink(formatLink(pcLink, getLinkParams), LinkJumpWay.NewWindow);
   }
 }
