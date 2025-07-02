@@ -288,15 +288,6 @@ export function formatLink(url: string, getLinkParams?: (url: string) => Record<
 /**
  * 根据链接类型和当前环境进行跳转处理
  * @param options 跳转配置项
- * @param options.linkData 链接数据，包含各种平台的链接和跳转方式
- * @param options.getLinkParams 获取链接参数的函数
- * @param options.openLink 通用链接打开处理器
- * @param options.isPlvWebview 判断是否处于保利威 webview 中的函数
- * @param options.isMobile 判断是否移动端的函数
- * @param options.getPlvWebviewSmallWindowSize 获取保利威 webview 小窗尺寸的函数
- * @param options.getPlvWebviewBridge 获取保利威 webview 桥接器的函数
- * @param options.isWxMiniProgramEnv 判断是否处于微信小程序环境的函数
- * @param options.toWxMiniProgram 跳转微信小程序的函数
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
   const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
