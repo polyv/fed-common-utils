@@ -9,7 +9,7 @@ import {
   isWorkWeixin,
   isPcMiniProgram,
   isMobile
-} from '@/external-links';
+} from '@/external-link';
 
 // 日志输出函数
 function log(message) {
