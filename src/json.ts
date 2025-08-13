@@ -65,3 +65,38 @@ export function tryParseJSON(
   }
   return result;
 }
+
+/**
+ * 转换 JSON 字符串成对象
+ * @param params 指定字符串。
+ * @return 转换结果。
+ * @example
+ * ```javascript
+ * parseJson('{"a": 1}'); // { success: true, data: { a: 1 } }
+ * parseJson('12&&**'); // { success: false, data: '12&&**' }
+ * ```
+ */
+export function parseJson<T>(params: string):
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      data: string;
+    } {
+  let result: T | string = params;
+
+  try {
+    result = JSON.parse(result) as T;
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: result as string,
+    };
+  }
+}
