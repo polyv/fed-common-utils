@@ -93,3 +93,43 @@ export function convertFileSize(
 
   return result;
 }
+
+/**
+ * 获取文件扩展名
+ * @param fileName 文件名
+ * @returns 文件扩展名
+ * @example
+ * ```typescript
+ * const ext = getFileExtension('test.pdf');
+ * console.log(ext); // pdf
+ * ```
+ */
+export function getFileExtension(fileName: string): string {
+  const ext = fileName.split('.').pop();
+  return ext || '';
+}
+
+export type FileType = 'pdf' | 'word' | 'ppt' | 'excel' | 'image' | 'other';
+
+/**
+ * 根据文件扩展名推断文件类型
+ * @param extension 文件扩展名
+ * @returns 文件类型
+ * @example
+ * ```typescript
+ * getFileType('test.pdf'); // pdf
+ * getFileType('test.docx'); // word
+ * getFileType('test.pptx'); // ppt
+ * getFileType('test.jpg'); // image
+ * getFileType('test.webp'); // image
+ * getFileType('test.txt'); // other
+ * ```
+ */
+export function getFileType(fileName: string): FileType {
+  const ext = getFileExtension(fileName);
+  if (['pdf'].includes(ext)) return 'pdf';
+  if (['doc', 'docx'].includes(ext)) return 'word';
+  if (['ppt', 'pptx'].includes(ext)) return 'ppt';
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(ext)) return 'image';
+  return 'other';
+}
