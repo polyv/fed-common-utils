@@ -8,10 +8,10 @@
  * @example
  * ```typescript
  * const tuple = genTuple(1, 2, '3');
- * console.log(tuple); // [1, 2, '3']，类型：[number, number, string]
+ * console.log(tuple); // [1, 2, '3']，类型：[1, 2, '3']
  * ```
  */
-export const genTuple = <T extends unknown[]>(...args: T): T => args;
+export const genTuple = <T extends (string | number | boolean)[]>(...args: T): T => args;
 
 /**
  * 将数组分组
