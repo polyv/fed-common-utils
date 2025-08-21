@@ -162,17 +162,6 @@ export interface NavigateToLinkOptions {
 }
 
 /**
-   * 获取原生 App 方法
-   */
-function getNativeToPointMallFn() {
-  if (isAndroid) {
-    return window.AndroidNative?.toPointMall;
-  } else if (isIOS) {
-    return window.webkit?.messageHandlers?.gotoPointsMall?.postMessage;
-  }
-}
-
-/**
  * 调用原生方法跳转
  */
 function toNativeLink(options: {
@@ -181,21 +170,25 @@ function toNativeLink(options: {
   otherLink: string;
 }) {
   const { androidLink, iosLink, otherLink } = options;
+  let url = isAndroid ? androidLink : iosLink;
 
-  const nativePointMallFn = getNativeToPointMallFn();
-  if (nativePointMallFn) {
-    let url = isAndroid ? androidLink : iosLink;
+  // 处理地址并注入 plt_back_uri
+  const pltBackUri = encodeURIComponent(location.href);
+  url = concat(url, {
+    plt_back_uri: pltBackUri,
+  });
 
-    // 处理地址并注入 plt_back_uri
-    const pltBackUri = encodeURIComponent(location.href);
-    url = concat(url, {
-      plt_back_uri: pltBackUri,
-    });
+  const paramsStr = JSON.stringify({
+    url,
+  });
 
-    const paramsStr = JSON.stringify({
-      url,
-    });
-    nativePointMallFn(paramsStr);
+  if (isAndroid && window.AndroidNative?.toPointMall) {
+    window.AndroidNative.toPointMall(paramsStr);
+    return;
+  }
+
+  if (isIOS && window.webkit?.messageHandlers?.gotoPointsMall?.postMessage) {
+    window.webkit.messageHandlers.gotoPointsMall.postMessage(paramsStr);
     return;
   }
 
