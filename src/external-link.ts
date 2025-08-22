@@ -162,6 +162,20 @@ export interface NavigateToLinkOptions {
 }
 
 /**
+ * 调用原生 App 方法
+ */
+function invokeNativePointMall(params: string) {
+  if (isAndroid) {
+    window.AndroidNative?.toPointMall?.(params);
+    return;
+  }
+
+  if (isIOS) {
+    window.webkit?.messageHandlers?.gotoPointsMall?.postMessage?.(params);
+  }
+}
+
+/**
  * 调用原生方法跳转
  */
 function toNativeLink(options: {
@@ -170,6 +184,12 @@ function toNativeLink(options: {
   otherLink: string;
 }) {
   const { androidLink, iosLink, otherLink } = options;
+
+  if (!window.AndroidNative?.toPointMall && !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage) {
+    window.open(otherLink, '_blank', 'noopener=yes');
+    return;
+  }
+
   let url = isAndroid ? androidLink : iosLink;
 
   // 处理地址并注入 plt_back_uri
@@ -181,18 +201,7 @@ function toNativeLink(options: {
   const paramsStr = JSON.stringify({
     url,
   });
-
-  if (isAndroid && window.AndroidNative?.toPointMall) {
-    window.AndroidNative.toPointMall(paramsStr);
-    return;
-  }
-
-  if (isIOS && window.webkit?.messageHandlers?.gotoPointsMall?.postMessage) {
-    window.webkit.messageHandlers.gotoPointsMall.postMessage(paramsStr);
-    return;
-  }
-
-  window.open(otherLink, '_blank', 'noopener=yes');
+  invokeNativePointMall(paramsStr);
 }
 
 /**
