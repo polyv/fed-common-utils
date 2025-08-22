@@ -1,0 +1,1 @@
+import*as md5 from"md5";export function genAPISign(t,e){const o=Object.keys(t).filter((t=>"sign"!==t)).sort();let r="";return o.forEach((e=>{let o=t[e];"object"==typeof o&&(o=JSON.stringify(o)),r+=e+o})),md5(e+r+e).toString().toUpperCase()}

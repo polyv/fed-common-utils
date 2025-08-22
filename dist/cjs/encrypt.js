@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.genAPISign=genAPISign;var md5=require("md5");function genAPISign(e,r){var t=Object.keys(e).filter((function(e){return"sign"!==e})).sort(),n="";return t.forEach((function(r){var t=e[r];"object"==typeof t&&(t=JSON.stringify(t)),n+=r+t})),md5(r+n+r).toString().toUpperCase()}

@@ -1,1 +1,1 @@
-export function cloneJSON(t){return null==t?t:JSON.parse(JSON.stringify(t))}export function tryParseJSON(t,r){let n;try{n=JSON.parse(t)}catch(t){n="function"==typeof r?r(t):r}return n}
+export function cloneJSON(n){return null==n?n:JSON.parse(JSON.stringify(n))}export function tryParseJSON(n,l){var r;let t=null;try{t=JSON.parse(n)}catch(n){t="function"==typeof l?null!==(r=l(n))&&void 0!==r?r:null:null!=l?l:null}return t}

@@ -47,3 +47,40 @@ export interface FileSizeConversionResult {
  * @returns 转换结果。
  */
 export declare function convertFileSize(sizeInBytes: number, options: FileSizeUnit | FileSizeConversionOptions): FileSizeConversionResult;
+/**
+ * 获取扩展名，支持传入文件名或 URL。
+ * @param url 文件名或 URL。
+ * @returns 扩展名。
+ */
+export declare function getExtname(url: string): string;
+/**
+ * 文件类型。
+ */
+export declare enum FileType {
+    /**
+     * 演示稿。
+     */
+    PPT = "ppt",
+    /**
+     * PDF 文档。
+     */
+    PDF = "pdf",
+    /**
+     * Word 文档。
+     */
+    Word = "word",
+    /**
+     * 图片。
+     */
+    Image = "image",
+    /**
+     * 其他。
+     */
+    Others = "others"
+}
+/**
+ * 获取文件类型，支持传入文件名或 URL。
+ * @param url 文件名或 URL。
+ * @returns 文件类型。
+ */
+export declare function getFileType(url: string): FileType;

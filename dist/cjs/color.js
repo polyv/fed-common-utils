@@ -1,0 +1,1 @@
+"use strict";function hexToRGB(e){var t=/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e)||/^#([a-f\d])([a-f\d])([a-f\d])$/.exec(e);return t?[t[1],t[2],t[3]].map((function(e){return parseInt(1===e.length?e+e:e,16)})):null}Object.defineProperty(exports,"__esModule",{value:!0}),exports.hexToRGB=hexToRGB;
