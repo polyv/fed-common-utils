@@ -161,13 +161,16 @@ export interface NavigateToLinkOptions {
 }
 
 /**
-   * 获取原生 App 方法
-   */
-function getNativeToPointMallFn() {
+ * 调用原生 App 方法
+ */
+function invokeNativePointMall(params: string) {
   if (isAndroid) {
-    return window.AndroidNative?.toPointMall;
-  } else if (isIOS) {
-    return window.webkit?.messageHandlers?.gotoPointsMall?.postMessage;
+    window.AndroidNative?.toPointMall?.(params);
+    return;
+  }
+
+  if (isIOS) {
+    window.webkit?.messageHandlers?.gotoPointsMall?.postMessage?.(params);
   }
 }
 
@@ -181,24 +184,23 @@ function toNativeLink(options: {
 }) {
   const { androidLink, iosLink, otherLink } = options;
 
-  const nativePointMallFn = getNativeToPointMallFn();
-  if (nativePointMallFn) {
-    let url = isAndroid ? androidLink : iosLink;
-
-    // 处理地址并注入 plt_back_uri
-    const pltBackUri = encodeURIComponent(location.href);
-    url = concat(url, {
-      plt_back_uri: pltBackUri,
-    });
-
-    const paramsStr = JSON.stringify({
-      url,
-    });
-    nativePointMallFn(paramsStr);
+  if (!window.AndroidNative?.toPointMall && !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage) {
+    window.open(otherLink, '_blank', 'noopener=yes');
     return;
   }
 
-  window.open(otherLink, '_blank', 'noopener=yes');
+  let url = isAndroid ? androidLink : iosLink;
+
+  // 处理地址并注入 plt_back_uri
+  const pltBackUri = encodeURIComponent(location.href);
+  url = concat(url, {
+    plt_back_uri: pltBackUri,
+  });
+
+  const paramsStr = JSON.stringify({
+    url,
+  });
+  invokeNativePointMall(paramsStr);
 }
 
 /**
