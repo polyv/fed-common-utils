@@ -166,10 +166,7 @@ export interface NavigateToLinkOptions {
 function invokeNativePointMall(params: string) {
   if (isAndroid) {
     window.AndroidNative?.toPointMall?.(params);
-    return;
-  }
-
-  if (isIOS) {
+  } else if (isIOS) {
     window.webkit?.messageHandlers?.gotoPointsMall?.postMessage?.(params);
   }
 }
@@ -184,7 +181,10 @@ function toNativeLink(options: {
 }) {
   const { androidLink, iosLink, otherLink } = options;
 
-  if (!window.AndroidNative?.toPointMall && !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage) {
+  if (
+    !window.AndroidNative?.toPointMall &&
+    !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage
+  ) {
     window.open(otherLink, '_blank', 'noopener=yes');
     return;
   }
