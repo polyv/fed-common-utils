@@ -3,8 +3,8 @@
  * @packageDocumentation
  */
 
-import * as md5 from 'md5';
-import * as sha256 from 'sha256';
+import md5 from 'md5';
+import sha256 from 'sha256';
 
 
 /**
