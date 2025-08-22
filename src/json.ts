@@ -18,11 +18,13 @@ export function cloneJSON(obj: unknown): any {
 }
 
 
+type JSONValue = string | number | boolean | null | object | Array<JSONValue>;
+
 /**
  * JSON 字符串解析失败时的回调。
  */
-export interface IErrorCallback {
-  (e: Error): unknown
+export interface IErrorCallback<T> {
+  (e: Error): void | null | T
 }
 
 /**
@@ -36,7 +38,7 @@ export interface IErrorCallback {
  * tryParseJSON('{"a": 1}'); // { a: 1 }
  * ```
  */
-export function tryParseJSON(str: string, onError?: IErrorCallback): unknown;
+export function tryParseJSON<T>(str: string, onError?: IErrorCallback<T>): T | null;
 
 /**
  * 尝试把指定字符串解析为 JSON 对象。
@@ -48,19 +50,19 @@ export function tryParseJSON(str: string, onError?: IErrorCallback): unknown;
  * tryParseJSON('12&&**', 1); // 1
  * ```
  */
-export function tryParseJSON(str: string, defaultValue?: unknown): unknown;
+export function tryParseJSON<T>(str: string, defaultValue?: T): T | null;
 
-export function tryParseJSON(
-  str: string, onError?: IErrorCallback | unknown
-): unknown {
-  let result: unknown;
+export function tryParseJSON<T extends JSONValue>(
+  str: string, onError?: IErrorCallback<T> | T
+): T | null {
+  let result: T | null = null;
   try {
     result = JSON.parse(str);
   } catch (e) {
     if (typeof onError === 'function') {
-      result = onError(<Error>e);
+      result = onError(<Error>e) ?? null;
     } else {
-      result = onError;
+      result = onError ?? null;
     }
   }
   return result;

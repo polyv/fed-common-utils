@@ -16,7 +16,7 @@ QUnit.test('clone', (assert) => {
 });
 
 QUnit.test('tryParseJSON', (assert) => {
-  assert.strictEqual(tryParseJSON('ss&&**'), undefined);
+  assert.strictEqual(tryParseJSON('ss&&**'), null);
   assert.strictEqual(tryParseJSON('ss&&**', 123), 123);
   assert.strictEqual(tryParseJSON('ss&&**', function() { return 'a'; }), 'a');
   assert.deepEqual(tryParseJSON('{"a": 1}'), { a: 1 });
