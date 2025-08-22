@@ -313,3 +313,41 @@ export function compressHTMLImgs(
     },
   );
 }
+
+
+/**
+ * 预加载图片。
+ * @param url 图片 URL。
+ * @returns 图片尺寸和图片元素。
+ * @example
+ * ```javascript
+ * await preloadImg('https://example.com/image.jpg'); // { width, height, element }
+ * ```
+ */
+export function preloadImg(url: string): Promise<{
+  width: number
+  height: number,
+  element: HTMLImageElement
+}> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    function onload() {
+      resolve({
+        width: img.width,
+        height: img.height,
+        element: img
+      });
+    }
+
+    img.onload = onload;
+    img.onerror = function() {
+      reject(
+        new Error(`"${url}" load failed.`)
+      );
+    };
+
+    img.src = url;
+    if (img.complete) { onload(); }
+  });
+}
