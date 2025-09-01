@@ -186,7 +186,6 @@ export class EventEmitter<
    * @param event 事件名
    * @param params 回调参数
    */
-  public emit<E extends Events>(event: E, params: Relations[E], cb: EventHandlerCb): void;
   public emit<E extends Events>(event: E, params: Relations[E], cb?: EventHandlerCb): void;
   public emit<E extends Events>(event: undefined extends Relations[E] ? E : never,): void;
   public emit<E extends Events>(
