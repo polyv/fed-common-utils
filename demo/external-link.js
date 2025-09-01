@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const originalUrl = 'https://example.com/path';
 
-    const formattedUrl = formatLink(originalUrl, (url) => ({
+    const formattedUrl = formatLink(originalUrl, () => ({
       timestamp: Date.now(),
       source: 'demo',
       test: 'true',

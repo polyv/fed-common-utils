@@ -3,6 +3,7 @@
  */
 
 const path = require('path');
+const webpack = require('webpack');
 const merge = require('webpack-merge').merge;
 const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -32,17 +33,21 @@ glob.sync('**/*.html', {
   );
 });
 
+const devServer = {
+  host: '0.0.0.0',
+  disableHostCheck: true,
+  port: 14003,
+  compress: false,
+  overlay: true,
+  stats: 'minimal',
+};
+
 module.exports = merge(config, {
   mode: 'development',
   entry,
-  devServer: {
-    host: '0.0.0.0',
-    disableHostCheck: true,
-    port: 14003,
-    compress: false,
-    overlay: true
-  },
-  plugins: htmlWebpackPlugins.concat([
+  devServer,
+  plugins: [
+    ...htmlWebpackPlugins,
     new CopyPlugin({
       patterns: [
         {
@@ -50,6 +55,36 @@ module.exports = merge(config, {
           to: '/qunit'
         }
       ]
-    })
-  ])
+    }),
+    new webpack.ProgressPlugin((percentage, message, ...args) => {
+      const percent = Math.round(percentage * 100);
+      if (percent < 100) {
+        console.clear();
+        console.info(`🔨 编译中... ${percent}% ${message}`, ...args);
+      }
+    }),
+    {
+      apply: (compiler) => {
+        compiler.hooks.done.tap('DonePlugin', () => {
+          console.clear();
+          // 获取 host 和 port
+          const host = devServer.host || 'localhost';
+          const port = devServer.port || 8080;
+          const protocol = devServer.https ? 'https' : 'http';
+
+          const url = `${protocol}://${host === '0.0.0.0' ? 'localhost' : host}:${port}`;
+          console.log(
+            '\x1b[32m%s\x1b[0m',
+            '🎉 编译完成！请访问以下地址'
+          );
+          console.log('-------------------');
+          Object.entries(entry).forEach(([pageKey]) => {
+            console.log(`${url}/${pageKey}`);
+          });
+          console.log('-------------------');
+        });
+      }
+    }
+  ],
+
 });
