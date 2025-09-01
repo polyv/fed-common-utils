@@ -5,37 +5,37 @@
  * @example
  * ```js
  * import { EventEmitter } from '@polyv/utils/es/event';
- * 
+ *
  * const emitter = new EventEmitter();
  * const context = { name: 'my name' };
- * 
+ *
  * function eventHandler(e) {
  *   console.log(e);
  *   console.log(this === context); // true
  * }
- * 
+ *
  * // listen event
  * emitter.on('foo', eventHandler, context);
- * 
+ *
  * // listen once event
  * emitter.once('foo', eventHandler, context);
- * 
+ *
  * // fire event
  * emitter.emit('foo', { a: 1 });
- * 
+ *
  * // unlisten event
  * emitter.off('foo', eventHandler);
- * 
+ *
  * // ---------- use typescript define event parameter types ---------- //
  * type EventParams = {
  *   foo: string;
  *   boo: number;
  * };
- * 
+ *
  * const emitter = new EventEmitter<EventParams>();
- * 
+ *
  * emitter.on('foo', (e) => {}); // 'e' has inferred type 'string'
- * 
+ *
  * emitter.emit('foo', 18); // Error: Argument of type 'number' is not assignable to parameter of type 'string'. (2345)
  *
  * // ---------- use typescript define event enum ---------- //
@@ -43,14 +43,14 @@
  *   Foo = 'foo',
  *   Bar = 'bar',
  * }
- * 
+ *
  * type TestEventParams = {
  *   [TestEvent.Foo]: string;
  *   [TestEvent.Bar]: number;
  * };
- * 
+ *
  * const emitter = new EventEmitter<TestEventParams, TestEvent>();
- * 
+ *
  * emitter.emit(TestEvent.Foo, 'abc'); // ok
  *
  * emitter.emit('foo', 'abc'); // Error: Argument of type "'foo'" is not assignable to parameter of type 'TestEvent'. (2345)
@@ -72,11 +72,14 @@ export type EventRelationsType = Record<EventType, unknown>;
  */
 type EventWay = 'normal' | 'once';
 
+type EventHandlerCb = (res: unknown) => void;
+
 /**
  * 事件回调函数类型
  */
 export type EventHandler<Relations extends EventRelationsType, E extends EventType> = (
   params: Relations[E],
+  cb?: EventHandlerCb
 ) => unknown;
 
 interface EventStoreItem<Relations extends EventRelationsType, E extends EventType> {
@@ -180,11 +183,12 @@ export class EventEmitter<
    * @param event 事件名
    * @param params 回调参数
    */
-  public emit<E extends Events>(event: E, params: Relations[E]): void;
-  public emit<E extends Events>(event: undefined extends Relations[E] ? E : never): void;
+  public emit<E extends Events>(event: E, params: Relations[E], cb: EventHandlerCb): void;
+  public emit<E extends Events>(event: undefined extends Relations[E] ? E : never,): void;
   public emit<E extends Events>(
     event: undefined extends Relations[E] ? E : never,
     params?: Relations[E],
+    cb?: EventHandlerCb,
   ): void {
     const storeList = this.__eventStore[event] as Array<EventStoreItem<Relations, E>>;
     if (!storeList) {
@@ -194,7 +198,7 @@ export class EventEmitter<
     storeList.forEach(item => {
       const { type, handler, callbackHandler } = item;
       if (typeof callbackHandler === 'function') {
-        callbackHandler(params as Relations[E]);
+        callbackHandler(params as Relations[E], cb);
       }
 
       if (type === 'once') {

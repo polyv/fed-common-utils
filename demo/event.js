@@ -16,3 +16,32 @@ QUnit.test('EventEmitter', (assert) => {
 
   eventEmitter.emit('sayName', myName);
 });
+
+QUnit.test('EventEmitterCb', async (assert) => {
+  const eventEmitter = new EventEmitter();
+  const myName = '我的名称';
+  const cbRes = '回调结果';
+
+  function sayNameHandler(name, cb) {
+    assert.strictEqual(name, myName, 'callback params');
+    cb(cbRes);
+  }
+
+  function sayNameHandlerOnce(name, cb) {
+    assert.strictEqual(name, myName, 'callback params once');
+    cb(cbRes);
+  }
+
+  eventEmitter.on('sayName', sayNameHandler);
+
+  eventEmitter.once('sayName', sayNameHandlerOnce);
+
+  eventEmitter.emit('sayName', myName, (res) => {
+    assert.strictEqual(res, cbRes, 'event emit res cb');
+  });
+
+
+  eventEmitter.emit('sayName', myName, (res) => {
+    assert.strictEqual(res, cbRes, 'event emit res cb2');
+  });
+});
