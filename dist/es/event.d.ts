@@ -64,6 +64,9 @@ export type EventType = number | string | symbol;
  * 事件参数关系类型
  */
 export type EventRelationsType = Record<EventType, unknown>;
+/**
+ * 事件回调后的类 response 函数
+ */
 type EventHandlerCb = (res: unknown) => void;
 /**
  * 事件回调函数类型
@@ -105,7 +108,7 @@ export declare class EventEmitter<Relations extends EventRelationsType = EventRe
      * @param event 事件名
      * @param params 回调参数
      */
-    emit<E extends Events>(event: E, params: Relations[E], cb: EventHandlerCb): void;
+    emit<E extends Events>(event: E, params: Relations[E], cb?: EventHandlerCb): void;
     emit<E extends Events>(event: undefined extends Relations[E] ? E : never): void;
     /**
      * 销毁实例
