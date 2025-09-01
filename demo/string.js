@@ -48,7 +48,7 @@ QUnit.test('cutStr', (assert) => {
 });
 
 const beforeEscape = '<abc a="1" b=\'&2\'>';
-const afterEscape = '&lt;abc a=&quot;1&quot; b=&#39;&amp;2&#39;&gt;';
+const afterEscape = '&lt;abc&nbsp;a=&quot;1&quot;&nbsp;b=&#39;&amp;2&#39;&gt;';
 
 QUnit.test('escapeHTML', (assert) => {
   assert.strictEqual(escapeHTML(null), null, 'null');
