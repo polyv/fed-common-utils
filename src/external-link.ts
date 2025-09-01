@@ -275,7 +275,7 @@ async function toMultiPlatformLink(options: {
  * @param getLinkParams 获取额外参数的函数，可选
  * @returns 格式化后的链接地址
  */
-export function formatLink(url: string, getLinkParams?: (url: string) => Record<string, unknown>) {
+export function formatLink(url: string, getLinkParams?: (url: string) => Record<string, unknown>): string {
   let urlParams = {};
 
   if (getLinkParams) {
