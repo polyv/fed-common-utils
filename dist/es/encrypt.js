@@ -1,0 +1,1 @@
+import md5 from"md5";import sha256 from"sha256";export function genAPISign(t,e,o){const r=Object.keys(t).filter((t=>"sign"!==t)).sort();let s="";r.forEach((e=>{let o=t[e];"object"==typeof o&&(o=JSON.stringify(o)),s+=e+o})),o||(o="sha256"===String(t.signatureMethod).toLowerCase()?"sha256":"md5");return("sha256"===o?sha256:md5)(e+s+e).toString().toUpperCase()}

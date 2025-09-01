@@ -68,3 +68,17 @@ export declare function cosCompress(url: string, options: IOSSCompressOptions | 
  * @returns 处理后的 HTML 代码。
  */
 export declare function compressHTMLImgs(html: string, options: IOSSCompressOptions, compressor?: (url: string, options: IOSSCompressOptions | number) => string): string;
+/**
+ * 预加载图片。
+ * @param url 图片 URL。
+ * @returns 图片尺寸和图片元素。
+ * @example
+ * ```javascript
+ * await preloadImg('https://example.com/image.jpg'); // { width, height, element }
+ * ```
+ */
+export declare function preloadImg(url: string): Promise<{
+    width: number;
+    height: number;
+    element: HTMLImageElement;
+}>;

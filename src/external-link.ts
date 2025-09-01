@@ -3,7 +3,6 @@
  * @packageDocumentation
  */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 import { getCurrentUAInfo } from '@just4/ua-info';
 import { concat } from '@just4/querystring';
 
@@ -162,13 +161,13 @@ export interface NavigateToLinkOptions {
 }
 
 /**
-   * 获取原生 App 方法
-   */
-function getNativeToPointMallFn() {
+ * 调用原生 App 方法
+ */
+function invokeNativePointMall(params: string) {
   if (isAndroid) {
-    return window.AndroidNative?.toPointMall;
+    window.AndroidNative?.toPointMall?.(params);
   } else if (isIOS) {
-    return window.webkit?.messageHandlers?.gotoPointsMall?.postMessage;
+    window.webkit?.messageHandlers?.gotoPointsMall?.postMessage?.(params);
   }
 }
 
@@ -182,24 +181,26 @@ function toNativeLink(options: {
 }) {
   const { androidLink, iosLink, otherLink } = options;
 
-  const nativePointMallFn = getNativeToPointMallFn();
-  if (nativePointMallFn) {
-    let url = isAndroid ? androidLink : iosLink;
-
-    // 处理地址并注入 plt_back_uri
-    const pltBackUri = encodeURIComponent(location.href);
-    url = concat(url, {
-      plt_back_uri: pltBackUri,
-    });
-
-    const paramsStr = JSON.stringify({
-      url,
-    });
-    nativePointMallFn(paramsStr);
+  if (
+    !window.AndroidNative?.toPointMall &&
+    !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage
+  ) {
+    window.open(otherLink, '_blank', 'noopener=yes');
     return;
   }
 
-  window.open(otherLink, '_blank', 'noopener=yes');
+  let url = isAndroid ? androidLink : iosLink;
+
+  // 处理地址并注入 plt_back_uri
+  const pltBackUri = encodeURIComponent(location.href);
+  url = concat(url, {
+    plt_back_uri: pltBackUri,
+  });
+
+  const paramsStr = JSON.stringify({
+    url,
+  });
+  invokeNativePointMall(paramsStr);
 }
 
 /**
@@ -275,7 +276,10 @@ async function toMultiPlatformLink(options: {
  * @param getLinkParams 获取额外参数的函数，可选
  * @returns 格式化后的链接地址
  */
-export function formatLink(url: string, getLinkParams?: (url: string) => Record<string, unknown>): string {
+export function formatLink(
+  url: string,
+  getLinkParams?: (url: string) => Record<string, unknown>
+): string {
   let urlParams = {};
 
   if (getLinkParams) {

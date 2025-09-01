@@ -1,0 +1,1 @@
+export function hexToRGB(e){const a=/^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e)||/^#([a-f\d])([a-f\d])([a-f\d])$/.exec(e);return a?[a[1],a[2],a[3]].map((e=>parseInt(1===e.length?e+e:e,16))):null}

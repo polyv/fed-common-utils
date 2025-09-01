@@ -3,7 +3,8 @@ import {
   supportAVIF,
   ossCompress,
   cosCompress,
-  compressHTMLImgs
+  compressHTMLImgs,
+  preloadImg
 } from '@/image';
 
 const QUnit = window.QUnit;
@@ -100,4 +101,11 @@ QUnit.test('compressHTMLImgs', (assert) => {
     }),
     htmlOut
   );
+});
+
+QUnit.test('preloadImg', async (assert) => {
+  const res = await preloadImg('https://nimg.ws.126.net/?url=http%3A%2F%2Fcms-bucket.ws.126.net%2F2025%2F0818%2Fdf366122p00t16x6l008hc001o600vuc.png&thumbnail=660x2147483647&quality=80&type=jpg');
+  assert.ok(res.width > 0);
+  assert.ok(res.height > 0);
+  assert.ok(res.element.tagName === 'IMG');
 });

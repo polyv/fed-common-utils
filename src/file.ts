@@ -93,3 +93,59 @@ export function convertFileSize(
 
   return result;
 }
+
+/**
+ * 获取扩展名，支持传入文件名或 URL。
+ * @param url 文件名或 URL。
+ * @returns 扩展名。
+ */
+export function getExtname(url: string): string {
+  const paths = url
+    .replace(/#.*$/, '')
+    .replace(/\?.*$/, '')
+    .replace(/^([a-z]+:)?\/\/[^/]+/i, '')
+    .split('/');
+
+  const matchResult = /\.([a-z0-9]+)$/.exec(paths[paths.length - 1]);
+  return matchResult ? matchResult[1].toLowerCase() : '';
+}
+
+/**
+ * 文件类型。
+ */
+export enum FileType {
+  /**
+   * 演示稿。
+   */
+  PPT = 'ppt',
+  /**
+   * PDF 文档。
+   */
+  PDF = 'pdf',
+  /**
+   * Word 文档。
+   */
+  Word = 'word',
+  /**
+   * 图片。
+   */
+  Image = 'image',
+  /**
+   * 其他。
+   */
+  Others = 'others'
+}
+
+/**
+ * 获取文件类型，支持传入文件名或 URL。
+ * @param url 文件名或 URL。
+ * @returns 文件类型。
+ */
+export function getFileType(url: string): FileType {
+  const ext = getExtname(url);
+  if (['pdf'].indexOf(ext) !== -1) return FileType.PDF;
+  if (['doc', 'docx'].indexOf(ext) !== -1) return FileType.Word;
+  if (['ppt', 'pptx'].indexOf(ext) !== -1) return FileType.PPT;
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].indexOf(ext) !== -1) return FileType.Image;
+  return FileType.Others;
+}

@@ -1,6 +1,6 @@
 {
   "name": "@polyv/utils",
-  "version": "2.13.0",
+  "version": "2.14.0-beta.3",
   "description": "Utility functions of Polyv frontend development.",
   "keywords": [
     "polyv",
@@ -35,7 +35,7 @@
     "@babel/plugin-transform-class-properties": "^7.24.7",
     "@babel/plugin-transform-json-strings": "^7.24.7",
     "@babel/preset-env": "^7.24.8",
-    "@polyv/eslint-config": "^0.7.0",
+    "@polyv/eslint-config": "^0.8.0",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^6.4.1",
     "core-js": "^3.37.1",
@@ -59,6 +59,10 @@
   "miniprogram": "./",
   "dependencies": {
     "@just4/querystring": "^2.0.0",
-    "@just4/ua-info": "^3.2.0"
+    "@just4/ua-info": "^3.2.0",
+    "@types/md5": "^2.3.5",
+    "@types/sha256": "^0.2.2",
+    "md5": "^2.3.0",
+    "sha256": "^0.2.0"
   }
 }
