@@ -5,6 +5,6 @@ module.exports = {
     './node_modules/@polyv/eslint-config/lib/for-ts',
   ],
   rules: {
-    '@typescript-eslint/no-explicit-any': 'off',
+    // '@typescript-eslint/no-explicit-any': 'off',
   },
 };
