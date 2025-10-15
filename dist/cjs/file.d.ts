@@ -70,9 +70,21 @@ export declare enum FileType {
      */
     Word = "word",
     /**
+     * Excel 表格。
+     */
+    Excel = "excel",
+    /**
      * 图片。
      */
     Image = "image",
+    /**
+     * 文本文件。
+     */
+    Txt = "txt",
+    /**
+     * 压缩文件。
+     */
+    Zip = "zip",
     /**
      * 其他。
      */
