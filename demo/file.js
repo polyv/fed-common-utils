@@ -36,5 +36,7 @@ QUnit.test('getFileType', (assert) => {
   assert.strictEqual(getFileType('a.pdf'), FileType.PDF);
   assert.strictEqual(getFileType('a.doc'), FileType.Word);
   assert.strictEqual(getFileType('a.pptx'), FileType.PPT);
-  assert.strictEqual(getFileType('a.zip'), FileType.Others);
+  assert.strictEqual(getFileType('a.xlsx'), FileType.Excel);
+  assert.strictEqual(getFileType('a.zip'), FileType.Zip);
+  assert.strictEqual(getFileType('a.html'), FileType.Others);
 });

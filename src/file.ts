@@ -127,9 +127,21 @@ export enum FileType {
    */
   Word = 'word',
   /**
+   * Excel 表格。
+   */
+  Excel = 'excel',
+  /**
    * 图片。
    */
   Image = 'image',
+  /**
+   * 文本文件。
+   */
+  Txt = 'txt',
+  /**
+   * 压缩文件。
+   */
+  Zip = 'zip',
   /**
    * 其他。
    */
@@ -145,6 +157,9 @@ export function getFileType(url: string): FileType {
   const ext = getExtname(url);
   if (['pdf'].indexOf(ext) !== -1) return FileType.PDF;
   if (['doc', 'docx'].indexOf(ext) !== -1) return FileType.Word;
+  if (['xls', 'xlsx'].indexOf(ext) !== -1) return FileType.Excel;
+  if (['txt', 'md', 'csv', 'log'].indexOf(ext) !== -1) return FileType.Txt;
+  if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].indexOf(ext) !== -1) return FileType.Zip;
   if (['ppt', 'pptx'].indexOf(ext) !== -1) return FileType.PPT;
   if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].indexOf(ext) !== -1) return FileType.Image;
   return FileType.Others;
