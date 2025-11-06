@@ -20,6 +20,7 @@ QUnit.test('support', async (assert) => {
 
 QUnit.test('ossCompress', (assert) => {
   const URL = 'https://vod-assets.videocc.net/uploaded/images/2019/12/fii52n6nkh.jpg';
+
   assert.strictEqual(
     ossCompress(URL, {
       allowAVIF: true
@@ -64,6 +65,12 @@ QUnit.test('ossCompress', (assert) => {
   assert.strictEqual(
     ossCompress(SVG_URL, { width: 100, allowWebP: true }),
     SVG_URL
+  );
+
+  const LONG_IMG_URL = 'https://liveimages.videocc.net/chatimage/20251105/chat_img_6470603_1762335415764_44720025_0.jpg';
+  assert.strictEqual(
+    ossCompress(LONG_IMG_URL, { width: 80, height: 200, mode: 'fill', allowWebP: true }),
+    LONG_IMG_URL + '?x-oss-process=image/resize,w_80,h_200,m_fill,limit_1/format,webp/quality,Q_80'
   );
 });
 
