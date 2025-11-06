@@ -13,6 +13,31 @@ export declare const supportWebP: () => boolean;
  */
 export declare const supportAVIF: () => Promise<boolean>;
 /**
+ * OSS 缩放模式。
+ */
+export declare enum OSSResizingMode {
+    /**
+     * 等比缩放至指定宽高区域内最大图形（默认）。
+     */
+    LFit = "lfit",
+    /**
+     * 等比缩放至覆盖指定宽高区域。
+     */
+    MFit = "mfit",
+    /**
+     * 等比缩放至覆盖指定宽高区域并居中裁剪。
+     */
+    Fill = "fill",
+    /**
+     * 等比缩放至指定宽高内最大图形并填充颜色至指定尺寸。
+     */
+    Pad = "pad",
+    /**
+     * 固定宽高，强制缩放。
+     */
+    Fixed = "fixed"
+}
+/**
  * 压缩选项。
  */
 export interface IOSSCompressOptions {
@@ -24,6 +49,10 @@ export interface IOSSCompressOptions {
      * 压缩后的图片高度。
      */
     height?: number;
+    /**
+     * 缩放模式。
+     */
+    mode?: OSSResizingMode;
     /**
      * 是否允许转换为 JPG。默认为 true。
      */
