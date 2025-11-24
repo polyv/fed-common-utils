@@ -23,40 +23,8 @@ const uaInfo = getCurrentUAInfo();
 export const isAndroid = uaInfo.os.isAndroid;
 /** 是否 iOS */
 export const isIOS = uaInfo.os.isIOS;
-
-type ToPointMallFunc = (params: string) => unknown;
-declare global {
-  interface Window {
-    AndroidNative?: {
-      toPointMall?: ToPointMallFunc;
-    };
-    webkit?: {
-      messageHandlers?: {
-        gotoPointsMall?: {
-          postMessage?: ToPointMallFunc;
-        };
-      };
-    };
-  }
-}
-
-/**
- * 链接类型
- */
-export enum LinkType {
-  /**
-   * 通用链接
-   */
-  Normal = 10,
-  /**
-   * 多平台链接
-   */
-  MultiPlatform = 11,
-  /**
-   * 原生方法跳转
-   */
-  Native = 12,
-}
+/** 是否纯血鸿蒙 */
+export const isHarmony = uaInfo.os.isOpenHarmony;
 
 /**
  * 外链跳转方式
@@ -81,10 +49,6 @@ export enum LinkJumpWay {
  */
 export interface LinkData {
   /**
-   * 链接类型
-   */
-  linkType: LinkType;
-  /**
    * 跳转方式
    */
   jumpWay: LinkJumpWay;
@@ -97,9 +61,9 @@ export interface LinkData {
    */
   pcLink: string;
   /**
-   * 移动端跳转链接
+   * PC 端链接开关
    */
-  mobileLink: string;
+  pcExclusiveEnabled: boolean;
   /**
    * App 链接
    */
@@ -113,9 +77,9 @@ export interface LinkData {
    */
   iosLink: string;
   /**
-   * 其他链接
+   * 鸿蒙 app 跳转链接
    */
-  otherLink: string;
+  harmonyLink: string;
   /**
    * 微信小程序原始 id
    */
@@ -142,15 +106,19 @@ export interface NavigateToLinkOptions {
   /** 链接数据 */
   linkData: LinkData;
   /**
+   * UA 标识，多个使用换行符隔开
+   */
+  appUserAgent: string;
+  /**
    * 获取链接参数
    */
   getLinkParams?: GetLinkParams;
   /** 通用链接打开处理器 */
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
-  /** 是否处于保利威 webview 中 */
-  isPlvWebview?: () => boolean;
   /** 是否移动端 */
   isMobile?: () => boolean;
+  /** 是否处于保利威 webview 中 */
+  isPlvWebview?: () => boolean;
   /** 获取保利威 webview 桥接器 */
   getPlvWebviewBridge?: () => Promise<WebViewBridge | undefined>;
   /** 获取保利威 webview 小窗尺寸 */
@@ -161,46 +129,61 @@ export interface NavigateToLinkOptions {
 }
 
 /**
- * 调用原生 App 方法
+ * 检测自定义环境 UA 配置
  */
-function invokeNativePointMall(params: string) {
-  if (isAndroid) {
-    window.AndroidNative?.toPointMall?.(params);
-  } else if (isIOS) {
-    window.webkit?.messageHandlers?.gotoPointsMall?.postMessage?.(params);
-  }
+export function isCustomUA(uaList: string[]) {
+  const currentUA = navigator.userAgent.toLowerCase();
+
+  if (!uaList.length) return false;
+
+  return uaList.some(ua => currentUA.includes(ua.toLowerCase()));
 }
 
 /**
- * 调用原生方法跳转
+ * 通过 URL Scheme 打开 App，失败时跳转兜底链接
  */
-function toNativeLink(options: {
-  androidLink: string;
+export function openAppWithFallback(options: {
   iosLink: string;
-  otherLink: string;
+  androidLink: string;
+  harmonyLink: string;
+  fallbackUrl: string
 }) {
-  const { androidLink, iosLink, otherLink } = options;
+  const { iosLink, androidLink, harmonyLink, fallbackUrl } = options;
+  console.info('app 降级 url', fallbackUrl);
 
-  if (
-    !window.AndroidNative?.toPointMall &&
-    !window.webkit?.messageHandlers?.gotoPointsMall?.postMessage
-  ) {
-    window.open(otherLink, '_blank', 'noopener=yes');
-    return;
+  const timeout = 1500;
+  const start = Date.now();
+  let hasBlur = false;
+
+  // 页面失去焦点，通常是成功唤起 App 了
+  const onBlur = () => {
+    hasBlur = true;
+    window.removeEventListener('blur', onBlur);
+  };
+  window.addEventListener('blur', onBlur);
+
+  let url = fallbackUrl;
+  if (isIOS && iosLink) {
+    console.info('命中 iosLink');
+    url = iosLink;
+  } else if (isAndroid && androidLink) {
+    console.info('命中 Android link');
+    url = androidLink;
+  } else if (isHarmony && harmonyLink) {
+    console.info('命中 harmony link');
+    url = harmonyLink;
   }
 
-  let url = isAndroid ? androidLink : iosLink;
+  window.location.href = url;
 
-  // 处理地址并注入 plt_back_uri
-  const pltBackUri = encodeURIComponent(location.href);
-  url = concat(url, {
-    plt_back_uri: pltBackUri,
-  });
+  setTimeout(() => {
+    window.removeEventListener('blur', onBlur);
 
-  const paramsStr = JSON.stringify({
-    url,
-  });
-  invokeNativePointMall(paramsStr);
+    const elapsed = Date.now() - start;
+    if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
+      window.location.href = fallbackUrl;
+    }
+  }, timeout);
 }
 
 /**
@@ -235,14 +218,15 @@ async function toPlvWebviewBridge(options: {
  */
 async function toMultiPlatformLink(options: {
   linkData: LinkData,
+  appUserAgent: string,
   getLinkParams?: GetLinkParams,
   isWxMiniProgramEnv?: () => Promise<boolean | undefined>,
   toWxMiniProgram?: (link: string) => void;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   isMobile?: () => boolean;
 }) {
-  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
-  const { wxMiniprogramLink, mobileLink, pcLink } = linkData;
+  const { linkData, appUserAgent, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
+  const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, pcExclusiveEnabled, jumpWay, mobileAppLink } = linkData;
   const isMobilePlatform = isMobile?.() || false;
 
   let isWxMiniProgramWebview = false;
@@ -254,20 +238,37 @@ async function toMultiPlatformLink(options: {
 
   // 小程序 webview 环境，利用微信 sdk 跳转指定页面
   if (isWxMiniProgramWebview && wxMiniprogramLink && toWxMiniProgram) {
+    console.info('进入到小程序 webview 环境 wxMiniprogramLink', wxMiniprogramLink);
     toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
     return;
   }
 
-  // 移动 Web 跳转
-  if (isMobilePlatform && mobileLink) {
-    openLink(formatLink(mobileLink, getLinkParams), LinkJumpWay.NewWindow);
+  // 非保利威 webview 下的原生 App 跳转
+  const uaList = appUserAgent
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(Boolean);
+  console.info('是否自定义 UA', isCustomUA(uaList));
+  if (isCustomUA(uaList)) {
+    openAppWithFallback({
+      iosLink,
+      androidLink,
+      harmonyLink,
+      fallbackUrl: mobileAppLink || link,
+    });
     return;
   }
 
-  // PC 跳转
-  if (!isMobilePlatform && pcLink) {
-    openLink(formatLink(pcLink, getLinkParams), LinkJumpWay.NewWindow);
+  // 电脑端链接跳转
+  console.info('是否移动端', isMobilePlatform);
+  console.info('是否开启了 PC 专属链接', pcExclusiveEnabled, pcLink);
+  if (!isMobilePlatform && pcExclusiveEnabled && pcLink) {
+    openLink(formatLink(pcLink, getLinkParams), jumpWay);
+    return;
   }
+  console.info('通用链接', link);
+  // 通用链接跳转
+  openLink(formatLink(link, getLinkParams), jumpWay);
 }
 
 /**
@@ -294,45 +295,24 @@ export function formatLink(
  * @param options 跳转配置项
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
-  const { linkType } = linkData;
+  const { linkData, appUserAgent, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
 
   const supportPlvWebview = isPlvWebview?.() || false;
-
-  // 原生方法跳转
-  if (linkType === LinkType.Native) {
-    toNativeLink({
-      androidLink: formatLink(linkData.androidLink, getLinkParams),
-      iosLink: formatLink(linkData.iosLink, getLinkParams),
-      otherLink: formatLink(linkData.otherLink, getLinkParams),
-    });
-    return;
-  }
+  console.info('是否保利威 webview 环境', supportPlvWebview);
 
   // 保利威 SDK Webview 下跳转
   if (supportPlvWebview) {
-    let linkTo = '';
-    const { link, mobileLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+    const { link, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+    const linkTo = mobileAppLink || link;
+    console.info('保利威 webview 下的 mobileAppLink，link', mobileAppLink, link);
 
-    switch (linkType) {
-      case LinkType.Normal:
-        linkTo = link;
-        break;
-      case LinkType.MultiPlatform:
-        linkTo = mobileAppLink || mobileLink;
-        break;
-    }
-
-    // 非通用链接，将其余字段单独放到 data 供接入方使用
-    let otherData = null;
-    if (linkType !== LinkType.Normal) {
-      otherData = {
-        mobileLink: formatLink(mobileLink, getLinkParams),
-        wxMiniprogramOriginalId,
-        wxMiniprogramLink: formatLink(wxMiniprogramLink, getLinkParams),
-        mobileAppLink: formatLink(mobileAppLink, getLinkParams),
-      };
-    }
+    // 将其余字段单独放到 data 供接入方使用
+    const otherData = {
+      mobileLink: formatLink(link, getLinkParams),
+      wxMiniprogramOriginalId,
+      wxMiniprogramLink: formatLink(wxMiniprogramLink, getLinkParams),
+      mobileAppLink: formatLink(mobileAppLink, getLinkParams),
+    };
 
     toPlvWebviewBridge({
       link: formatLink(linkTo, getLinkParams),
@@ -343,22 +323,13 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
     return;
   }
 
-  // 通用平台
-  if (linkType === LinkType.Normal) {
-    const { link, jumpWay } = linkData;
-    openLink(formatLink(link, getLinkParams), jumpWay);
-    return;
-  }
-
-  // 多平台跳转
-  if (linkType === LinkType.MultiPlatform) {
-    toMultiPlatformLink({
-      linkData,
-      getLinkParams,
-      isWxMiniProgramEnv,
-      toWxMiniProgram,
-      openLink,
-      isMobile,
-    });
-  }
+  toMultiPlatformLink({
+    linkData,
+    appUserAgent,
+    getLinkParams,
+    isWxMiniProgramEnv,
+    toWxMiniProgram,
+    openLink,
+    isMobile,
+  });
 }
