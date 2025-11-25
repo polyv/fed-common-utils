@@ -53,10 +53,6 @@ export interface LinkData {
      */
     pcLink: string;
     /**
-     * PC 端链接开关
-     */
-    pcExclusiveEnabled: boolean;
-    /**
      * App 链接
      */
     mobileAppLink: string;
