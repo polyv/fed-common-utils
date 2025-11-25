@@ -61,10 +61,6 @@ export interface LinkData {
    */
   pcLink: string;
   /**
-   * PC 端链接开关
-   */
-  pcExclusiveEnabled: boolean;
-  /**
    * App 链接
    */
   mobileAppLink: string;
@@ -226,7 +222,7 @@ async function toMultiPlatformLink(options: {
   isMobile?: () => boolean;
 }) {
   const { linkData, appUserAgent, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
-  const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, pcExclusiveEnabled, jumpWay, mobileAppLink } = linkData;
+  const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
   const isMobilePlatform = isMobile?.() || false;
 
   let isWxMiniProgramWebview = false;
@@ -261,8 +257,8 @@ async function toMultiPlatformLink(options: {
 
   // 电脑端链接跳转
   console.info('是否移动端', isMobilePlatform);
-  console.info('是否开启了 PC 专属链接', pcExclusiveEnabled, pcLink);
-  if (!isMobilePlatform && pcExclusiveEnabled && pcLink) {
+  console.info('PC 链接', pcLink);
+  if (!isMobilePlatform && pcLink) {
     openLink(formatLink(pcLink, getLinkParams), jumpWay);
     return;
   }
