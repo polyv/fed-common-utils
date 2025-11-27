@@ -19,6 +19,8 @@ export declare const isAndroid: boolean;
 export declare const isIOS: boolean;
 /** 是否纯血鸿蒙 */
 export declare const isHarmony: boolean;
+/** 是否移动端 */
+export declare const isPortable: boolean;
 /**
  * 外链跳转方式
  */
@@ -91,10 +93,6 @@ export type GetLinkParams = (url: string) => Record<string, unknown>;
 export interface NavigateToLinkOptions {
     /** 链接数据 */
     linkData: LinkData;
-    /**
-     * UA 标识，多个使用换行符隔开
-     */
-    appUserAgent: string;
     /**
      * 获取链接参数
      */
