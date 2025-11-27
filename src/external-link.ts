@@ -25,6 +25,8 @@ export const isAndroid = uaInfo.os.isAndroid;
 export const isIOS = uaInfo.os.isIOS;
 /** 是否纯血鸿蒙 */
 export const isHarmony = uaInfo.os.isOpenHarmony;
+/** 是否移动端 */
+export const isPortable = uaInfo.isPortable;
 
 /**
  * 外链跳转方式
@@ -102,10 +104,6 @@ export interface NavigateToLinkOptions {
   /** 链接数据 */
   linkData: LinkData;
   /**
-   * UA 标识，多个使用换行符隔开
-   */
-  appUserAgent: string;
-  /**
    * 获取链接参数
    */
   getLinkParams?: GetLinkParams;
@@ -145,7 +143,6 @@ export function openAppWithFallback(options: {
   fallbackUrl: string
 }) {
   const { iosLink, androidLink, harmonyLink, fallbackUrl } = options;
-  console.info('app 降级 url', fallbackUrl);
 
   const timeout = 1500;
   const start = Date.now();
@@ -158,25 +155,32 @@ export function openAppWithFallback(options: {
   };
   window.addEventListener('blur', onBlur);
 
-  let url = fallbackUrl;
-  if (isIOS && iosLink) {
-    console.info('命中 iosLink');
+  console.info(`ios：${isIOS}，Android：${isAndroid}，harmony：${isHarmony}`);
+  let url;
+  if (isIOS) {
+    console.info('iOSLink', iosLink);
     url = iosLink;
-  } else if (isAndroid && androidLink) {
-    console.info('命中 Android link');
+  } else if (isAndroid) {
+    console.info('Android link', androidLink);
     url = androidLink;
-  } else if (isHarmony && harmonyLink) {
-    console.info('命中 harmony link');
+  } else if (isHarmony) {
+    console.info('harmony link', harmonyLink);
     url = harmonyLink;
+  }
+  if (!url) {
+    console.info('没有配置多平台链接，使用降级链接', fallbackUrl);
+    url = fallbackUrl;
   }
 
   window.location.href = url;
 
   setTimeout(() => {
     window.removeEventListener('blur', onBlur);
+    console.info('跳转超时，进入到降级链接处理');
 
     const elapsed = Date.now() - start;
     if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
+      console.info('执行了降级跳转', fallbackUrl);
       window.location.href = fallbackUrl;
     }
   }, timeout);
@@ -214,16 +218,15 @@ async function toPlvWebviewBridge(options: {
  */
 async function toMultiPlatformLink(options: {
   linkData: LinkData,
-  appUserAgent: string,
   getLinkParams?: GetLinkParams,
   isWxMiniProgramEnv?: () => Promise<boolean | undefined>,
   toWxMiniProgram?: (link: string) => void;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   isMobile?: () => boolean;
 }) {
-  const { linkData, appUserAgent, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
   const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
-  const isMobilePlatform = isMobile?.() || false;
+  const isMobilePlatform = isMobile?.() || isPortable;
 
   let isWxMiniProgramWebview = false;
   try {
@@ -239,32 +242,25 @@ async function toMultiPlatformLink(options: {
     return;
   }
 
-  // 非保利威 webview 下的原生 App 跳转
-  const uaList = appUserAgent
-    .split(/\r?\n/)
-    .map(item => item.trim())
-    .filter(Boolean);
-  console.info('是否自定义 UA', isCustomUA(uaList));
-  if (isCustomUA(uaList)) {
-    openAppWithFallback({
-      iosLink,
-      androidLink,
-      harmonyLink,
-      fallbackUrl: mobileAppLink || link,
-    });
+  // PC 端
+  if (!isMobilePlatform) {
+    openLink(formatLink(pcLink || link, getLinkParams), jumpWay);
     return;
   }
 
-  // 电脑端链接跳转
-  console.info('是否移动端', isMobilePlatform);
-  console.info('PC 链接', pcLink);
-  if (!isMobilePlatform && pcLink) {
-    openLink(formatLink(pcLink, getLinkParams), jumpWay);
+  // 某些 App 下禁用了 url scheme，改用链接跳转
+  if (uaInfo.client.isWx || uaInfo.client.isWxWork || uaInfo.client.isDing || uaInfo.client.isQQ || uaInfo.client.isWeibo || uaInfo.client.isBaiduApp) {
+    openLink(formatLink(link, getLinkParams), jumpWay);
     return;
   }
-  console.info('通用链接', link);
-  // 通用链接跳转
-  openLink(formatLink(link, getLinkParams), jumpWay);
+
+  // 优先跳转 App url scheme，否则降级到浏览器链接
+  openAppWithFallback({
+    iosLink,
+    androidLink,
+    harmonyLink,
+    fallbackUrl: mobileAppLink || link,
+  });
 }
 
 /**
@@ -291,7 +287,7 @@ export function formatLink(
  * @param options 跳转配置项
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, appUserAgent, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
+  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
 
   const supportPlvWebview = isPlvWebview?.() || false;
   console.info('是否保利威 webview 环境', supportPlvWebview);
@@ -321,7 +317,6 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
 
   toMultiPlatformLink({
     linkData,
-    appUserAgent,
     getLinkParams,
     isWxMiniProgramEnv,
     toWxMiniProgram,
