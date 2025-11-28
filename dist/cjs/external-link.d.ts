@@ -93,6 +93,8 @@ export type GetLinkParams = (url: string) => Record<string, unknown>;
 export interface NavigateToLinkOptions {
     /** 链接数据 */
     linkData: LinkData;
+    /** 是否使用保利威桥接器跳转链接 */
+    usePlvWebviewBridge?: boolean;
     /**
      * 获取链接参数
      */
