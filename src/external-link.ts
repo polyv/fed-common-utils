@@ -103,6 +103,8 @@ export type GetLinkParams = (url: string) => Record<string, unknown>;
 export interface NavigateToLinkOptions {
   /** 链接数据 */
   linkData: LinkData;
+  /** 是否使用保利威桥接器跳转链接 */
+  usePlvWebviewBridge?: boolean;
   /**
    * 获取链接参数
    */
@@ -236,9 +238,13 @@ async function toMultiPlatformLink(options: {
   }
 
   // 小程序 webview 环境，利用微信 sdk 跳转指定页面
-  if (isWxMiniProgramWebview && wxMiniprogramLink && toWxMiniProgram) {
-    console.info('进入到小程序 webview 环境 wxMiniprogramLink', wxMiniprogramLink);
-    toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
+  if (isWxMiniProgramWebview && toWxMiniProgram) {
+    console.info('进入到小程序 webview 环境 wxMiniprogramLink & link', wxMiniprogramLink, link);
+    if (wxMiniprogramLink) {
+      toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
+    } else {
+      openLink(formatLink(link, getLinkParams), LinkJumpWay.CurrentWindow);
+    }
     return;
   }
 
@@ -287,16 +293,17 @@ export function formatLink(
  * @param options 跳转配置项
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
+  const { linkData, usePlvWebviewBridge, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
 
   const supportPlvWebview = isPlvWebview?.() || false;
   console.info('是否保利威 webview 环境', supportPlvWebview);
 
   // 保利威 SDK Webview 下跳转
   if (supportPlvWebview) {
-    const { link, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+    const { link, iosLink, androidLink, harmonyLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
     const linkTo = mobileAppLink || link;
     console.info('保利威 webview 下的 mobileAppLink，link', mobileAppLink, link);
+    console.info('保利威 webview 下 usePlvWebviewBridge', usePlvWebviewBridge);
 
     // 将其余字段单独放到 data 供接入方使用
     const otherData = {
@@ -306,11 +313,21 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       mobileAppLink: formatLink(mobileAppLink, getLinkParams),
     };
 
-    toPlvWebviewBridge({
-      link: formatLink(linkTo, getLinkParams),
-      data: otherData,
-      getPlvWebviewSmallWindowSize,
-      getPlvWebviewBridge,
+    if (usePlvWebviewBridge) {
+      toPlvWebviewBridge({
+        link: formatLink(linkTo, getLinkParams),
+        data: otherData,
+        getPlvWebviewSmallWindowSize,
+        getPlvWebviewBridge,
+      });
+      return;
+    }
+
+    openAppWithFallback({
+      iosLink,
+      androidLink,
+      harmonyLink,
+      fallbackUrl: mobileAppLink || link,
     });
     return;
   }
