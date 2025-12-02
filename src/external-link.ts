@@ -146,7 +146,7 @@ export function openAppWithFallback(options: {
 }) {
   const { iosLink, androidLink, harmonyLink, fallbackUrl } = options;
 
-  const timeout = 1500;
+  const timeout = 3500;
   const start = Date.now();
   let hasBlur = false;
 
@@ -229,6 +229,7 @@ async function toMultiPlatformLink(options: {
   const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
   const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
   const isMobilePlatform = isMobile?.() || isPortable;
+  console.info('跳转函数收到的数据', linkData);
 
   let isWxMiniProgramWebview = false;
   try {
