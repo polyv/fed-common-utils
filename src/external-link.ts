@@ -127,7 +127,7 @@ export interface NavigateToLinkOptions {
 /**
  * 检测自定义环境 UA 配置
  */
-export function isCustomUA(uaList: string[]) {
+export function isCustomUA(uaList: string[]): boolean {
   const currentUA = navigator.userAgent.toLowerCase();
 
   if (!uaList.length) return false;
@@ -143,7 +143,7 @@ export function openAppWithFallback(options: {
   androidLink: string;
   harmonyLink: string;
   fallbackUrl: string
-}) {
+}): void {
   const { iosLink, androidLink, harmonyLink, fallbackUrl } = options;
 
   const timeout = 3500;
@@ -178,11 +178,9 @@ export function openAppWithFallback(options: {
 
   setTimeout(() => {
     window.removeEventListener('blur', onBlur);
-    console.info('跳转超时，进入到降级链接处理');
 
     const elapsed = Date.now() - start;
     if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
-      console.info('执行了降级跳转', fallbackUrl);
       window.location.href = fallbackUrl;
     }
   }, timeout);
