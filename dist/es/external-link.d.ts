@@ -17,38 +17,10 @@ export interface WebViewBridge {
 export declare const isAndroid: boolean;
 /** 是否 iOS */
 export declare const isIOS: boolean;
-type ToPointMallFunc = (params: string) => unknown;
-declare global {
-    interface Window {
-        AndroidNative?: {
-            toPointMall?: ToPointMallFunc;
-        };
-        webkit?: {
-            messageHandlers?: {
-                gotoPointsMall?: {
-                    postMessage?: ToPointMallFunc;
-                };
-            };
-        };
-    }
-}
-/**
- * 链接类型
- */
-export declare enum LinkType {
-    /**
-     * 通用链接
-     */
-    Normal = 10,
-    /**
-     * 多平台链接
-     */
-    MultiPlatform = 11,
-    /**
-     * 原生方法跳转
-     */
-    Native = 12
-}
+/** 是否纯血鸿蒙 */
+export declare const isHarmony: boolean;
+/** 是否移动端 */
+export declare const isPortable: boolean;
 /**
  * 外链跳转方式
  */
@@ -71,10 +43,6 @@ export declare enum LinkJumpWay {
  */
 export interface LinkData {
     /**
-     * 链接类型
-     */
-    linkType: LinkType;
-    /**
      * 跳转方式
      */
     jumpWay: LinkJumpWay;
@@ -86,10 +54,6 @@ export interface LinkData {
      * PC 端跳转链接
      */
     pcLink: string;
-    /**
-     * 移动端跳转链接
-     */
-    mobileLink: string;
     /**
      * App 链接
      */
@@ -103,9 +67,9 @@ export interface LinkData {
      */
     iosLink: string;
     /**
-     * 其他链接
+     * 鸿蒙 app 跳转链接
      */
-    otherLink: string;
+    harmonyLink: string;
     /**
      * 微信小程序原始 id
      */
@@ -129,16 +93,18 @@ export type GetLinkParams = (url: string) => Record<string, unknown>;
 export interface NavigateToLinkOptions {
     /** 链接数据 */
     linkData: LinkData;
+    /** 是否使用保利威桥接器跳转链接 */
+    usePlvWebviewBridge?: boolean;
     /**
      * 获取链接参数
      */
     getLinkParams?: GetLinkParams;
     /** 通用链接打开处理器 */
     openLink: (url: string, jumpWay: LinkJumpWay) => void;
-    /** 是否处于保利威 webview 中 */
-    isPlvWebview?: () => boolean;
     /** 是否移动端 */
     isMobile?: () => boolean;
+    /** 是否处于保利威 webview 中 */
+    isPlvWebview?: () => boolean;
     /** 获取保利威 webview 桥接器 */
     getPlvWebviewBridge?: () => Promise<WebViewBridge | undefined>;
     /** 获取保利威 webview 小窗尺寸 */
@@ -151,6 +117,19 @@ export interface NavigateToLinkOptions {
     toWxMiniProgram?: (link: string) => void;
 }
 /**
+ * 检测自定义环境 UA 配置
+ */
+export declare function isCustomUA(uaList: string[]): boolean;
+/**
+ * 通过 URL Scheme 打开 App，失败时跳转兜底链接
+ */
+export declare function openAppWithFallback(options: {
+    iosLink: string;
+    androidLink: string;
+    harmonyLink: string;
+    fallbackUrl: string;
+}): void;
+/**
  * 格式化链接地址
  * @param url 需要格式化的链接地址
  * @param getLinkParams 获取额外参数的函数，可选
@@ -162,4 +141,3 @@ export declare function formatLink(url: string, getLinkParams?: (url: string) =>
  * @param options 跳转配置项
  */
 export declare function navigateToLink(options: NavigateToLinkOptions): void;
-export {};

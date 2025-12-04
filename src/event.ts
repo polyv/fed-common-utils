@@ -199,13 +199,17 @@ export class EventEmitter<
     }
 
     storeList.forEach(item => {
-      const { type, handler, callbackHandler } = item;
-      if (typeof callbackHandler === 'function') {
-        callbackHandler(params as Relations[E], cb);
-      }
+      try {
+        const { type, handler, callbackHandler } = item;
+        if (typeof callbackHandler === 'function') {
+          callbackHandler(params as Relations[E], cb);
+        }
 
-      if (type === 'once') {
-        this.off(event, handler);
+        if (type === 'once') {
+          this.off(event, handler);
+        }
+      } catch (err) {
+        console.error(err);
       }
     });
   }
