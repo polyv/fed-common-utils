@@ -128,6 +128,8 @@ export declare function openAppWithFallback(options: {
     androidLink: string;
     harmonyLink: string;
     fallbackUrl: string;
+    jumpWay: LinkJumpWay;
+    openLink: (url: string, jumpWay: LinkJumpWay) => void;
 }): void;
 /**
  * 格式化链接地址
