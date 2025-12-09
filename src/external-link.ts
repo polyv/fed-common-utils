@@ -174,9 +174,10 @@ export function openAppWithFallback(options: {
   if (!url) {
     console.info('没有配置多平台链接，使用降级链接', fallbackUrl);
     openLink(fallbackUrl, jumpWay);
-  } else {
-    window.location.href = url;
+    return;
   }
+
+  window.location.href = url;
 
   setTimeout(() => {
     window.removeEventListener('blur', onBlur);
