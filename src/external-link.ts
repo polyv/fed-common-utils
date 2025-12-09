@@ -180,10 +180,12 @@ export function openAppWithFallback(options: {
   window.location.href = url;
 
   setTimeout(() => {
+    console.info('进入到降级逻辑了');
     window.removeEventListener('blur', onBlur);
 
     const elapsed = Date.now() - start;
     if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
+      console.info('降级的 url', fallbackUrl, jumpWay);
       openLink(fallbackUrl, jumpWay);
     }
   }, timeout);
