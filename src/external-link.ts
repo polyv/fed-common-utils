@@ -247,7 +247,7 @@ async function toMultiPlatformLink(options: {
     if (wxMiniprogramLink) {
       toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
     } else {
-      openLink(formatLink(link, getLinkParams), LinkJumpWay.CurrentWindow);
+      openLink(formatLink(link, getLinkParams), jumpWay);
     }
     return;
   }
