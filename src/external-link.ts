@@ -142,9 +142,11 @@ export function openAppWithFallback(options: {
   iosLink: string;
   androidLink: string;
   harmonyLink: string;
-  fallbackUrl: string
+  fallbackUrl: string;
+  jumpWay: LinkJumpWay;
+  openLink: (url: string, jumpWay: LinkJumpWay) => void;
 }): void {
-  const { iosLink, androidLink, harmonyLink, fallbackUrl } = options;
+  const { iosLink, androidLink, harmonyLink, fallbackUrl, jumpWay, openLink } = options;
 
   const timeout = 3500;
   const start = Date.now();
@@ -171,17 +173,20 @@ export function openAppWithFallback(options: {
   }
   if (!url) {
     console.info('没有配置多平台链接，使用降级链接', fallbackUrl);
-    url = fallbackUrl;
+    openLink(fallbackUrl, jumpWay);
+    return;
   }
 
   window.location.href = url;
 
   setTimeout(() => {
+    console.info('进入到降级逻辑了');
     window.removeEventListener('blur', onBlur);
 
     const elapsed = Date.now() - start;
     if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
-      window.location.href = fallbackUrl;
+      console.info('降级的 url', fallbackUrl, jumpWay);
+      openLink(fallbackUrl, jumpWay);
     }
   }, timeout);
 }
@@ -242,7 +247,7 @@ async function toMultiPlatformLink(options: {
     if (wxMiniprogramLink) {
       toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
     } else {
-      openLink(formatLink(link, getLinkParams), LinkJumpWay.CurrentWindow);
+      openLink(formatLink(link, getLinkParams), jumpWay);
     }
     return;
   }
@@ -264,7 +269,9 @@ async function toMultiPlatformLink(options: {
     iosLink,
     androidLink,
     harmonyLink,
-    fallbackUrl: mobileAppLink || link,
+    fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
+    jumpWay,
+    openLink,
   });
 }
 
@@ -299,7 +306,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
 
   // 保利威 SDK Webview 下跳转
   if (supportPlvWebview) {
-    const { link, iosLink, androidLink, harmonyLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+    const { link, iosLink, androidLink, harmonyLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink, jumpWay } = linkData;
     const linkTo = mobileAppLink || link;
     console.info('保利威 webview 下的 mobileAppLink，link', mobileAppLink, link);
     console.info('保利威 webview 下 usePlvWebviewBridge', usePlvWebviewBridge);
@@ -326,7 +333,9 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       iosLink,
       androidLink,
       harmonyLink,
-      fallbackUrl: mobileAppLink || link,
+      fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
+      jumpWay,
+      openLink,
     });
     return;
   }
