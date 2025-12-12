@@ -265,6 +265,7 @@ async function toMultiPlatformLink(options: {
   }
 
   // 优先跳转 App url scheme，否则降级到浏览器链接
+  console.info('收到 getLinkParams 参数', getLinkParams);
   openAppWithFallback({
     iosLink,
     androidLink,
@@ -289,8 +290,10 @@ export function formatLink(
 
   if (getLinkParams) {
     const res = getLinkParams(url);
+    console.info('带的参数', res);
     urlParams = Object.assign({}, urlParams, res);
   }
+  console.info('最终拼接的字符串', concat(url, urlParams));
   return concat(url, urlParams);
 }
 
