@@ -110,3 +110,39 @@ export function formatSeconds(
     return (zeros + subResult).slice(-Math.max(len, digits));
   }).join(':');
 }
+
+/**
+ * 把“时:分:秒.毫秒”格式的字符串转换为总秒数。如存在毫秒部分，则四舍五入。
+ * @param time “时:分:秒.毫秒”格式的字符串。
+ * @returns 总秒数。
+ * @example
+ * ```javascript
+ * timeToSeconds('00:01'); // 1
+ * timeToSeconds('10:01'); // 601
+ * timeToSeconds('06:10:01'); // 22201
+ * timeToSeconds('06:10:01.123'); // 22201
+ * timeToSeconds('06:10:01.666'); // 22202
+ * ```
+ */
+export function timeToSeconds(time: string): number {
+  const match = /^(?:(\d+):)*?(?:(\d+):)?(\d+)(?:\.(\d+))?$/.exec(time);
+  if (!match) { return NaN; }
+
+  const steps = [60 * 60, 60, 1, 0.001];
+
+  let result = 0;
+  [match[1], match[2], match[3], match[4]].some((item, i) => {
+    if (item != null) {
+      const num = Number(item);
+      if (isNaN(num)) {
+        result = NaN;
+        return true;
+      } else {
+        result += Math.round(num * steps[i]);
+      }
+    }
+    return false;
+  });
+
+  return result;
+}
