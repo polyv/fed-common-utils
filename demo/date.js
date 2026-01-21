@@ -1,6 +1,7 @@
 import {
   formatDate,
-  formatSeconds
+  formatSeconds,
+  timeToSeconds
 } from '@/date';
 const QUnit = window.QUnit;
 
@@ -66,4 +67,12 @@ QUnit.test('formatSeconds', (assert) => {
     '1:22',
     '两段一位'
   );
+});
+
+QUnit.test('timeToSeconds', (assert) => {
+  assert.strictEqual(timeToSeconds('00:01'), 1);
+  assert.strictEqual(timeToSeconds('10:01'), 10 * 60 + 1);
+  assert.strictEqual(timeToSeconds('06:10:01'), 6 * 3600 + 10 * 60 + 1);
+  assert.strictEqual(timeToSeconds('06:10:01.123'), 6 * 3600 + 10 * 60 + 1);
+  assert.strictEqual(timeToSeconds('06:10:01.666'), 6 * 3600 + 10 * 60 + 2);
 });

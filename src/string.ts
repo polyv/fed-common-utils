@@ -83,7 +83,7 @@ export function cutStr(
   options = options || {};
   options.enLen = Number(options.enLen) || 1;
   options.nonEnLen = Number(options.nonEnLen) || 2;
-  options.ellipsis = options.ellipsis || '...';
+  options.ellipsis = options.ellipsis ?? '...';
 
   str = String(str);
   const len = strLen(str, options);
