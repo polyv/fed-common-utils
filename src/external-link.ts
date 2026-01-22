@@ -331,6 +331,7 @@ export function formatLink(
   url: string,
   getLinkParams?: (url: string) => Record<string, unknown>
 ): string {
+  if (!url) return url;
   let urlParams = {};
 
   if (getLinkParams) {
