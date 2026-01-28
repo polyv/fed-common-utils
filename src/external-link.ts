@@ -124,6 +124,8 @@ export interface NavigateToLinkOptions {
   toWxMiniProgram?: (link: string) => void;
   /** 跳转失败回调 */
   failCallback?: () => void;
+  /** app 标识 */
+  getIsApp?: () => string | undefined;
 }
 
 /**
@@ -148,12 +150,15 @@ export function openAppWithFallback(options: {
   jumpWay: LinkJumpWay;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   failCallback?: () => void;
+  getIsApp?: () => string | undefined;
 }): void {
-  const { iosLink, androidLink, harmonyLink, fallbackUrl, jumpWay, openLink, failCallback } = options;
+  const { iosLink, androidLink, harmonyLink, fallbackUrl, jumpWay, openLink, failCallback, getIsApp } = options;
 
   const timeout = 3500;
   const start = Date.now();
   let hasLeftPage = false;
+  const isApp = getIsApp?.();
+  console.info('isApp 标识', isApp);
 
   // 检测页面是否隐藏
   const onVisibilityChange = () => {
@@ -209,6 +214,11 @@ export function openAppWithFallback(options: {
       return;
     }
 
+    if (isApp === '1') {
+      console.info('存在 isApp 标识不做降级');
+      return;
+    }
+
     const elapsed = Date.now() - start;
     if (!hasLeftPage && elapsed < timeout + 200) {
       console.info('降级的 url', fallbackUrl, jumpWay);
@@ -259,8 +269,9 @@ async function toMultiPlatformLink(options: {
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   isMobile?: () => boolean;
   failCallback?: () => void;
+  getIsApp?: () => string | undefined;
 }) {
-  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile, failCallback } = options;
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile, failCallback, getIsApp } = options;
   const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
   const isMobilePlatform = isMobile?.() || isPortable;
   console.info('跳转函数收到的数据', linkData);
@@ -318,6 +329,7 @@ async function toMultiPlatformLink(options: {
     jumpWay,
     openLink,
     failCallback,
+    getIsApp,
   });
 }
 
@@ -348,7 +360,7 @@ export function formatLink(
  * @param options 跳转配置项
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, usePlvWebviewBridge, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile, failCallback } = options;
+  const { linkData, usePlvWebviewBridge, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile, failCallback, getIsApp } = options;
 
   const supportPlvWebview = isPlvWebview?.() || false;
   console.info('是否保利威 webview 环境', supportPlvWebview);
@@ -390,6 +402,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       jumpWay,
       openLink,
       failCallback,
+      getIsApp,
     });
     return;
   }
@@ -402,5 +415,6 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
     openLink,
     isMobile,
     failCallback,
+    getIsApp,
   });
 }
