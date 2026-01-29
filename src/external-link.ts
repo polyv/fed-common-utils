@@ -156,29 +156,16 @@ export function openAppWithFallback(options: {
 
   const timeout = 3500;
   const start = Date.now();
-  let hasLeftPage = false;
   const isApp = getIsApp?.();
   console.info('isApp 标识', isApp);
+  let hasBlur = false;
 
-  // 检测页面是否隐藏
-  const onVisibilityChange = () => {
-    if (document.visibilityState === 'hidden') {
-      hasLeftPage = true;
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    }
+  // 页面失去焦点，通常是成功唤起 App 了
+  const onBlur = () => {
+    hasBlur = true;
+    window.removeEventListener('blur', onBlur);
   };
-  document.addEventListener('visibilitychange', onVisibilityChange);
-
-  const onPageHide = () => {
-    hasLeftPage = true;
-    window.removeEventListener('pagehide', onPageHide);
-  };
-  window.addEventListener('pagehide', onPageHide);
-
-  const cleanupListeners = () => {
-    document.removeEventListener('visibilitychange', onVisibilityChange);
-    window.removeEventListener('pagehide', onPageHide);
-  };
+  window.addEventListener('blur', onBlur);
 
   console.info(`ios：${isIOS}，Android：${isAndroid}，harmony：${isHarmony}`);
   let url;
@@ -194,7 +181,6 @@ export function openAppWithFallback(options: {
   }
   if (!url) {
     console.info('没有配置多平台链接，使用降级链接', fallbackUrl);
-    cleanupListeners();
     if (!fallbackUrl) {
       failCallback?.();
       return;
@@ -206,13 +192,8 @@ export function openAppWithFallback(options: {
   window.location.href = url;
 
   setTimeout(() => {
-    console.info('进入到降级逻辑了');
-    cleanupListeners();
-
-    if (document.visibilityState === 'hidden') {
-      console.info('页面当前不可见，跳过降级');
-      return;
-    }
+    console.info('进入到降级逻辑了，是否离开页面', hasBlur);
+    window.removeEventListener('blur', onBlur);
 
     if (isApp === '1') {
       console.info('存在 isApp 标识不做降级');
@@ -220,7 +201,7 @@ export function openAppWithFallback(options: {
     }
 
     const elapsed = Date.now() - start;
-    if (!hasLeftPage && elapsed < timeout + 200) {
+    if (!hasBlur && elapsed < timeout + 200) {
       console.info('降级的 url', fallbackUrl, jumpWay);
       if (!fallbackUrl) {
         failCallback?.();
