@@ -115,6 +115,10 @@ export interface NavigateToLinkOptions {
     isWxMiniProgramEnv?: () => Promise<boolean | undefined>;
     /** 跳转微信小程序 */
     toWxMiniProgram?: (link: string) => void;
+    /** 跳转失败回调 */
+    failCallback?: () => void;
+    /** app 标识 */
+    getIsApp?: () => string | undefined;
 }
 /**
  * 检测自定义环境 UA 配置
@@ -130,6 +134,8 @@ export declare function openAppWithFallback(options: {
     fallbackUrl: string;
     jumpWay: LinkJumpWay;
     openLink: (url: string, jumpWay: LinkJumpWay) => void;
+    failCallback?: () => void;
+    getIsApp?: () => string | undefined;
 }): void;
 /**
  * 格式化链接地址

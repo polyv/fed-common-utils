@@ -122,6 +122,10 @@ export interface NavigateToLinkOptions {
   isWxMiniProgramEnv?: () => Promise<boolean | undefined>;
   /** 跳转微信小程序 */
   toWxMiniProgram?: (link: string) => void;
+  /** 跳转失败回调 */
+  failCallback?: () => void;
+  /** app 标识 */
+  getIsApp?: () => string | undefined;
 }
 
 /**
@@ -145,11 +149,15 @@ export function openAppWithFallback(options: {
   fallbackUrl: string;
   jumpWay: LinkJumpWay;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
+  failCallback?: () => void;
+  getIsApp?: () => string | undefined;
 }): void {
-  const { iosLink, androidLink, harmonyLink, fallbackUrl, jumpWay, openLink } = options;
+  const { iosLink, androidLink, harmonyLink, fallbackUrl, jumpWay, openLink, failCallback, getIsApp } = options;
 
   const timeout = 3500;
   const start = Date.now();
+  const isApp = getIsApp?.();
+  console.info('isApp 标识', isApp);
   let hasBlur = false;
 
   // 页面失去焦点，通常是成功唤起 App 了
@@ -173,6 +181,10 @@ export function openAppWithFallback(options: {
   }
   if (!url) {
     console.info('没有配置多平台链接，使用降级链接', fallbackUrl);
+    if (!fallbackUrl) {
+      failCallback?.();
+      return;
+    }
     openLink(fallbackUrl, jumpWay);
     return;
   }
@@ -180,12 +192,21 @@ export function openAppWithFallback(options: {
   window.location.href = url;
 
   setTimeout(() => {
-    console.info('进入到降级逻辑了');
+    console.info('进入到降级逻辑了，是否离开页面', hasBlur);
     window.removeEventListener('blur', onBlur);
 
+    if (isApp === '1') {
+      console.info('存在 isApp 标识不做降级');
+      return;
+    }
+
     const elapsed = Date.now() - start;
-    if (!hasBlur && elapsed < timeout + 200 && fallbackUrl) {
+    if (!hasBlur && elapsed < timeout + 200) {
       console.info('降级的 url', fallbackUrl, jumpWay);
+      if (!fallbackUrl) {
+        failCallback?.();
+        return;
+      }
       openLink(fallbackUrl, jumpWay);
     }
   }, timeout);
@@ -228,8 +249,10 @@ async function toMultiPlatformLink(options: {
   toWxMiniProgram?: (link: string) => void;
   openLink: (url: string, jumpWay: LinkJumpWay) => void;
   isMobile?: () => boolean;
+  failCallback?: () => void;
+  getIsApp?: () => string | undefined;
 }) {
-  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile } = options;
+  const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile, failCallback, getIsApp } = options;
   const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
   const isMobilePlatform = isMobile?.() || isPortable;
   console.info('跳转函数收到的数据', linkData);
@@ -247,6 +270,10 @@ async function toMultiPlatformLink(options: {
     if (wxMiniprogramLink) {
       toWxMiniProgram(formatLink(wxMiniprogramLink, getLinkParams));
     } else {
+      if (!link) {
+        failCallback?.();
+        return;
+      }
       openLink(formatLink(link, getLinkParams), jumpWay);
     }
     return;
@@ -254,17 +281,27 @@ async function toMultiPlatformLink(options: {
 
   // PC 端
   if (!isMobilePlatform) {
-    openLink(formatLink(pcLink || link, getLinkParams), jumpWay);
+    const targetLink = pcLink || link;
+    if (!targetLink) {
+      failCallback?.();
+      return;
+    }
+    openLink(formatLink(targetLink, getLinkParams), jumpWay);
     return;
   }
 
   // 某些 App 下禁用了 url scheme，改用链接跳转
   if (uaInfo.client.isWx || uaInfo.client.isWxWork || uaInfo.client.isDing || uaInfo.client.isQQ || uaInfo.client.isWeibo || uaInfo.client.isBaiduApp) {
+    if (!link) {
+      failCallback?.();
+      return;
+    }
     openLink(formatLink(link, getLinkParams), jumpWay);
     return;
   }
 
   // 优先跳转 App url scheme，否则降级到浏览器链接
+  console.info('收到 getLinkParams 参数', getLinkParams);
   openAppWithFallback({
     iosLink,
     androidLink,
@@ -272,6 +309,8 @@ async function toMultiPlatformLink(options: {
     fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
     jumpWay,
     openLink,
+    failCallback,
+    getIsApp,
   });
 }
 
@@ -285,12 +324,15 @@ export function formatLink(
   url: string,
   getLinkParams?: (url: string) => Record<string, unknown>
 ): string {
+  if (!url) return url;
   let urlParams = {};
 
   if (getLinkParams) {
     const res = getLinkParams(url);
+    console.info('带的参数', res);
     urlParams = Object.assign({}, urlParams, res);
   }
+  console.info('最终拼接的字符串', concat(url, urlParams));
   return concat(url, urlParams);
 }
 
@@ -299,7 +341,7 @@ export function formatLink(
  * @param options 跳转配置项
  */
 export function navigateToLink(options: NavigateToLinkOptions): void {
-  const { linkData, usePlvWebviewBridge, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile } = options;
+  const { linkData, usePlvWebviewBridge, openLink, isPlvWebview, getPlvWebviewSmallWindowSize, getPlvWebviewBridge, isWxMiniProgramEnv, toWxMiniProgram, getLinkParams, isMobile, failCallback, getIsApp } = options;
 
   const supportPlvWebview = isPlvWebview?.() || false;
   console.info('是否保利威 webview 环境', supportPlvWebview);
@@ -320,6 +362,10 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
     };
 
     if (usePlvWebviewBridge) {
+      if (!linkTo) {
+        failCallback?.();
+        return;
+      }
       toPlvWebviewBridge({
         link: formatLink(linkTo, getLinkParams),
         data: otherData,
@@ -336,6 +382,8 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
       jumpWay,
       openLink,
+      failCallback,
+      getIsApp,
     });
     return;
   }
@@ -347,5 +395,7 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
     toWxMiniProgram,
     openLink,
     isMobile,
+    failCallback,
+    getIsApp,
   });
 }
