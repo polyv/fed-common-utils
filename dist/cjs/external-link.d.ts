@@ -43,9 +43,19 @@ export declare enum LinkJumpWay {
  */
 export interface LinkData {
     /**
-     * 跳转方式
+     * 通用平台跳转链接的跳转方式
      */
     jumpWay: LinkJumpWay;
+    /**
+     * PC 端跳转链接的跳转方式。
+     * 未指定时回退为 jumpWay。
+     */
+    pcLinkJumpWay?: LinkJumpWay;
+    /**
+     * App 降级跳转链接的跳转方式。
+     * 未指定时回退为 jumpWay。
+     */
+    mobileAppLinkJumpWay?: LinkJumpWay;
     /**
      * 通用平台跳转链接
      */
@@ -115,6 +125,10 @@ export interface NavigateToLinkOptions {
     isWxMiniProgramEnv?: () => Promise<boolean | undefined>;
     /** 跳转微信小程序 */
     toWxMiniProgram?: (link: string) => void;
+    /** 跳转失败回调 */
+    failCallback?: () => void;
+    /** app 标识 */
+    getIsApp?: () => string | undefined;
 }
 /**
  * 检测自定义环境 UA 配置
@@ -130,6 +144,8 @@ export declare function openAppWithFallback(options: {
     fallbackUrl: string;
     jumpWay: LinkJumpWay;
     openLink: (url: string, jumpWay: LinkJumpWay) => void;
+    failCallback?: () => void;
+    getIsApp?: () => string | undefined;
 }): void;
 /**
  * 格式化链接地址
