@@ -51,9 +51,19 @@ export enum LinkJumpWay {
  */
 export interface LinkData {
   /**
-   * 跳转方式
+   * 通用平台跳转链接的跳转方式
    */
   jumpWay: LinkJumpWay;
+  /**
+   * PC 端跳转链接的跳转方式。
+   * 未指定时回退为 jumpWay。
+   */
+  pcLinkJumpWay?: LinkJumpWay;
+  /**
+   * App 降级跳转链接的跳转方式。
+   * 未指定时回退为 jumpWay。
+   */
+  mobileAppLinkJumpWay?: LinkJumpWay;
   /**
    * 通用平台跳转链接
    */
@@ -126,6 +136,36 @@ export interface NavigateToLinkOptions {
   failCallback?: () => void;
   /** app 标识 */
   getIsApp?: () => string | undefined;
+}
+
+type LinkTarget = 'link' | 'pcLink' | 'mobileAppLink';
+
+interface SelectedLinkData {
+  url: string;
+  jumpWay: LinkJumpWay;
+}
+
+function getJumpWayByTarget(linkData: LinkData, target: LinkTarget): LinkJumpWay {
+  switch (target) {
+    case 'pcLink':
+      return linkData.pcLinkJumpWay ?? linkData.jumpWay;
+    case 'mobileAppLink':
+      return linkData.mobileAppLinkJumpWay ?? linkData.jumpWay;
+    default:
+      return linkData.jumpWay;
+  }
+}
+
+function selectLinkData(
+  linkData: LinkData,
+  preferredTarget: Exclude<LinkTarget, 'link'>
+): SelectedLinkData {
+  const url = linkData[preferredTarget] || linkData.link;
+  const target: LinkTarget = linkData[preferredTarget] ? preferredTarget : 'link';
+  return {
+    url,
+    jumpWay: getJumpWayByTarget(linkData, target),
+  };
 }
 
 /**
@@ -253,8 +293,12 @@ async function toMultiPlatformLink(options: {
   getIsApp?: () => string | undefined;
 }) {
   const { linkData, isWxMiniProgramEnv, toWxMiniProgram, openLink, getLinkParams, isMobile, failCallback, getIsApp } = options;
-  const { wxMiniprogramLink, pcLink, iosLink, androidLink, harmonyLink, link, jumpWay, mobileAppLink } = linkData;
+  const { wxMiniprogramLink, iosLink, androidLink, harmonyLink, link } = linkData;
   const isMobilePlatform = isMobile?.() || isPortable;
+  const pcLinkData = selectLinkData(linkData, 'pcLink');
+  const mobileAppLinkData = selectLinkData(linkData, 'mobileAppLink');
+  console.info('pcLinkData', pcLinkData);
+  console.info('mobileAppLinkData', mobileAppLinkData);
   console.info('跳转函数收到的数据', linkData);
 
   let isWxMiniProgramWebview = false;
@@ -274,19 +318,18 @@ async function toMultiPlatformLink(options: {
         failCallback?.();
         return;
       }
-      openLink(formatLink(link, getLinkParams), jumpWay);
+      openLink(formatLink(link, getLinkParams), getJumpWayByTarget(linkData, 'link'));
     }
     return;
   }
 
   // PC 端
   if (!isMobilePlatform) {
-    const targetLink = pcLink || link;
-    if (!targetLink) {
+    if (!pcLinkData.url) {
       failCallback?.();
       return;
     }
-    openLink(formatLink(targetLink, getLinkParams), jumpWay);
+    openLink(formatLink(pcLinkData.url, getLinkParams), pcLinkData.jumpWay);
     return;
   }
 
@@ -296,7 +339,7 @@ async function toMultiPlatformLink(options: {
       failCallback?.();
       return;
     }
-    openLink(formatLink(link, getLinkParams), jumpWay);
+    openLink(formatLink(link, getLinkParams), getJumpWayByTarget(linkData, 'link'));
     return;
   }
 
@@ -306,8 +349,8 @@ async function toMultiPlatformLink(options: {
     iosLink,
     androidLink,
     harmonyLink,
-    fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
-    jumpWay,
+    fallbackUrl: formatLink(mobileAppLinkData.url, getLinkParams),
+    jumpWay: mobileAppLinkData.jumpWay,
     openLink,
     failCallback,
     getIsApp,
@@ -348,17 +391,20 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
 
   // 保利威 SDK Webview 下跳转
   if (supportPlvWebview) {
-    const { link, iosLink, androidLink, harmonyLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink, jumpWay } = linkData;
-    const linkTo = mobileAppLink || link;
+    const { link, iosLink, androidLink, harmonyLink, mobileAppLink, wxMiniprogramOriginalId, wxMiniprogramLink } = linkData;
+    const mobileAppLinkData = selectLinkData(linkData, 'mobileAppLink');
+    const linkTo = mobileAppLinkData.url;
     console.info('保利威 webview 下的 mobileAppLink，link', mobileAppLink, link);
-    console.info('保利威 webview 下 usePlvWebviewBridge', usePlvWebviewBridge);
+    console.info('保利威 webview 下的 mobileAppLinkData', mobileAppLinkData);
 
     // 将其余字段单独放到 data 供接入方使用
     const otherData = {
       mobileLink: formatLink(link, getLinkParams),
+      jumpWay: getJumpWayByTarget(linkData, 'link'),
       wxMiniprogramOriginalId,
       wxMiniprogramLink: formatLink(wxMiniprogramLink, getLinkParams),
       mobileAppLink: formatLink(mobileAppLink, getLinkParams),
+      mobileAppLinkJumpWay: mobileAppLinkData.jumpWay,
     };
 
     if (usePlvWebviewBridge) {
@@ -379,8 +425,8 @@ export function navigateToLink(options: NavigateToLinkOptions): void {
       iosLink,
       androidLink,
       harmonyLink,
-      fallbackUrl: formatLink(mobileAppLink || link, getLinkParams),
-      jumpWay,
+      fallbackUrl: formatLink(mobileAppLinkData.url, getLinkParams),
+      jumpWay: mobileAppLinkData.jumpWay,
       openLink,
       failCallback,
       getIsApp,

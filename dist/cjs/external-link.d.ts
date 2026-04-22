@@ -43,9 +43,19 @@ export declare enum LinkJumpWay {
  */
 export interface LinkData {
     /**
-     * 跳转方式
+     * 通用平台跳转链接的跳转方式
      */
     jumpWay: LinkJumpWay;
+    /**
+     * PC 端跳转链接的跳转方式。
+     * 未指定时回退为 jumpWay。
+     */
+    pcLinkJumpWay?: LinkJumpWay;
+    /**
+     * App 降级跳转链接的跳转方式。
+     * 未指定时回退为 jumpWay。
+     */
+    mobileAppLinkJumpWay?: LinkJumpWay;
     /**
      * 通用平台跳转链接
      */
